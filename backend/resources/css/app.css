@@ -1,0 +1,791 @@
+/* Notificaciones operativas del ERP. */
+.swal2-popup.erp-toast {
+  width: min(390px, calc(100vw - 2rem));
+  padding: 1rem 1.15rem;
+  color: #fff;
+  box-shadow: 0 0.35rem 1.25rem rgb(34 48 62 / 24%);
+}
+
+.swal2-popup.erp-toast-success { background: #83d467; }
+.swal2-popup.erp-toast-error { background: #f36f73; }
+.swal2-popup.erp-toast-warning { background: var(--bs-primary, #8c57ff); }
+.swal2-popup.erp-toast-info { background: var(--bs-primary, #8c57ff); }
+
+.erp-toast .swal2-title,
+.erp-toast .swal2-html-container { color: #fff; text-align: left; }
+.erp-toast .swal2-title { font-size: 1rem; margin: 0.1rem 0 0.2rem; }
+.erp-toast .swal2-html-container { font-size: 0.875rem; margin: 0; }
+.erp-toast .swal2-icon { border-color: #fff; color: #fff; margin: 0 0.8rem 0 0; }
+.erp-toast .swal2-timer-progress-bar { background: rgb(255 255 255 / 48%); }
+
+.swal2-popup.erp-confirm { border-radius: 0.75rem; }
+
+.swal2-container.erp-confirm-container {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100vh !important;
+  z-index: 2147483000 !important;
+  isolation: isolate;
+  pointer-events: auto !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.swal2-container.erp-confirm-container.swal2-backdrop-show {
+  background: rgb(24 21 39 / 58%) !important;
+}
+
+.swal2-container.erp-confirm-container .swal2-popup {
+  position: relative;
+  z-index: 1;
+}
+
+/* SweetAlert se inserta fuera del layout: desenfocamos directamente toda la
+   aplicación para que navbar, buscador y menú nunca queden visualmente activos. */
+body.erp-confirm-open .layout-wrapper {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.12s ease;
+}
+
+/* Paginación uniforme en todos los listados del ERP. */
+.pagination {
+  gap: 0.25rem;
+}
+
+.pagination .page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  min-inline-size: 2rem;
+  padding: 0;
+  border-radius: 50% !important;
+}
+
+.pagination.pagination-sm .page-link {
+  inline-size: 1.875rem;
+  block-size: 1.875rem;
+  min-inline-size: 1.875rem;
+}
+
+#pagination.d-flex > .btn,
+[data-pagination-controls] > .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  min-inline-size: 2rem;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* Contraste de las paginaciones en el dark mode. */
+[data-bs-theme="dark"] .pagination {
+  --bs-pagination-color: #cbbcff;
+  --bs-pagination-bg: rgb(255 255 255 / 8%);
+  --bs-pagination-border-color: transparent;
+  --bs-pagination-hover-color: #fff;
+  --bs-pagination-hover-bg: rgb(155 109 255 / 28%);
+  --bs-pagination-hover-border-color: transparent;
+  --bs-pagination-focus-color: #fff;
+  --bs-pagination-focus-bg: rgb(155 109 255 / 28%);
+  --bs-pagination-active-color: #fff;
+  --bs-pagination-active-bg: var(--bs-primary);
+  --bs-pagination-active-border-color: var(--bs-primary);
+  --bs-pagination-disabled-color: #77738e;
+  --bs-pagination-disabled-bg: rgb(255 255 255 / 4%);
+  --bs-pagination-disabled-border-color: transparent;
+}
+
+[data-bs-theme="dark"] .pagination .page-link {
+  background-color: var(--bs-pagination-bg);
+  border-color: var(--bs-pagination-border-color);
+  color: var(--bs-pagination-color);
+}
+
+[data-bs-theme="dark"] .pagination .page-item.active .page-link {
+  background-color: var(--bs-pagination-active-bg);
+  border-color: var(--bs-pagination-active-border-color);
+  color: var(--bs-pagination-active-color);
+}
+
+[data-bs-theme="dark"] .pagination .page-item.disabled .page-link,
+[data-bs-theme="dark"] .pagination .page-link:disabled {
+  background-color: var(--bs-pagination-disabled-bg);
+  border-color: var(--bs-pagination-disabled-border-color);
+  color: var(--bs-pagination-disabled-color);
+  opacity: 1;
+}
+
+[data-bs-theme="dark"] #pagination.d-flex > .btn-outline-secondary,
+[data-bs-theme="dark"] [data-pagination-controls] > .btn-outline-secondary {
+  background-color: rgb(255 255 255 / 8%);
+  border-color: transparent;
+  color: #cbbcff;
+}
+
+[data-bs-theme="dark"] #pagination.d-flex > .btn-outline-secondary:hover,
+[data-bs-theme="dark"] #pagination.d-flex > .btn-outline-secondary:focus,
+[data-bs-theme="dark"] [data-pagination-controls] > .btn-outline-secondary:hover,
+[data-bs-theme="dark"] [data-pagination-controls] > .btn-outline-secondary:focus {
+  background-color: rgb(155 109 255 / 28%);
+  border-color: transparent;
+  color: #fff;
+}
+
+[data-bs-theme="dark"] #pagination.d-flex > .btn:disabled,
+[data-bs-theme="dark"] [data-pagination-controls] > .btn:disabled {
+  background-color: rgb(255 255 255 / 4%);
+  border-color: transparent;
+  color: #77738e;
+  opacity: 1;
+}
+
+/* Acciones semánticas compartidas. Los colores pueden cambiarse globalmente aquí. */
+.erp-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Dark mode propio del ERP (la edición gratuita de Materio no incluye este skin). */
+[data-bs-theme="dark"] {
+  --bs-body-color: #d5d1e9;
+  --bs-body-color-rgb: 213, 209, 233;
+  --bs-body-bg: #25243a;
+  --bs-body-bg-rgb: 37, 36, 58;
+  --bs-emphasis-color: #f3f1ff;
+  --bs-emphasis-color-rgb: 243, 241, 255;
+  --bs-secondary-color: #aaa6c2;
+  --bs-secondary-color-rgb: 170, 166, 194;
+  --bs-tertiary-color: #8d89a5;
+  --bs-tertiary-bg: #312f4b;
+  --bs-secondary-bg: #302e49;
+  --bs-border-color: #46445f;
+  --bs-border-color-translucent: rgb(207 202 232 / 18%);
+  --bs-heading-color: #e8e6f4;
+  --bs-link-color: #a98bff;
+  --bs-link-hover-color: #bda8ff;
+  --bs-primary: #9b6dff;
+  --bs-primary-rgb: 155, 109, 255;
+  --bs-primary-bg-subtle: #3d315e;
+  --bs-primary-border-subtle: #684ca3;
+  --bs-paper-bg: #312f4b;
+  --bs-paper-bg-rgb: 49, 47, 75;
+  --bs-base-color: #fff;
+  --bs-base-color-rgb: 255, 255, 255;
+  --bs-navbar-bg: rgb(49 47 75 / 92%);
+  --bs-navbar-border-color: #312f4b;
+  --bs-navbar-box-shadow: 0 .25rem .5rem -.25rem rgb(0 0 0 / 45%);
+  --bs-menu-bg: #2b2942;
+  --bs-menu-bg-rgb: 43, 41, 66;
+  --bs-menu-color: #cbc7df;
+  --bs-menu-color-rgb: 203, 199, 223;
+  --bs-menu-hover-bg: #39364f;
+  --bs-menu-hover-color: #f2efff;
+  --bs-menu-sub-active-bg: #40385c;
+  --bs-menu-sub-active-color: #d9ccff;
+  --bs-menu-header-color: #938fa9;
+  --bs-menu-divider-color: #48455f;
+  --bs-menu-item-icon-color: #aaa5c2;
+  --bs-box-shadow: 0 .25rem .75rem rgb(0 0 0 / 28%);
+  --bs-box-shadow-sm: 0 .125rem .375rem rgb(0 0 0 / 25%);
+  --bs-box-shadow-lg: 0 .75rem 2rem rgb(0 0 0 / 38%);
+  --bs-form-control-bg: #2b2942;
+  --bs-form-control-color: #ddd9ed;
+  --bs-form-control-border-color: #504d69;
+}
+
+[data-bs-theme="dark"] body,
+[data-bs-theme="dark"] .layout-page,
+[data-bs-theme="dark"] .content-wrapper { background-color: var(--bs-body-bg); }
+
+[data-bs-theme="dark"] .card,
+[data-bs-theme="dark"] .modal-content,
+[data-bs-theme="dark"] .offcanvas,
+[data-bs-theme="dark"] .dropdown-menu,
+[data-bs-theme="dark"] .list-group-item,
+[data-bs-theme="dark"] .accordion-item,
+[data-bs-theme="dark"] .swal2-popup { background-color: var(--bs-paper-bg); color: var(--bs-body-color); }
+
+/* Menús de acciones de las tablas y desplegables generales. */
+[data-bs-theme="dark"] .dropdown-menu {
+  --bs-dropdown-bg: var(--bs-paper-bg);
+  --bs-dropdown-color: #dedbea;
+  --bs-dropdown-link-color: #dedbea;
+  --bs-dropdown-link-hover-color: #fff;
+  --bs-dropdown-link-hover-bg: #45415f;
+  --bs-dropdown-link-active-color: #fff;
+  --bs-dropdown-link-active-bg: #6541b8;
+  --bs-dropdown-link-disabled-color: #77738e;
+  border-color: #504d69;
+  box-shadow: 0 .65rem 1.8rem rgb(0 0 0 / 38%);
+}
+
+[data-bs-theme="dark"] .dropdown-item,
+[data-bs-theme="dark"] .dropdown-item-text {
+  background-color: transparent;
+  color: #dedbea;
+}
+
+[data-bs-theme="dark"] .dropdown-item:hover,
+[data-bs-theme="dark"] .dropdown-item:focus {
+  background-color: #45415f !important;
+  color: #fff !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item.active,
+[data-bs-theme="dark"] .dropdown-item:active {
+  background-color: #6541b8 !important;
+  color: #fff !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item.disabled,
+[data-bs-theme="dark"] .dropdown-item:disabled {
+  background-color: transparent !important;
+  color: #77738e !important;
+  opacity: 1;
+}
+
+[data-bs-theme="dark"] .dropdown-item.text-danger { color: #ff6b75; }
+[data-bs-theme="dark"] .dropdown-item.text-danger:hover,
+[data-bs-theme="dark"] .dropdown-item.text-danger:focus { background-color: rgb(255 76 81 / 16%) !important; color: #ff7d85 !important; }
+[data-bs-theme="dark"] .dropdown-item.text-success { color: #58d68d; }
+[data-bs-theme="dark"] .dropdown-item.text-success:hover,
+[data-bs-theme="dark"] .dropdown-item.text-success:focus { background-color: rgb(40 199 111 / 16%) !important; color: #72e2a3 !important; }
+[data-bs-theme="dark"] .dropdown-divider { border-color: #504d69; }
+
+[data-bs-theme="dark"] .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--bs-body-color);
+  --bs-table-border-color: #494661;
+  --bs-table-striped-bg: rgb(255 255 255 / 3%);
+  --bs-table-striped-color: #e2dff0;
+  --bs-table-hover-bg: rgb(155 109 255 / 9%);
+  --bs-table-hover-color: #fff;
+  --bs-table-header-bg-color: #393650;
+}
+
+[data-bs-theme="dark"] .table thead th {
+  background-color: #393650 !important;
+  border-color: #494661 !important;
+  color: #dedbea !important;
+}
+
+[data-bs-theme="dark"] .table-light,
+[data-bs-theme="dark"] .table .table-light {
+  --bs-table-bg: #393650;
+  --bs-table-color: #dedbea;
+  --bs-table-border-color: #494661;
+  color: #dedbea !important;
+}
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select,
+[data-bs-theme="dark"] .input-group-text { background-color: #2b2942; border-color: #504d69; color: #ddd9ed; }
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus { background-color: #2b2942; color: #f3f1ff; border-color: #9b6dff; }
+[data-bs-theme="dark"] .form-control::placeholder { color: #85819b; }
+[data-bs-theme="dark"] .text-dark { color: #e8e6f4 !important; }
+[data-bs-theme="dark"] .bg-white { background-color: var(--bs-paper-bg) !important; }
+[data-bs-theme="dark"] .bg-light,
+[data-bs-theme="dark"] .bg-lightest,
+[data-bs-theme="dark"] .alert-light {
+  background-color: #3b3852 !important;
+  border-color: #504d69 !important;
+  color: #dedbea !important;
+}
+[data-bs-theme="dark"] .alert-light strong,
+[data-bs-theme="dark"] .alert-light span { color: inherit; }
+
+/* Estados uniformes en grillas: variante suave en lugar de badges sólidos. */
+.table .badge:is(.bg-primary, .bg-label-primary) { background-color: color-mix(in sRGB, var(--bs-paper-bg) 84%, var(--bs-primary)) !important; color: var(--bs-primary) !important; }
+.table .badge:is(.bg-secondary, .bg-label-secondary) { background-color: color-mix(in sRGB, var(--bs-paper-bg) 84%, var(--bs-secondary)) !important; color: var(--bs-secondary) !important; }
+.table .badge:is(.bg-success, .bg-label-success) { background-color: color-mix(in sRGB, var(--bs-paper-bg) 84%, var(--bs-success)) !important; color: var(--bs-success) !important; }
+.table .badge:is(.bg-info, .bg-label-info) { background-color: color-mix(in sRGB, var(--bs-paper-bg) 84%, var(--bs-info)) !important; color: var(--bs-info) !important; }
+.table .badge:is(.bg-warning, .bg-label-warning) { background-color: color-mix(in sRGB, var(--bs-paper-bg) 84%, var(--bs-warning)) !important; color: #e89b00 !important; }
+.table .badge:is(.bg-danger, .bg-label-danger) { background-color: color-mix(in sRGB, var(--bs-paper-bg) 84%, var(--bs-danger)) !important; color: var(--bs-danger) !important; }
+.table .badge:is(.bg-dark, .bg-label-dark) { background-color: color-mix(in sRGB, var(--bs-paper-bg) 84%, var(--bs-dark)) !important; color: var(--bs-dark) !important; }
+
+[data-bs-theme="dark"] .table .badge:is(.bg-warning, .bg-label-warning) { color: #ffc247 !important; }
+[data-bs-theme="dark"] .table .badge:is(.bg-dark, .bg-label-dark) { background-color: rgb(255 255 255 / 12%) !important; color: #dedbea !important; }
+[data-bs-theme="dark"] .border,
+[data-bs-theme="dark"] .border-top,
+[data-bs-theme="dark"] .border-bottom { border-color: var(--bs-border-color) !important; }
+[data-bs-theme="dark"] .select2-container--default .select2-selection--single,
+[data-bs-theme="dark"] .select2-container--default .select2-selection--multiple,
+[data-bs-theme="dark"] .select2-dropdown { background-color: #2b2942; border-color: #504d69; color: #ddd9ed; }
+[data-bs-theme="dark"] .select2-results__option--highlighted { background-color: #6541b8 !important; }
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--bs-primary) !important;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+[data-bs-theme="dark"] .theme-toggle {
+  color: #fff !important;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  background-color: rgb(var(--bs-primary-rgb) / 12%);
+  color: #6f3fd5 !important;
+}
+
+[data-bs-theme="dark"] .theme-toggle:hover,
+[data-bs-theme="dark"] .theme-toggle:focus-visible {
+  background-color: rgb(255 255 255 / 12%);
+  color: #fff !important;
+}
+
+.theme-toggle-icon {
+  inline-size: 1.35rem;
+  block-size: 1.35rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle-sun { display: none; }
+[data-bs-theme="dark"] .theme-toggle-moon { display: none; }
+[data-bs-theme="dark"] .theme-toggle-sun { display: block; }
+
+/* Indicadores de carga compartidos. */
+.erp-global-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1095;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(34 31 53 / 16%);
+  backdrop-filter: blur(1.5px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .16s ease, visibility .16s ease;
+}
+
+.erp-global-loader.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.erp-global-loader-panel {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  min-width: 12.5rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid rgb(115 103 240 / 18%);
+  border-radius: .8rem;
+  background: rgb(255 255 255 / 96%);
+  color: #4b465c;
+  box-shadow: 0 .5rem 2rem rgb(34 31 53 / 18%);
+}
+
+.erp-global-loader-spinner {
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: 0 0 auto;
+  color: #7367f0;
+}
+
+.erp-global-loader-text {
+  font-weight: 600;
+}
+
+[data-bs-theme="dark"] .erp-global-loader {
+  background: rgb(10 9 20 / 38%);
+}
+
+[data-bs-theme="dark"] .erp-global-loader-panel {
+  border-color: rgb(195 167 255 / 24%);
+  background: rgb(47 43 69 / 97%);
+  color: #f0edf9;
+  box-shadow: 0 .5rem 2rem rgb(0 0 0 / 38%);
+}
+
+[data-bs-theme="dark"] .erp-global-loader-spinner {
+  color: #c3a7ff;
+}
+
+.btn .erp-button-spinner {
+  margin-right: .45rem;
+  vertical-align: -.125em;
+}
+/* Panel de atajos del navbar: reutiliza la estructura visual del template. */
+.erp-shortcuts-menu {
+    inline-size: min(24rem, calc(100vw - 2rem));
+    overflow: hidden;
+}
+
+[data-bs-theme="light"] .erp-shortcuts-toggle-icon {
+    color: var(--bs-primary);
+}
+
+[data-bs-theme="dark"] .erp-shortcuts-toggle-icon {
+    color: inherit;
+}
+
+.erp-shortcuts-menu .dropdown-shortcuts-list {
+    max-block-size: min(30rem, calc(100vh - 9rem));
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+}
+
+.erp-shortcuts-menu .dropdown-shortcuts-list::-webkit-scrollbar {
+    inline-size: .375rem;
+}
+
+.erp-shortcuts-menu .dropdown-shortcuts-list::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background-color: color-mix(in srgb, var(--bs-body-color) 25%, transparent);
+}
+
+.erp-shortcut-action {
+    border: 0;
+    background: transparent;
+}
+
+.erp-shortcut-key {
+    display: inline-flex;
+    min-inline-size: 2.25rem;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--bs-primary) 25%, transparent);
+    border-radius: .375rem;
+    background: color-mix(in srgb, var(--bs-primary) 10%, transparent);
+    color: var(--bs-primary);
+    font-size: .6875rem;
+    line-height: 1;
+    padding: .3rem .45rem;
+    box-shadow: none;
+}
+/* Dashboard ejecutivo */
+.dashboard-kpi-card {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--bs-border-color) 75%, transparent);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.dashboard-kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1.5rem rgb(34 48 62 / 12%);
+}
+
+.dashboard-kpi-value { letter-spacing: -.025em; }
+.dashboard-chart { min-block-size: 18rem; }
+
+.dashboard-pulse-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 1rem;
+    border-block-end: 1px solid var(--bs-border-color);
+}
+
+.classification-card { transition: border-color .2s ease, background-color .2s ease; }
+.classification-card:hover {
+    border-color: color-mix(in srgb, var(--bs-primary) 45%, var(--bs-border-color)) !important;
+    background: color-mix(in srgb, var(--bs-primary) 4%, transparent);
+}
+
+.dashboard-dot {
+    display: inline-block;
+    inline-size: .65rem;
+    block-size: .65rem;
+    border-radius: 50%;
+    box-shadow: 0 0 0 .25rem color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.dashboard-spin { animation: dashboard-spin .8s linear infinite; }
+@keyframes dashboard-spin { to { transform: rotate(360deg); } }
+
+.dashboard-shell .apexcharts-text,
+.dashboard-shell .apexcharts-legend-text,
+.dashboard-shell .apexcharts-datalabel-label,
+.dashboard-shell .apexcharts-datalabel-value {
+    color: var(--bs-body-color) !important;
+    fill: var(--bs-body-color) !important;
+}
+
+.dashboard-shell .apexcharts-tooltip,
+.dashboard-shell .apexcharts-xaxistooltip,
+.dashboard-shell .apexcharts-yaxistooltip {
+    border-color: var(--bs-border-color) !important;
+    background: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+}
+
+.dashboard-shell .apexcharts-tooltip-title {
+    border-color: var(--bs-border-color) !important;
+    background: color-mix(in srgb, var(--bs-body-bg) 88%, var(--bs-body-color)) !important;
+    color: var(--bs-heading-color) !important;
+}
+
+[data-bs-theme="dark"] .dashboard-shell .table > :not(caption) > * > *,
+[data-bs-theme="dark"] .dashboard-shell .classification-card,
+[data-bs-theme="dark"] .dashboard-shell .dashboard-pulse-item {
+    color: var(--bs-body-color);
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-chart { min-block-size: 15rem; }
+    .dashboard-shell .card-header { align-items: flex-start !important; }
+}
+
+/* Buscador expandible del navbar. */
+.erp-navbar-search-toggle { min-width: 12rem; }
+.erp-search-key {
+    margin-left: .35rem;
+    padding: .15rem .4rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: .3rem;
+    background: transparent;
+    color: var(--bs-secondary-color);
+    font-size: .68rem;
+    font-weight: 500;
+    box-shadow: none;
+}
+.erp-navbar-search {
+    position: absolute;
+    inset: 0;
+    z-index: 1085;
+    border-radius: inherit;
+    background: var(--bs-paper-bg, #fff);
+}
+.erp-navbar-search-bar {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    height: 100%;
+    padding: 0 1rem;
+}
+.erp-navbar-search-bar .form-control {
+    height: 100%;
+    padding-inline: .25rem;
+    background: transparent;
+    font-size: 1rem;
+}
+.erp-navbar-search-results {
+    position: absolute;
+    top: calc(100% + .5rem);
+    right: 0;
+    left: 0;
+    max-height: min(28rem, calc(100vh - 8rem));
+    overflow-y: auto;
+    padding: .5rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: .65rem;
+    background: var(--bs-paper-bg, #fff);
+    box-shadow: 0 .5rem 2rem rgb(34 31 53 / 18%);
+}
+.erp-navbar-search-result {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .7rem .8rem;
+    border-radius: .45rem;
+    color: var(--bs-body-color);
+    transition: background-color .15s ease, color .15s ease;
+}
+.erp-navbar-search-result:hover,
+.erp-navbar-search-result:focus {
+    background: rgb(115 103 240 / 10%);
+    color: #7367f0;
+    outline: none;
+}
+.erp-navbar-search-result-icon {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: rgb(115 103 240 / 12%);
+    color: #7367f0;
+    font-size: 1.1rem;
+}
+.erp-navbar-search-result strong,
+.erp-navbar-search-result small { display: block; }
+.erp-navbar-search-result small {
+    margin-top: .1rem;
+    color: var(--bs-secondary-color);
+}
+.erp-navbar-search-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .65rem;
+    min-height: 5rem;
+    color: var(--bs-secondary-color);
+}
+.erp-navbar-search-empty i { font-size: 1.35rem; }
+[data-bs-theme="dark"] .erp-navbar-search,
+[data-bs-theme="dark"] .erp-navbar-search-results { background: var(--bs-paper-bg); }
+[data-bs-theme="dark"] .erp-navbar-search-result:hover,
+[data-bs-theme="dark"] .erp-navbar-search-result:focus {
+    background: rgb(195 167 255 / 12%);
+    color: #c3a7ff;
+}
+[data-bs-theme="dark"] .erp-navbar-search-result-icon {
+    background: rgb(195 167 255 / 14%);
+    color: #c3a7ff;
+}
+@media (max-width: 767.98px) {
+    .erp-navbar-search-toggle { min-width: auto; }
+}
+
+/* Selector de fecha compartido. Flatpickr mantiene el valor ISO para Laravel. */
+.flatpickr-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+.flatpickr-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: .9rem;
+    z-index: 2;
+    width: 1.15rem;
+    height: 1.15rem;
+    background-color: currentColor;
+    color: var(--bs-secondary-color);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 1v2h6V1h2v2h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h4V1zm11 10H4v8h16zM7 5H4v4h16V5h-3v2h-2V5H9v2H7z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 1v2h6V1h2v2h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h4V1zm11 10H4v8h16zM7 5H4v4h16V5h-3v2h-2V5H9v2H7z'/%3E%3C/svg%3E") center / contain no-repeat;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+.erp-date-input {
+    padding-right: 2.75rem !important;
+    cursor: pointer;
+}
+.erp-date-input:focus {
+    border-color: #7367f0;
+    box-shadow: 0 0 0 .2rem rgb(115 103 240 / 16%);
+}
+.erp-date-calendar.flatpickr-calendar {
+    overflow: hidden;
+    margin-top: .4rem;
+    padding: .45rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: .75rem;
+    background: var(--bs-paper-bg, #fff);
+    color: var(--bs-body-color);
+    box-shadow: 0 .75rem 2.25rem rgb(34 31 53 / 18%);
+}
+.erp-date-calendar .flatpickr-months,
+.erp-date-calendar .flatpickr-month,
+.erp-date-calendar .flatpickr-weekdays,
+.erp-date-calendar span.flatpickr-weekday {
+    background: transparent;
+    color: var(--bs-heading-color);
+}
+.erp-date-calendar .flatpickr-current-month,
+.erp-date-calendar .flatpickr-current-month input.cur-year,
+.erp-date-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+    color: var(--bs-heading-color);
+    font-weight: 600;
+}
+.erp-date-calendar .flatpickr-current-month .flatpickr-monthDropdown-months,
+.erp-date-calendar .flatpickr-current-month .flatpickr-monthDropdown-months option,
+.erp-date-calendar .numInputWrapper:hover,
+.erp-date-calendar .flatpickr-time input:hover,
+.erp-date-calendar .flatpickr-time .flatpickr-am-pm:hover {
+    background: color-mix(in srgb, #7367f0 9%, transparent);
+}
+.erp-date-calendar .flatpickr-day {
+    border-radius: .45rem;
+    color: var(--bs-body-color);
+}
+.erp-date-calendar .flatpickr-day:hover,
+.erp-date-calendar .flatpickr-day:focus {
+    border-color: rgb(115 103 240 / 16%);
+    background: rgb(115 103 240 / 12%);
+    color: #7367f0;
+}
+.erp-date-calendar .flatpickr-day.today {
+    border-color: #7367f0;
+    color: #7367f0;
+}
+.erp-date-calendar .flatpickr-day.selected,
+.erp-date-calendar .flatpickr-day.startRange,
+.erp-date-calendar .flatpickr-day.endRange {
+    border-color: #7367f0;
+    background: #7367f0;
+    color: #fff;
+    box-shadow: none;
+}
+.erp-date-calendar .flatpickr-day.prevMonthDay,
+.erp-date-calendar .flatpickr-day.nextMonthDay,
+.erp-date-calendar .flatpickr-day.flatpickr-disabled {
+    color: var(--bs-secondary-color);
+    opacity: .48;
+}
+.erp-date-calendar .flatpickr-prev-month,
+.erp-date-calendar .flatpickr-next-month { color: var(--bs-heading-color); fill: currentColor; }
+.erp-date-calendar .flatpickr-time {
+    border-color: var(--bs-border-color);
+}
+.erp-date-calendar .flatpickr-time input,
+.erp-date-calendar .flatpickr-time .flatpickr-time-separator,
+.erp-date-calendar .flatpickr-time .flatpickr-am-pm {
+    color: var(--bs-body-color);
+}
+[data-bs-theme="dark"] .erp-date-calendar.flatpickr-calendar {
+    background: var(--bs-paper-bg, #312d4b);
+    box-shadow: 0 .85rem 2.5rem rgb(0 0 0 / 36%);
+}
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+    border-radius: .35rem;
+    background-color: #312d4b !important;
+    color: #f3f1ff !important;
+    color-scheme: dark;
+}
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-current-month .flatpickr-monthDropdown-months option {
+    background-color: #312d4b;
+    color: #f3f1ff;
+}
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-current-month .flatpickr-monthDropdown-months option:checked {
+    background-color: #7367f0;
+    color: #fff;
+}
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-current-month input.cur-year,
+[data-bs-theme="dark"] .erp-date-calendar .numInputWrapper span::after {
+    color: #f3f1ff;
+}
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-day:hover,
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-day:focus {
+    border-color: rgb(195 167 255 / 20%);
+    background: rgb(195 167 255 / 14%);
+    color: #c3a7ff;
+}
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-day.today { border-color: #a98df8; color: #c3a7ff; }
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-day.selected,
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-day.startRange,
+[data-bs-theme="dark"] .erp-date-calendar .flatpickr-day.endRange {
+    border-color: #8c6be8;
+    background: #8c6be8;
+    color: #fff;
+}

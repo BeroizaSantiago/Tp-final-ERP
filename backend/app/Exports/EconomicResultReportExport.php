@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Exports;
+
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+
+class EconomicResultReportExport implements FromCollection, WithHeadings
+{
+    public function __construct(private readonly Collection $rows) {}
+    public function headings(): array
+    {
+        return ['Período', 'Ventas Netas', 'Gastos Netos', 'Compras Netas', 'Resultado', 'Rentabilidad (%)'];
+    }
+    public function collection(): Collection
+    {
+        return $this->rows;
+    }
+}

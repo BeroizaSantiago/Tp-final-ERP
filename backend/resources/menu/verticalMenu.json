@@ -1,0 +1,437 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "Dashboard",
+      "icon": "menu-icon icon-base ri ri-dashboard-line",
+      "slug": "dashboard"
+    },
+    {
+      "menuHeader": "Gestión Comercial"
+    },
+    {
+      "name": "Ventas",
+      "icon": "menu-icon icon-base ri ri-shopping-cart-line",
+      "slug": "ventas",
+      "submenu": [
+        {
+          "url": "/demo/sales",
+          "name": "Facturas",
+          "slug": "ventas-facturas"
+        },
+        {
+          "url": "/demo/sales/create",
+          "name": "Nueva Venta",
+          "slug": "ventas-nueva"
+        },
+        {
+          "url": "/demo/vouchers",
+          "name": "Vouchers",
+          "slug": "ventas-vouchers"
+        },
+        {
+          "url": "/demo/sales/credit-notes",
+          "name": "Notas de Crédito",
+          "slug": "ventas-notas-credito"
+        }
+      ]
+    },
+    {
+      "name": "Compras",
+      "icon": "menu-icon icon-base ri ri-shopping-bag-3-line",
+      "slug": "compras",
+      "submenu": [
+        {
+          "url": "/demo/purchases",
+          "name": "Compras",
+          "slug": "compras-listado"
+        },
+        {
+          "url": "/demo/purchase-orders",
+          "name": "Órdenes de Compra",
+          "slug": "compras-ordenes"
+        },
+        {
+          "url": "/demo/expense-types",
+          "name": "Tipos de Gasto",
+          "slug": "compras-tipos-gasto"
+        },
+        {
+          "url": "/demo/misc-expenses",
+          "name": "Gastos Varios",
+          "slug": "compras-gastos-varios"
+        },
+        {
+          "url": "/demo/providers",
+          "name": "Proveedores",
+          "slug": "proveedores"
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "icon": "menu-icon icon-base ri ri-user-3-line",
+      "slug": "clientes",
+      "submenu": [
+        {
+          "url": "/demo/clients",
+          "name": "Listado",
+          "slug": "clientes-listado"
+        }
+      ]
+    },
+    {
+      "menuHeader": "Productos e Inventario"
+    },
+    {
+      "name": "Productos",
+      "icon": "menu-icon icon-base ri ri-t-shirt-line",
+      "slug": "productos",
+      "submenu": [
+        {
+          "url": "/demo/products",
+          "name": "Listado",
+          "slug": "productos-listado"
+        },
+        {
+          "url": "/demo/products/create",
+          "name": "Nuevo Producto",
+          "slug": "productos-nuevo"
+        },
+        {
+          "url": "/demo/products/import",
+          "name": "Importación masiva",
+          "slug": "productos-importacion-masiva"
+        },
+        {
+          "url": "/demo/brands",
+          "name": "Marcas",
+          "slug": "productos-marcas"
+        },
+        {
+          "url": "/demo/colors",
+          "name": "Colores",
+          "slug": "productos-colores"
+        },
+        {
+          "url": "/demo/sizes",
+          "name": "Talles",
+          "slug": "productos-talles"
+        },
+        {
+          "url": "/demo/product-categories",
+          "name": "Categorías",
+          "slug": "productos-categorias"
+        },
+        {
+          "url": "/demo/product-models",
+          "name": "Modelos",
+          "slug": "productos-modelos"
+        },
+        {
+          "url": "/demo/size-types",
+          "name": "Tipos de Talle",
+          "slug": "productos-tipos-talle"
+        },
+        {
+          "url": "/demo/products/price-import",
+          "name": "Importación masiva de precios",
+          "slug": "productos-importacion-precios"
+        },
+        {
+          "url": "/demo/products/bulk-price-update",
+          "name": "Actualización masiva de precios",
+          "slug": "productos-actualizacion-masiva-precios"
+        },
+        {
+          "url": "/demo/sales-promotions",
+          "name": "Promociones de Venta",
+          "slug": "productos-promociones-venta"
+        }
+      ]
+    },
+    {
+      "name": "Stock",
+      "icon": "menu-icon icon-base ri ri-archive-2-line",
+      "slug": "stock",
+      "submenu": [
+        {
+          "url": "/demo/stock/inventory",
+          "name": "Inventario",
+          "slug": "stock-inventario"
+        },
+        {
+          "url": "/demo/stock/adjustments",
+          "name": "Ajustes",
+          "slug": "stock-ajustes"
+        }
+      ]
+    },
+    {
+      "menuHeader": "Gestión Financiera"
+    },
+    {
+      "name": "Finanzas",
+      "icon": "menu-icon icon-base ri ri-money-dollar-circle-line",
+      "slug": "finanzas",
+      "submenu": [
+        {
+          "name": "Cajas",
+          "slug": "finanzas-cajas-grupo",
+          "submenu": [
+            {
+              "url": "/demo/finance/cash-sheets",
+              "name": "Planillas de Caja",
+              "slug": "finanzas-planillas-caja"
+            },
+            {
+              "url": "/demo/finance/treasury-sheets",
+              "name": "Planillas de Tesorería",
+              "slug": "finanzas-planillas-tesoreria"
+            },
+            {
+              "url": "/demo/finance/cash-boxes",
+              "name": "Cajas",
+              "slug": "finanzas-cajas"
+            },
+            {
+              "url": "/demo/finance/cash-concept-types",
+              "name": "Tipos de Conceptos Caja",
+              "slug": "finanzas-conceptos-caja"
+            }
+          ]
+        },
+        {
+          "name": "Tarjetas",
+          "slug": "finanzas-tarjetas-grupo",
+          "submenu": [
+            {
+              "url": "/demo/finance/card-coupons",
+              "name": "Cupones",
+              "slug": "finanzas-cupones-tarjeta"
+            },
+            {
+              "url": "/demo/finance/credit-cards",
+              "name": "Configuración",
+              "slug": "finanzas-tarjetas"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "menuHeader": "Análisis y Cumplimiento"
+    },
+    {
+      "name": "Reportes",
+      "icon": "menu-icon icon-base ri ri-bar-chart-box-line",
+      "slug": "reportes",
+      "submenu": [
+        {
+          "name": "Ventas",
+          "slug": "reportes-ventas",
+          "submenu": [
+            {
+              "url": "/demo/reports/sales/consolidated",
+              "name": "Ventas Consolidado",
+              "slug": "reportes-ventas-consolidado"
+            },
+            {
+              "url": "/demo/reports/sales/commissions",
+              "name": "Listado de Comisiones",
+              "slug": "reportes-ventas-comisiones"
+            },
+            {
+              "url": "/demo/reports/sales/list",
+              "name": "Listado de Ventas",
+              "slug": "reportes-ventas-listado"
+            },
+            {
+              "url": "/demo/reports/sales/detailed",
+              "name": "Listado con Detalle de Ventas",
+              "slug": "reportes-ventas-detalle"
+            },
+            {
+              "url": "/demo/reports/sales/by-date-cash",
+              "name": "Ventas por Fechas y Cajas",
+              "slug": "reportes-ventas-fechas-cajas"
+            }
+          ]
+        },
+        {
+          "name": "Productos",
+          "slug": "reportes-productos",
+          "submenu": [
+            {
+              "url": "/demo/reports/products/margins/product",
+              "name": "Margen por Producto",
+              "slug": "reportes-productos-margen-producto"
+            },
+            {
+              "url": "/demo/reports/products/margins/category",
+              "name": "Margen por Categoría",
+              "slug": "reportes-productos-margen-categoria"
+            },
+            {
+              "url": "/demo/reports/products/margins/brand",
+              "name": "Margen por Marca",
+              "slug": "reportes-productos-margen-marca"
+            },
+            {
+              "url": "/demo/reports/products/ranking",
+              "name": "Ranking de Productos Vendidos",
+              "slug": "reportes-productos-ranking"
+            }
+          ]
+        },
+        {
+          "name": "Gastos/Compras",
+          "slug": "reportes-gastos-compras",
+          "submenu": [
+            {
+              "url": "/demo/reports/purchases/misc-expenses",
+              "name": "Listado de Gastos Varios",
+              "slug": "reportes-gastos-varios"
+            },
+            {
+              "url": "/demo/reports/purchases/list",
+              "name": "Listado de Compras",
+              "slug": "reportes-compras-listado"
+            },
+            {
+              "url": "/demo/reports/purchases/detailed",
+              "name": "Listado de Compras con Detalle",
+              "slug": "reportes-compras-detalle"
+            }
+          ]
+        },
+        {
+          "name": "Clientes",
+          "slug": "reportes-clientes",
+          "submenu": [
+            {
+              "url": "/demo/reports/clients/list",
+              "name": "Listado de Clientes",
+              "slug": "reportes-clientes-listado"
+            },
+            {
+              "url": "/demo/reports/clients/ranking",
+              "name": "Ranking de Clientes",
+              "slug": "reportes-clientes-ranking"
+            },
+            {
+              "url": "/demo/reports/clients/debtors",
+              "name": "Listado de Deudores",
+              "slug": "reportes-clientes-deudores"
+            }
+          ]
+        },
+        {
+          "name": "Proveedores",
+          "slug": "reportes-proveedores",
+          "submenu": [
+            {
+              "url": "/demo/reports/suppliers/list",
+              "name": "Listado de Proveedores",
+              "slug": "reportes-proveedores-listado"
+            },
+            {
+              "url": "/demo/reports/suppliers/ranking",
+              "name": "Ranking de Proveedores",
+              "slug": "reportes-proveedores-ranking"
+            },
+            {
+              "url": "/demo/reports/suppliers/creditors",
+              "name": "Listado de Acreedores",
+              "slug": "reportes-proveedores-acreedores"
+            }
+          ]
+        },
+        {
+          "name": "Posición de la Empresa",
+          "slug": "reportes-posicion-empresa",
+          "submenu": [
+            {
+              "url": "/demo/reports/company-position/economic",
+              "name": "Resultado Económico",
+              "slug": "reportes-posicion-resultado-economico"
+            },
+            {
+              "url": "/demo/reports/company-position/financial",
+              "name": "Resultado Financiero",
+              "slug": "reportes-posicion-resultado-financiero"
+            }
+          ]
+        },
+        {
+          "name": "Stock",
+          "slug": "reportes-stock",
+          "submenu": [
+            {
+              "url": "/demo/reports/stock/stock",
+              "name": "Stock",
+              "slug": "reportes-stock-listado"
+            },
+            {
+              "url": "/demo/reports/stock/movements",
+              "name": "Movimientos",
+              "slug": "reportes-stock-movimientos"
+            },
+            {
+              "url": "/demo/reports/stock/replenishment",
+              "name": "Reposición de Stock",
+              "slug": "reportes-stock-reposicion"
+            },
+            {
+              "url": "/demo/reports/stock/sales-based",
+              "name": "Stock según Ventas",
+              "slug": "reportes-stock-segun-ventas"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "menuHeader": "Administración del Sistema"
+    },
+    {
+      "name": "Seguridad",
+      "icon": "menu-icon icon-base ri ri-shield-user-line",
+      "slug": "seguridad",
+      "submenu": [
+        {
+          "url": "/demo/security/users",
+          "name": "Usuarios",
+          "slug": "seguridad-usuarios"
+        },
+        {
+          "url": "/demo/security/users/create",
+          "name": "Nuevo Usuario",
+          "slug": "seguridad-nuevo-usuario"
+        },
+        {
+          "url": "/demo/security/roles",
+          "name": "Roles",
+          "slug": "seguridad-roles"
+        }
+      ]
+    },
+    {
+      "name": "Configuración",
+      "icon": "menu-icon icon-base ri ri-settings-3-line",
+      "slug": "configuracion",
+      "submenu": [
+        {
+          "url": "/demo/stock-adjustment-reasons",
+          "name": "Motivos Ajuste Stock",
+          "slug": "configuracion-motivos-stock"
+        },
+        {
+          "url": "/demo/credit-note-reasons",
+          "name": "Motivos Nota Crédito",
+          "slug": "configuracion-motivos-nc"
+        }
+      ]
+    }
+  ]
+}
