@@ -1,0 +1,798 @@
+/**
+ * Componentes de la interfaz del ERP.
+ *
+ * Tablas, formularios, badges y fichas de detalle. Replica las clases del
+ * template Blade de referencia (card, table, badge, form-label…) usando los
+ * tokens de `theme.css`.
+ */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------------ page head */
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.page-title {
+  margin: 0 0 0.2rem;
+  color: var(--erp-heading-color);
+  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: var(--erp-secondary-color);
+  font-size: 0.92rem;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* --------------------------------------------------------------------- card */
+
+.erp-card {
+  margin-bottom: 1.25rem;
+  background: var(--erp-paper-bg);
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.125rem 0.375rem rgb(0 0 0 / 4%);
+  overflow: hidden;
+}
+
+.erp-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid var(--erp-border-color);
+}
+
+.erp-card-head--wrap {
+  flex-wrap: wrap;
+}
+
+.erp-card-title {
+  margin: 0;
+  color: var(--erp-heading-color);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.erp-card-meta {
+  color: var(--erp-secondary-color);
+  font-size: 0.85rem;
+}
+
+/* -------------------------------------------------------------------- tabla */
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.erp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.erp-table th,
+.erp-table td {
+  padding: 0.7rem 1.15rem;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.erp-table thead th {
+  color: var(--erp-secondary-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--erp-body-bg);
+  border-bottom: 1px solid var(--erp-border-color);
+}
+
+.erp-table tbody tr {
+  border-bottom: 1px solid var(--erp-border-color);
+}
+
+.erp-table tbody tr:last-child {
+  border-bottom: 0;
+}
+
+.erp-table tbody tr:hover {
+  background: color-mix(in srgb, var(--erp-accent) 4%, transparent);
+}
+
+.erp-table .is-end {
+  text-align: right;
+}
+
+.erp-table .is-center {
+  text-align: center;
+}
+
+.cell-media {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cell-title {
+  display: block;
+  color: var(--erp-heading-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cell-title:hover {
+  color: var(--erp-accent);
+  text-decoration: underline;
+}
+
+.cell-subtitle {
+  display: block;
+  color: var(--erp-secondary-color);
+  font-size: 0.78rem;
+}
+
+.book-cover {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 3.25rem;
+  border-radius: 0.35rem;
+  object-fit: cover;
+  background: var(--erp-body-bg);
+}
+
+/* El placeholder de portada sin imagen lleva fondo suave, no un borde
+   punteado: el punteado repetido en cada fila hacía ruido visual. */
+.book-cover--empty {
+  display: grid;
+  place-items: center;
+  color: var(--erp-secondary-color);
+  background: color-mix(in srgb, var(--erp-secondary-color) 12%, transparent);
+  border: 1px solid var(--erp-border-color);
+}
+
+/* Botón sólo de icono: cuadrado, sin padding horizontal y centrado. */
+.erp-btn--icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  gap: 0;
+}
+
+.erp-btn--icon.erp-btn--sm {
+  width: 2rem;
+  height: 2rem;
+}
+
+/*
+ * Los SVG no deben comprimirse dentro de un contenedor flex: si el texto de un
+ * botón o de una celda crece, el ícono se deformaba en lugar de dejar que el
+ * texto envuelva.
+ */
+.erp-btn svg,
+.app-nav-link svg,
+.cell-media svg,
+.toast-icon svg,
+.price-preview svg,
+.stock-preview svg,
+.erp-search svg,
+.quick-link svg,
+.app-notice-icon svg {
+  flex-shrink: 0;
+}
+
+.master-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.master-swatch-dot {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 1px solid var(--erp-border-color);
+  border-radius: 50%;
+}
+
+.table-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2.5rem 1.25rem;
+  color: var(--erp-secondary-color);
+  text-align: center;
+}
+
+.table-state--error {
+  color: var(--erp-danger);
+}
+
+.table-state--error p {
+  margin: 0;
+  color: var(--erp-body-color);
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------------- paginación */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.15rem;
+  border-top: 1px solid var(--erp-border-color);
+  flex-wrap: wrap;
+}
+
+.pagination-summary {
+  margin: 0;
+  color: var(--erp-secondary-color);
+  font-size: 0.85rem;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pagination-button {
+  display: grid;
+  min-width: 2rem;
+  height: 2rem;
+  place-items: center;
+  padding: 0 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--erp-body-color);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background: var(--erp-accent-soft);
+  color: var(--erp-accent);
+}
+
+.pagination-button.is-active {
+  background: var(--erp-primary);
+  border-color: var(--erp-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.pagination-button:disabled {
+  color: var(--erp-secondary-color);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pagination-gap {
+  color: var(--erp-secondary-color);
+  padding: 0 0.15rem;
+}
+
+/* ------------------------------------------------------------------ badges */
+
+.erp-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.erp-badge--primary {
+  background: var(--erp-accent-soft);
+  color: var(--erp-accent);
+}
+
+.erp-badge--success {
+  background: color-mix(in srgb, #56ca00 15%, transparent);
+  color: color-mix(in srgb, #56ca00 80%, #000);
+}
+
+.erp-badge--warning {
+  background: color-mix(in srgb, #ffb400 20%, transparent);
+  color: color-mix(in srgb, #b97c00 85%, #000);
+}
+
+.erp-badge--danger {
+  background: color-mix(in srgb, #ff4c51 15%, transparent);
+  color: var(--erp-danger);
+}
+
+.erp-badge--secondary {
+  background: var(--erp-body-bg);
+  color: var(--erp-secondary-color);
+}
+
+[data-bs-theme='dark'] .erp-badge--success {
+  color: #8fdc5e;
+}
+
+[data-bs-theme='dark'] .erp-badge--warning {
+  color: #ffc94d;
+}
+
+/* ------------------------------------------------------- búsqueda y filtros */
+
+.erp-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: min(18rem, 100%);
+  padding: 0 0.7rem;
+  border: 1px solid var(--erp-input-border-color);
+  border-radius: 0.5rem;
+  background: var(--erp-body-bg);
+  color: var(--erp-secondary-color);
+}
+
+.erp-search input {
+  width: 100%;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--erp-heading-color);
+  font: inherit;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.erp-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid var(--erp-border-color);
+}
+
+.erp-filter {
+  width: auto;
+  min-width: 11rem;
+  min-height: 2.35rem;
+  padding-block: 0.35rem;
+}
+
+/* ---------------------------------------------------------------- formularios */
+
+.erp-field-block {
+  min-width: 0;
+  margin-bottom: 1rem;
+}
+
+.erp-field-control {
+  min-height: 2.6rem;
+}
+
+.erp-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--erp-body-color);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.erp-required {
+  color: var(--erp-danger);
+}
+
+.erp-textarea {
+  min-height: 5rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.erp-select {
+  appearance: none;
+  padding-right: 2rem;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 0.85rem center, right 0.6rem center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.erp-hint {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--erp-secondary-color);
+  font-size: 0.78rem;
+}
+
+.erp-field-row {
+  display: grid;
+  grid-template-columns: repeat(var(--erp-field-columns, 2), minmax(0, 1fr));
+  gap: 0 1rem;
+}
+
+/* interruptor */
+.erp-switch-row {
+  margin-bottom: 1rem;
+}
+
+.erp-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+
+.erp-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.erp-switch-track {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.35rem;
+  height: 1.3rem;
+  background: var(--erp-input-border-color);
+  border-radius: 2rem;
+  transition: background-color 0.18s ease;
+}
+
+.erp-switch-thumb {
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 1rem;
+  height: 1rem;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  transition: transform 0.18s ease;
+}
+
+.erp-switch input:checked + .erp-switch-track {
+  background: var(--erp-primary);
+}
+
+.erp-switch input:checked + .erp-switch-track .erp-switch-thumb {
+  transform: translateX(1.05rem);
+}
+
+.erp-switch input:focus-visible + .erp-switch-track {
+  outline: 2px solid var(--erp-accent);
+  outline-offset: 2px;
+}
+
+.erp-switch-label {
+  color: var(--erp-body-color);
+  font-size: 0.9rem;
+}
+
+/* secciones del formulario */
+.form-section {
+  margin-bottom: 1.25rem;
+  background: var(--erp-paper-bg);
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.85rem;
+  overflow: hidden;
+}
+
+.form-section-head {
+  padding: 0.95rem 1.15rem;
+  border-bottom: 1px solid var(--erp-border-color);
+}
+
+.form-section-title {
+  margin: 0;
+  color: var(--erp-heading-color);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.form-section-text {
+  margin: 0.2rem 0 0;
+  color: var(--erp-secondary-color);
+  font-size: 0.85rem;
+}
+
+.form-section-body {
+  padding: 1.15rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0 1rem;
+}
+
+.form-span-2 {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--erp-border-color);
+}
+
+.price-preview,
+.stock-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.6rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--erp-body-bg);
+  border-radius: 0.5rem;
+  color: var(--erp-body-color);
+  font-size: 0.88rem;
+  flex-wrap: wrap;
+}
+
+.price-preview small {
+  color: var(--erp-secondary-color);
+  font-size: 0.78rem;
+}
+
+.price-preview strong {
+  color: var(--erp-heading-color);
+}
+
+.stock-preview .erp-hint {
+  margin: 0;
+}
+
+/* gestor de imágenes */
+.image-manager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.image-thumb {
+  position: relative;
+  width: 5.5rem;
+  height: 7rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--erp-body-bg);
+}
+
+.image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-thumb-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.15rem;
+  background: rgb(0 0 0 / 65%);
+  color: #fff;
+  font-size: 0.65rem;
+  text-align: center;
+}
+
+.image-thumb-remove {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  display: grid;
+  width: 1.4rem;
+  height: 1.4rem;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 60%);
+  color: #fff;
+  cursor: pointer;
+}
+
+.image-thumb-remove:hover {
+  background: var(--erp-danger);
+}
+
+.image-thumb--add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  border: 1px dashed var(--erp-border-color);
+  background: transparent;
+  color: var(--erp-secondary-color);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.image-thumb--add:hover {
+  border-color: var(--erp-accent);
+  color: var(--erp-accent);
+}
+
+/* ------------------------------------------------------------------ detalle */
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 20rem 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.detail-aside {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.detail-gallery {
+  margin-bottom: 0.85rem;
+}
+
+.detail-cover {
+  aspect-ratio: 3 / 4;
+  background: var(--erp-paper-bg);
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.85rem;
+  overflow: hidden;
+}
+
+.detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-cover--empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--erp-secondary-color);
+  font-size: 0.85rem;
+}
+
+.detail-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.detail-thumb img {
+  width: 2.5rem;
+  height: 3.25rem;
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.35rem;
+  object-fit: cover;
+}
+
+.detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background: var(--erp-paper-bg);
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.85rem;
+}
+
+.detail-list--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.85rem 1rem;
+  border: 0;
+  padding: 1.15rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.detail-item--wide {
+  grid-column: 1 / -1;
+}
+
+.detail-label {
+  color: var(--erp-secondary-color);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.detail-value {
+  margin: 0;
+  color: var(--erp-heading-color);
+  font-size: 0.92rem;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.detail-text {
+  margin: 0;
+  padding: 1.15rem;
+  color: var(--erp-body-color);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.detail-text--muted {
+  color: var(--erp-secondary-color);
+}
+
+.detail-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+}
+
+/* --------------------------------------------------------------- responsive */
+
+@media (max-width: 1199.98px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-aside {
+    position: static;
+    max-width: 22rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .erp-field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .page-head {
+    align-items: flex-start;
+  }
+}

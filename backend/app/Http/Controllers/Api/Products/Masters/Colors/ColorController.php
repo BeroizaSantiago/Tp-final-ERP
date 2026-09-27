@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Products\Masters\Colors;
 
+use App\Http\Controllers\Api\Products\Masters\Concerns\AppliesCatalogDefaults;
 use App\Http\Controllers\Controller;
 use App\Models\Products\Color;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
  */
 class ColorController extends Controller
 {
+    use AppliesCatalogDefaults;
+
     public function index(Request $request)
     {
         $query = Color::orderBy('web_order')->orderBy('name');
@@ -35,7 +38,7 @@ class ColorController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
-        return Color::create($data);
+        return Color::create($this->withCatalogDefaults($data));
     }
 
     public function show(Color $color)
@@ -45,7 +48,7 @@ class ColorController extends Controller
 
     public function update(Request $request, Color $color)
     {
-        $color->update($request->all());
+        $color->update($this->withCatalogDefaults($request->all()));
         return $color->fresh();
     }
 

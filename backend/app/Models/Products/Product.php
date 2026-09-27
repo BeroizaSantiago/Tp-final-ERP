@@ -49,6 +49,16 @@ class Product extends Model
       return $this->belongsTo(Brand::class);
    }
 
+   public function publisher()
+   {
+      return $this->belongsTo(Publisher::class);
+   }
+
+   public function collection()
+   {
+      return $this->belongsTo(Collection::class);
+   }
+
    public function model()
    {
       return $this->belongsTo(ProductModel::class, 'product_model_id');

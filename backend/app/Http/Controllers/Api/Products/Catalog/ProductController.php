@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 /**
  * Gestiona el catalogo de productos disponible mediante la API.
@@ -22,6 +23,40 @@ class ProductController extends Controller
 {
     private const MAX_IMAGE_KB = 2048;
     private const MAX_IMAGES = 6;
+
+    /** Campos que el backend espera como booleanos. */
+    private const BOOLEAN_FIELDS = ['has_variants', 'auto_calculate_tax', 'is_active'];
+
+    /**
+     * Normaliza booleanos que llegan como texto.
+     *
+     * En multipart todo llega como string, y la regla 'boolean' de Laravel sólo
+     * acepta true, false, 1, 0, "1" y "0": un "true" o "false" plano se
+     * rechazaba y el alta del producto fallaba. Se invoca explícitamente desde
+     * store() y update() porque este hook automático sólo corre en FormRequest.
+     */
+    private function normalizeBooleans(Request $request): void
+    {
+        $merged = [];
+
+        foreach (self::BOOLEAN_FIELDS as $field) {
+            $value = $request->input($field);
+
+            if (is_string($value)) {
+                $normalized = strtolower(trim($value));
+
+                if (in_array($normalized, ['true', '1', 'on', 'yes'], true)) {
+                    $merged[$field] = true;
+                } elseif (in_array($normalized, ['false', '0', 'off', 'no', ''], true)) {
+                    $merged[$field] = false;
+                }
+            }
+        }
+
+        if ($merged) {
+            $request->merge($merged);
+        }
+    }
 
     public function index(Request $request)
     {
@@ -36,14 +71,28 @@ class ProductController extends Controller
         return Product::with([
             'category',
             'brand',
+            'publisher',
+            'collection',
             'model',
             'size',
             'color',
-            'variants.size',
-            'variants.color',
+            'variants.category',
+            'variants.brand',
+            'variants.publisher',
+            'variants.model',
+            'variants.collection',
             'images',
+            // El listado muestra el deposito de cada libro, asi que hace falta
+            // traerlo. Antes no se cargaba y la columna siempre quedaba vacia.
+            'inventoryItems',
         ])
             ->when($request->boolean('lookup'), fn ($query) => $query->where('is_active', true))
+            ->when($request->filled('category_id'), fn ($query) => $query->where('category_id', $request->integer('category_id')))
+            ->when($request->filled('brand_id'), fn ($query) => $query->where('brand_id', $request->integer('brand_id')))
+            ->when(
+                $request->has('is_active') && $request->query('is_active') !== '',
+                fn ($query) => $query->where('is_active', $request->boolean('is_active'))
+            )
             ->when($search !== '', function ($query) use ($search, $isGenericSaleCode) {
                 $query->where(function ($query) use ($search, $isGenericSaleCode) {
                     if ($isGenericSaleCode) {
@@ -61,7 +110,7 @@ class ProductController extends Controller
                 });
             })
             ->orderBy('name')
-            ->paginate(20);
+            ->paginate(min(100, max(10, $request->integer('per_page', 20))));
     }
 
     public function show(Product $product)
@@ -69,12 +118,17 @@ class ProductController extends Controller
         return $product->load([
             'category',
             'brand',
+            'publisher',
+            'collection',
             'model',
             'size',
             'color',
             'inventoryItems',
-            'variants.size',
-            'variants.color',
+            'variants.category',
+            'variants.brand',
+            'variants.publisher',
+            'variants.model',
+            'variants.collection',
             'images',
         ]);
     }
@@ -87,7 +141,7 @@ class ProductController extends Controller
         $barcode = trim($data['barcode']);
 
         $variant = ProductVariant::query()
-            ->with(['size:id,name', 'color:id,name'])
+            ->with(['category:id,name', 'brand:id,name', 'publisher:id,name', 'model:id,name', 'collection:id,name'])
             ->where('bar_code', $barcode)
             ->where('is_active', true)
             ->first();
@@ -115,13 +169,13 @@ class ProductController extends Controller
             'images',
             'variants' => fn ($query) => $query
                 ->where('is_active', true)
-                ->with(['size:id,name', 'color:id,name']),
+                ->with(['category:id,name', 'brand:id,name', 'publisher:id,name', 'model:id,name', 'collection:id,name']),
         ]);
         $image = $variant?->image_full_url
             ?: $product->images->first()?->full_url
             ?: $product->image_full_url;
-        $sizes = $product->variants->pluck('size.name')->filter()->unique()->values();
-        $colors = $product->variants->pluck('color.name')->filter()->unique()->values();
+        $categories = $product->variants->pluck('category.name')->filter()->unique()->values();
+        $publishers = $product->variants->pluck('publisher.name')->filter()->unique()->values();
 
         return response()->json([
             'id' => $product->id,
@@ -132,10 +186,10 @@ class ProductController extends Controller
             'category' => $product->getRelation('category')?->name ?: $product->getRawOriginal('category'),
             'brand' => $product->getRelation('brand')?->name ?: $product->getRawOriginal('brand'),
             'model' => $product->getRelation('model')?->name ?: $product->getRawOriginal('model'),
-            'size' => $variant?->size?->name,
-            'color' => $variant?->color?->name,
-            'sizes' => $sizes,
-            'colors' => $colors,
+            'variant_category' => $variant?->category?->name,
+            'variant_publisher' => $variant?->publisher?->name,
+            'variant_categories' => $categories,
+            'variant_publishers' => $publishers,
             'price' => (float) ($variant?->price_a_with_tax ?? $product->price_a_with_tax ?? 0),
             'currency' => $product->currency_symbol ?: '$',
         ]);
@@ -143,6 +197,8 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $this->normalizeBooleans($request);
+
         try {
             $data = $request->validate([
                 'external_id' => ['nullable'],
@@ -182,9 +238,9 @@ class ProductController extends Controller
                 'is_active' => ['nullable', 'boolean'],
                 'category_id' => ['nullable', 'exists:product_categories,id'],
                 'brand_id' => ['nullable', 'exists:brands,id'],
+                'publisher_id' => ['nullable', 'exists:publishers,id'],
                 'product_model_id' => ['nullable', 'exists:product_models,id'],
-                'size_id' => ['nullable', 'exists:sizes,id'],
-                'color_id' => ['nullable', 'exists:colors,id'],
+                'collection_id' => ['nullable', 'exists:collections,id'],
                 'weight' => ['nullable', 'numeric'],
                 'height' => ['nullable', 'numeric'],
                 'width' => ['nullable', 'numeric'],
@@ -193,10 +249,21 @@ class ProductController extends Controller
                 'images.*' => ['image', 'max:' . self::MAX_IMAGE_KB],
                 'image_urls' => ['nullable', 'array', 'max:' . self::MAX_IMAGES],
                 'image_urls.*' => ['url:http,https', 'max:255', 'distinct'],
+
+                // Campos que ya existen en la tabla products pero no se aceptaban.
+                // La descripcion es la sinopsis del libro, asi que es necesaria.
+                'description' => ['nullable', 'string', 'max:65535'],
+                'notes' => ['nullable', 'string', 'max:65535'],
+                'web_title' => ['nullable', 'string', 'max:255'],
+                'min_stock' => ['nullable', 'numeric', 'min:0'],
+                'reposition_stock' => ['nullable', 'numeric', 'min:0'],
             ], [
+                'name.required' => 'Ingresá el nombre del libro.',
+                'name.max' => 'El nombre no puede superar los 255 caracteres.',
                 'images.max' => 'Podés cargar como máximo 6 imágenes.',
                 'images.*.image' => 'Todos los archivos deben ser imágenes válidas.',
                 'images.*.max' => 'Cada imagen puede pesar como máximo 2 MB.',
+                'image_urls.*.url' => 'Cada URL de imagen debe ser válida.',
             ]);
 
             $tax = match ($data['aliquot_name'] ?? 'IVA 21%') {
@@ -232,7 +299,9 @@ class ProductController extends Controller
                 throw ValidationException::withMessages(['images' => 'Podés cargar como máximo 6 imágenes en total.']);
             }
 
-            $product = DB::transaction(function () use ($data, $request, $imageUrls) {
+            $variantsInput = $request->input('variants', []);
+
+            $product = DB::transaction(function () use ($data, $request, $imageUrls, $variantsInput) {
                 $product = Product::create($data);
 
                 $position = 0;
@@ -248,6 +317,8 @@ class ProductController extends Controller
                     $product->update(['image_url' => $primaryImage]);
                 }
 
+                $stockService = app(StockService::class);
+
                 if (! $product->has_variants) {
                     $variant = ProductVariant::create([
                         'product_id' => $product->id,
@@ -259,12 +330,38 @@ class ProductController extends Controller
                         'is_active' => true,
                     ]);
 
-                    $stockService = app(StockService::class);
                     $stockService->initializeVariantStock(
                         $product,
                         $variant,
                         (float) ($product->current_stock ?? 0)
                     );
+                    $stockService->recalculateProductStock($product);
+                } elseif (is_array($variantsInput)) {
+                    foreach ($variantsInput as $variantData) {
+                        $stock = (float) ($variantData['current_stock'] ?? 0);
+
+                        $variant = ProductVariant::findByAttributes($product->id, $variantData);
+
+                        if ($variant) {
+                            $variant->update([
+                                'sku' => $variantData['sku'] ?? $variant->sku,
+                                'bar_code' => $variantData['bar_code'] ?? $variant->bar_code,
+                                'price_a_with_tax' => $variantData['price_a_with_tax'] ?? $variant->price_a_with_tax,
+                            ]);
+                        } else {
+                            $variant = ProductVariant::create(array_merge($variantData, [
+                                'product_id' => $product->id,
+                                'current_stock' => $stock,
+                                'available_stock' => $stock,
+                                'is_active' => true,
+                            ]));
+                        }
+
+                        if ($stock > 0) {
+                            $stockService->initializeVariantStock($product, $variant, $stock);
+                        }
+                    }
+
                     $stockService->recalculateProductStock($product);
                 }
 
@@ -275,9 +372,16 @@ class ProductController extends Controller
                 $product->load([
                     'category',
                     'brand',
+                    'publisher',
+                    'collection',
                     'model',
                     'size',
                     'color',
+                    'variants.category',
+                    'variants.brand',
+                    'variants.publisher',
+                    'variants.model',
+                    'variants.collection',
                     'images',
                 ]),
                 201
@@ -302,6 +406,8 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        $this->normalizeBooleans($request);
+
         $data = $request->validate([
             'external_id' => ['nullable'],
             'code' => ['nullable'],
@@ -344,9 +450,9 @@ class ProductController extends Controller
 
             'category_id' => ['nullable', 'exists:product_categories,id'],
             'brand_id' => ['nullable', 'exists:brands,id'],
+            'publisher_id' => ['nullable', 'exists:publishers,id'],
             'product_model_id' => ['nullable', 'exists:product_models,id'],
-            'size_id' => ['nullable', 'exists:sizes,id'],
-            'color_id' => ['nullable', 'exists:colors,id'],
+            'collection_id' => ['nullable', 'exists:collections,id'],
 
             'weight' => ['nullable', 'numeric', 'min:0'],
             'height' => ['nullable', 'numeric', 'min:0'],
@@ -359,6 +465,17 @@ class ProductController extends Controller
             'image_urls.*' => ['url:http,https', 'max:255', 'distinct'],
             'remove_image_ids' => ['nullable', 'array'],
             'remove_image_ids.*' => ['integer'],
+
+            // Mismos campos que el alta: ver store().
+            'description' => ['nullable', 'string', 'max:65535'],
+            'notes' => ['nullable', 'string', 'max:65535'],
+            'web_title' => ['nullable', 'string', 'max:255'],
+            'min_stock' => ['nullable', 'numeric', 'min:0'],
+            'reposition_stock' => ['nullable', 'numeric', 'min:0'],
+        ], [
+            'name.required' => 'Ingresá el nombre del libro.',
+            'name.max' => 'El nombre no puede superar los 255 caracteres.',
+            'image_urls.*.url' => 'Cada URL de imagen debe ser válida.',
         ]);
 
         $removeIds = collect($data['remove_image_ids'] ?? [])->map(fn ($id) => (int) $id)->unique();
@@ -385,7 +502,9 @@ class ProductController extends Controller
 
         unset($data['images'], $data['image_urls'], $data['remove_image_ids'], $data['auto_calculate_tax']);
 
-        DB::transaction(function () use ($product, $data, $imagesToRemove, $newImages, $newImageUrls) {
+        $variantsInput = $request->input('variants', []);
+
+        DB::transaction(function () use ($product, $data, $imagesToRemove, $newImages, $newImageUrls, $variantsInput) {
             $product->update($data);
 
             // Las variantes no administran un precio independiente en la
@@ -417,15 +536,72 @@ class ProductController extends Controller
             $product->update([
                 'image_url' => $product->images()->value('path'),
             ]);
+
+            $stockService = app(StockService::class);
+
+            // El stock del producto se apoya en sus variantes. Cuando el producto
+            // no tiene variantes hay una sola que lo representa y hay que
+            // sincronizarla: si no, available_stock y la variante quedan con el
+            // valor anterior y el detalle muestra un stock distinto al listado.
+            if (! $product->has_variants && array_key_exists('current_stock', $data)) {
+                $variant = $product->variants()->first();
+
+                if ($variant) {
+                    $stock = (float) $data['current_stock'];
+
+                    $variant->update([
+                        'current_stock' => $stock,
+                        'available_stock' => $stock,
+                    ]);
+
+                    $stockService->initializeVariantStock($product, $variant, $stock);
+                }
+            } elseif ($product->has_variants && is_array($variantsInput)) {
+                foreach ($variantsInput as $variantData) {
+                    $stock = (float) ($variantData['current_stock'] ?? 0);
+
+                    $variant = ProductVariant::findByAttributes($product->id, $variantData);
+
+                    if ($variant) {
+                        $variant->update([
+                            'sku' => $variantData['sku'] ?? $variant->sku,
+                            'bar_code' => $variantData['bar_code'] ?? $variant->bar_code,
+                            'price_a_with_tax' => $variantData['price_a_with_tax'] ?? $variant->price_a_with_tax,
+                        ]);
+                    } else {
+                        $variant = ProductVariant::create(array_merge($variantData, [
+                            'product_id' => $product->id,
+                            'current_stock' => $stock,
+                            'available_stock' => $stock,
+                            'is_active' => true,
+                        ]));
+                    }
+
+                    if ($stock > 0) {
+                        $stockService->initializeVariantStock($product, $variant, $stock);
+                    }
+                }
+            }
+
+            $stockService->recalculateProductStock($product);
         });
 
-        return response()->json($product->fresh()->load('images'), 200);
+        return response()->json($product->fresh()->load([
+            'images',
+            'variants.category',
+            'variants.brand',
+            'variants.publisher',
+            'variants.model',
+            'variants.collection',
+        ]), 200);
     }
 
     public function updateStatus(Request $request, Product $product)
     {
         $data = $request->validate([
             'is_active' => ['required', 'boolean'],
+        ], [
+            'is_active.required' => 'Indicá si el libro queda habilitado o de baja.',
         ]);
 
         $product->update(['is_active' => $data['is_active']]);

@@ -54,7 +54,7 @@ class StockService
             return null;
         }
 
-        $variant->loadMissing(['size', 'color']);
+        $variant->loadMissing(['category', 'brand', 'publisher', 'model', 'collection']);
 
         return InventoryItem::updateOrCreate([
             'product_id' => $product->id,
@@ -69,8 +69,8 @@ class StockService
             'reference_code' => $product->reference_code,
             'product_name' => $product->name,
             'current_stock' => $stock,
-            'color_name' => $variant->color?->name,
-            'size_name' => $variant->size?->name,
+            'color_name' => $variant->category?->name,
+            'size_name' => $variant->publisher?->name,
             'currency_symbol' => $product->currency_symbol ?: '$',
         ]);
     }
@@ -96,7 +96,7 @@ class StockService
             return;
         }
 
-        $variant->loadMissing(['size', 'color']);
+        $variant->loadMissing(['category', 'brand', 'publisher', 'model', 'collection']);
 
         InventoryItem::updateOrCreate([
             'product_id' => $product->id,
@@ -111,8 +111,8 @@ class StockService
             'reference_code' => $product->reference_code,
             'product_name' => $product->name,
             'current_stock' => $stock,
-            'color_name' => $variant->color?->name,
-            'size_name' => $variant->size?->name,
+            'color_name' => $variant->category?->name,
+            'size_name' => $variant->publisher?->name,
             'currency_symbol' => $product->currency_symbol ?: '$',
         ]);
 

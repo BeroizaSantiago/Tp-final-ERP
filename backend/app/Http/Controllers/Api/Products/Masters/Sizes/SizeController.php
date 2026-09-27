@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Products\Masters\Sizes;
 
+use App\Http\Controllers\Api\Products\Masters\Concerns\AppliesCatalogDefaults;
 use App\Http\Controllers\Controller;
 use App\Models\Products\Size;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
  */
 class SizeController extends Controller
 {
+    use AppliesCatalogDefaults;
+
     public function index(Request $request)
     {
         $query = Size::with('sizeType')->orderBy('web_order')->orderBy('name');
@@ -43,7 +46,7 @@ class SizeController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
-        return Size::create($data);
+        return Size::create($this->withCatalogDefaults($data));
     }
 
     public function show(Size $size)
@@ -53,7 +56,7 @@ class SizeController extends Controller
 
     public function update(Request $request, Size $size)
     {
-        $size->update($request->all());
+        $size->update($this->withCatalogDefaults($request->all()));
 
         return $size->fresh();
     }

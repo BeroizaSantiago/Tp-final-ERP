@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Products\Variants;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Products\Product;
 use App\Models\Products\ProductVariant;
 use App\Services\StockService;
 use Illuminate\Support\Facades\DB;
@@ -14,29 +15,31 @@ use Illuminate\Validation\Rule;
  * Controlador de Producto Variante.
  *
  * Coordina las solicitudes, validaciones y respuestas del módulo Producto Variante del ERP.
+ *
+ * Las variantes se definen por la combinación de atributos maestros:
+ * categoría, marca, editorial, modelo y colección.
  */
 class ProductVariantController extends Controller
 {
     private const MAX_IMAGE_KB = 2048;
 
+    /** Campos que identifican una variante de forma única dentro de un producto. */
+    private const ATTRIBUTE_FIELDS = ['category_id', 'brand_id', 'publisher_id', 'product_model_id', 'collection_id'];
+
     public function store(Request $request, StockService $stockService)
     {
         try {
             $productId = $request->integer('product_id');
-            $sizeId = $request->filled('size_id') ? $request->integer('size_id') : null;
-            $colorId = $request->filled('color_id') ? $request->integer('color_id') : null;
-            $existingVariant = ProductVariant::query()
-                ->where('product_id', $productId)
-                ->when($sizeId, fn ($query) => $query->where('size_id', $sizeId), fn ($query) => $query->whereNull('size_id'))
-                ->when($colorId, fn ($query) => $query->where('color_id', $colorId), fn ($query) => $query->whereNull('color_id'))
-                ->first();
 
             $data = $request->validate([
                 'product_id' => ['required', Rule::exists('products', 'id')->where('is_active', true)],
-                'size_id' => ['nullable', 'exists:sizes,id'],
-                'color_id' => ['nullable', 'exists:colors,id'],
-                'sku' => ['nullable', 'string', 'max:255', Rule::unique('product_variants', 'sku')->ignore($existingVariant)],
-                'bar_code' => ['nullable', 'string', 'max:255', Rule::unique('product_variants', 'bar_code')->ignore($existingVariant)],
+                'category_id' => ['nullable', 'exists:product_categories,id'],
+                'brand_id' => ['nullable', 'exists:brands,id'],
+                'publisher_id' => ['nullable', 'exists:publishers,id'],
+                'product_model_id' => ['nullable', 'exists:product_models,id'],
+                'collection_id' => ['nullable', 'exists:collections,id'],
+                'sku' => ['nullable', 'string', 'max:255'],
+                'bar_code' => ['nullable', 'string', 'max:255'],
                 'price_a_with_tax' => ['nullable', 'numeric'],
                 'current_stock' => ['nullable', 'numeric'],
                 'image' => ['nullable', 'image', 'max:' . self::MAX_IMAGE_KB],
@@ -44,6 +47,29 @@ class ProductVariantController extends Controller
             ], [
                 'image.image' => 'El archivo debe ser una imagen valida.',
                 'image.max' => 'La imagen de la variante no puede superar 2 MB.',
+                'product_id.exists' => 'El producto no existe o está inhabilitado.',
+                'category_id.exists' => 'La categoría seleccionada no existe.',
+                'brand_id.exists' => 'La marca seleccionada no existe.',
+                'publisher_id.exists' => 'La editorial seleccionada no existe.',
+                'product_model_id.exists' => 'El modelo seleccionado no existe.',
+                'collection_id.exists' => 'La colección seleccionada no existe.',
+            ]);
+
+            // Buscar variante existente por combinación de atributos
+            $existingVariant = ProductVariant::findByAttributes($productId, $data);
+
+            // Validar unicidad de SKU y bar_code ignorando la variante existente
+            $skuRule = $existingVariant
+                ? Rule::unique('product_variants', 'sku')->ignore($existingVariant->id)
+                : Rule::unique('product_variants', 'sku');
+            $barCodeRule = $existingVariant
+                ? Rule::unique('product_variants', 'bar_code')->ignore($existingVariant->id)
+                : Rule::unique('product_variants', 'bar_code');
+
+            $request->validate([
+                'sku' => ['nullable', 'string', 'max:255', $skuRule],
+                'bar_code' => ['nullable', 'string', 'max:255', $barCodeRule],
+            ], [
                 'sku.unique' => 'El SKU ya está utilizado por otra variante.',
                 'bar_code.unique' => 'El código de barras ya está utilizado por otra variante.',
             ]);
@@ -76,7 +102,7 @@ class ProductVariantController extends Controller
                     $stockService->recalculateProductStock($variant->product);
                 }
 
-                return $variant->fresh()->load('product', 'size', 'color');
+                return $variant->fresh()->load(['product', 'category', 'brand', 'publisher', 'model', 'collection']);
             });
 
             return response()->json([
@@ -92,5 +118,38 @@ class ProductVariantController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         }
+    }
+
+    public function index(Request $request)
+    {
+        $query = ProductVariant::query()
+            ->with(['product', 'category', 'brand', 'publisher', 'model', 'collection']);
+
+        if ($request->filled('product_id')) {
+            $query->where('product_id', $request->integer('product_id'));
+        }
+
+        return $query->paginate(min(100, max(10, $request->integer('per_page', 20))));
+    }
+
+    public function show(ProductVariant $productVariant)
+    {
+        return $productVariant->load(['product', 'category', 'brand', 'publisher', 'model', 'collection', 'inventoryItems']);
+    }
+
+    public function destroy(Request $request, ProductVariant $variant)
+    {
+        $product = $variant->product;
+
+        DB::transaction(function () use ($variant) {
+            $variant->inventoryItems()->delete();
+            $variant->delete();
+        });
+
+        app(StockService::class)->recalculateProductStock($product);
+
+        return response()->json([
+            'message' => 'La variante fue eliminada.',
+        ]);
     }
 }

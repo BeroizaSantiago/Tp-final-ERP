@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Products\Masters\Categories;
 
+use App\Http\Controllers\Api\Products\Masters\Concerns\AppliesCatalogDefaults;
 use App\Http\Controllers\Controller;
 use App\Models\Products\ProductCategory;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
  */
 class ProductCategoryController extends Controller
 {
+    use AppliesCatalogDefaults;
+
     public function index(Request $request)
     {
         $query = ProductCategory::with('children')->orderBy('web_order')->orderBy('name');
@@ -37,7 +40,7 @@ class ProductCategoryController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
-        return ProductCategory::create($data);
+        return ProductCategory::create($this->withCatalogDefaults($data));
     }
 
     public function show(ProductCategory $productCategory)
@@ -47,7 +50,7 @@ class ProductCategoryController extends Controller
 
     public function update(Request $request, ProductCategory $productCategory)
     {
-        $productCategory->update($request->all());
+        $productCategory->update($this->withCatalogDefaults($request->all()));
 
         return $productCategory->fresh();
     }

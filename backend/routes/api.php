@@ -28,6 +28,8 @@ use App\Http\Controllers\Api\Stock\StockLocationController;
 use App\Http\Controllers\Api\Stock\Inventory\InventoryItemController;
 use App\Http\Controllers\Api\Stock\Transfers\InternalTransferController;
 use App\Http\Controllers\Api\Products\Masters\Brands\BrandController;
+use App\Http\Controllers\Api\Products\Masters\Publishers\PublisherController;
+use App\Http\Controllers\Api\Products\Masters\Collections\CollectionController;
 use App\Http\Controllers\Api\Products\Masters\Categories\ProductCategoryController;
 use App\Http\Controllers\Api\Products\Masters\Colors\ColorController;
 use App\Http\Controllers\Api\Products\Masters\Models\ProductModelController;
@@ -53,9 +55,19 @@ use App\Http\Controllers\Api\Finance\Sheets\Cash\CashSheetController;
 use App\Http\Controllers\Api\Clients\Catalog\ClientController;
 use App\Http\Controllers\Api\Security\UserController as SecurityUserController;
 use App\Http\Controllers\Api\Security\RoleController;
+use App\Http\Controllers\Api\Auth\SessionController;
+use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\DashboardController;
 
 Route::get('/dashboard', DashboardController::class)->middleware('auth:sanctum');
+
+// Autenticacion del cliente React mediante tokens de Sanctum.
+Route::post('/login', [SessionController::class, 'store']);
+Route::post('/register', [RegisterController::class, 'store']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [SessionController::class, 'me']);
+    Route::post('/logout', [SessionController::class, 'destroy']);
+});
 
 Route::get('/security/users', [SecurityUserController::class, 'index']);
 Route::post('/security/users', [SecurityUserController::class, 'store']);
@@ -188,6 +200,19 @@ Route::post('/brands', [BrandController::class, 'store']);
 Route::get('/brands/{brand}', [BrandController::class, 'show']);
 Route::match(['put', 'patch'], '/brands/{brand}', [BrandController::class, 'update']);
 Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
+
+// Editoriales y colecciones: catalogos propios del catalogo de libros.
+Route::get('/publishers', [PublisherController::class, 'index']);
+Route::post('/publishers', [PublisherController::class, 'store']);
+Route::get('/publishers/{publisher}', [PublisherController::class, 'show']);
+Route::match(['put', 'patch'], '/publishers/{publisher}', [PublisherController::class, 'update']);
+Route::delete('/publishers/{publisher}', [PublisherController::class, 'destroy']);
+
+Route::get('/collections', [CollectionController::class, 'index']);
+Route::post('/collections', [CollectionController::class, 'store']);
+Route::get('/collections/{collection}', [CollectionController::class, 'show']);
+Route::match(['put', 'patch'], '/collections/{collection}', [CollectionController::class, 'update']);
+Route::delete('/collections/{collection}', [CollectionController::class, 'destroy']);
 
 Route::get('/product-models', [ProductModelController::class, 'index']);
 Route::post('/product-models', [ProductModelController::class, 'store']);
