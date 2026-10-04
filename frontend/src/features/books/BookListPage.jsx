@@ -47,11 +47,11 @@ export function BookListPage() {
   const [search, setSearch] = useState(searchParams.get('search') ?? '')
   const page = Number(searchParams.get('page') ?? 1)
   const categoryId = searchParams.get('category_id') ?? ''
-  const brandId = searchParams.get('brand_id') ?? ''
+  const brandId = searchParams.get('publisher_id') ?? ''
   const status = searchParams.get('is_active') ?? ''
 
   const { options: categories } = useMasterOptions('product-categories')
-  const { options: brands } = useMasterOptions('brands')
+  const { options: publishers } = useMasterOptions('publishers')
 
   // Búsqueda con rebote de 300 ms, igual que el backend.
   useEffect(() => {
@@ -85,7 +85,7 @@ export function BookListPage() {
     }
 
     if (brandId) {
-      params.set('brand_id', brandId)
+      params.set('publisher_id', brandId)
     }
 
     if (status !== '') {
@@ -168,12 +168,12 @@ export function BookListPage() {
     },
     {
       key: 'relations',
-      header: 'Categoría / Marca',
+      header: 'Autor / Categoría',
       render: (book) => (
         <>
-          <strong>{relatedName(book.category, book.category)}</strong>
+          <strong>{relatedName(book.author, book.author)}</strong>
           <small className="cell-subtitle">
-            {[relatedName(book.brand, book.brand), relatedName(book.model, book.model)]
+            {[relatedName(book.publishers, book.publishers), relatedName(book.category, book.category)]
               .filter((value) => value !== '—')
               .join(' · ') || '—'}
           </small>
@@ -279,7 +279,7 @@ export function BookListPage() {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Buscar por título, ISBN o código…"
+              placeholder="Buscar título, ISBN, autor o código…"
               aria-label="Buscar libro"
             />
           </div>
@@ -303,11 +303,11 @@ export function BookListPage() {
           <select
             className="erp-control erp-select erp-filter"
             value={brandId}
-            onChange={(event) => updateParam('brand_id', event.target.value)}
-            aria-label="Filtrar por marca"
+            onChange={(event) => updateParam('publisher_id', event.target.value)}
+            aria-label="Filtrar por editorial"
           >
-            <option value="">Todas las marcas</option>
-            {brands.map((option) => (
+            <option value="">Todas las editoriales</option>
+            {publishers.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>

@@ -304,6 +304,7 @@ const EMPTY_FORM = {
   web_title: '',
   description: '',
   notes: '',
+  author_id: '',
   category_id: '',
   brand_id: '',
   publisher_id: '',
@@ -470,7 +471,8 @@ export function BookFormPage() {
   const { options: publishers } = useMasterOptions('publishers')
   const { options: models } = useMasterOptions('product-models')
   const { options: collections } = useMasterOptions('collections')
-  const masterOptions = { categories, brands, publishers, models, collections }
+  const { options: authors } = useMasterOptions('authors')
+  const masterOptions = { categories, brands, publishers, models, collections, authors }
 
   const { data: product, error: loadError } = useApiResource(
     isEditing ? `/products/${id}` : null,
@@ -514,10 +516,11 @@ export function BookFormPage() {
     setLoading(false)
   }, [product])
 
-  const change = (field) => (event) => {
-    const { value, checked, type } = event.target
-    setValues((current) => ({ ...current, [field]: type === 'checkbox' ? checked : value }))
-    setErrors((current) => ({ ...current, [field]: undefined }))
+  const change = (field) => (event) => { 
+    const { value, checked, type } = event.target 
+    setValues((current) => ({ ...current, [field]: type === 'checkbox' ?
+  checked : value }))
+    setErrors((current) => ({ ...current, [field]: undefined })) 
   }
 
   const handleSubmit = async (event) => {
@@ -626,6 +629,16 @@ export function BookFormPage() {
             error={errors.name}
             placeholder="Cien años de soledad"
             autoFocus={!isEditing}
+          />
+
+          <Select
+            name="author_id"
+            label="Autor"
+            value={values.author_id}
+            onChange={change('author_id')}
+            error={errors.author_id}
+            options={authors}
+            placeholder="Sin Autor"
           />
 
           <TextInput

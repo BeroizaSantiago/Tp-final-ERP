@@ -69,6 +69,7 @@ class ProductController extends Controller
         }
 
         return Product::with([
+            'author',
             'category',
             'brand',
             'publisher',
@@ -88,7 +89,7 @@ class ProductController extends Controller
         ])
             ->when($request->boolean('lookup'), fn ($query) => $query->where('is_active', true))
             ->when($request->filled('category_id'), fn ($query) => $query->where('category_id', $request->integer('category_id')))
-            ->when($request->filled('brand_id'), fn ($query) => $query->where('brand_id', $request->integer('brand_id')))
+            ->when($request->filled('publisher_id'), fn ($query) => $query->where('publisher_id', $request->integer('publisher_id')))
             ->when(
                 $request->has('is_active') && $request->query('is_active') !== '',
                 fn ($query) => $query->where('is_active', $request->boolean('is_active'))
@@ -106,6 +107,9 @@ class ProductController extends Controller
                     ->orWhere('bar_code', 'like', "%{$search}%")
                     ->orWhere('reference_code', 'like', "%{$search}%")
                     ->orWhere('code', 'like', "%{$search}%")
+                    ->orWhereHas('author', function ($author) use ($search) {
+                        $author->where('name', 'like', "%{$search}%");
+                    })
                     ->orWhereHas('variants', fn ($variants) => $variants->where('sku', 'like', "%{$search}%")->orWhere('bar_code', 'like', "%{$search}%"));
                 });
             })
@@ -116,6 +120,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         return $product->load([
+            'author',
             'category',
             'brand',
             'publisher',
@@ -163,6 +168,7 @@ class ProductController extends Controller
         }
 
         $product->load([
+            'author:id,name',
             'category:id,name',
             'brand:id,name',
             'model:id,name',
@@ -241,6 +247,7 @@ class ProductController extends Controller
                 'publisher_id' => ['nullable', 'exists:publishers,id'],
                 'product_model_id' => ['nullable', 'exists:product_models,id'],
                 'collection_id' => ['nullable', 'exists:collections,id'],
+                'author_id' => ['required', 'integer', 'exists:authors,id'],
                 'weight' => ['nullable', 'numeric'],
                 'height' => ['nullable', 'numeric'],
                 'width' => ['nullable', 'numeric'],
@@ -370,6 +377,7 @@ class ProductController extends Controller
 
             return response()->json(
                 $product->load([
+                    'author',
                     'category',
                     'brand',
                     'publisher',
@@ -453,6 +461,7 @@ class ProductController extends Controller
             'publisher_id' => ['nullable', 'exists:publishers,id'],
             'product_model_id' => ['nullable', 'exists:product_models,id'],
             'collection_id' => ['nullable', 'exists:collections,id'],
+            'author_id' => ['required', 'integer', 'exists:authors,id'],
 
             'weight' => ['nullable', 'numeric', 'min:0'],
             'height' => ['nullable', 'numeric', 'min:0'],
@@ -587,6 +596,7 @@ class ProductController extends Controller
         });
 
         return response()->json($product->fresh()->load([
+            'author',
             'images',
             'variants.category',
             'variants.brand',

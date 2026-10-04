@@ -12,6 +12,24 @@
  */
 
 export const MASTERS = {
+
+  autores: {
+    key: 'autores',
+    path: '/maestros/autores',
+    resource: 'authors',
+    label: 'Autores',
+    singular: 'autor',
+    icon: 'user',
+    description: 'Autores de los libros del catálogo.',
+    columns: ['name', 'biography', 'is_active'],
+    fields: [
+      { name: 'name', label: 'Nombre', type: 'text', required: true, placeholder: 'Gabriel García Márquez' },
+      { name: 'biography', label: 'Biografía', type: 'text', placeholder: ' ' },
+      { name: 'external_code', label: 'Código externo', type: 'text' },
+      { name: 'is_active', label: 'Activo', type: 'switch', default: true },
+    ],
+  },
+  
   categorias: {
     key: 'categorias',
     path: '/maestros/categorias',
@@ -125,6 +143,7 @@ export const MASTER_LIST = Object.values(MASTERS)
  * del orden del objeto.
  */
 export const MENU_ORDER = [
+  'autores',
   'categorias',
   'marcas',
   'editoriales',

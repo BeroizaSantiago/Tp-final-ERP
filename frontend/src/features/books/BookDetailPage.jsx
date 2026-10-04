@@ -133,7 +133,7 @@ export function BookDetailPage() {
           <BackLink to="/libros">Volver a libros</BackLink>
           <h1 className="page-title">{product.name}</h1>
           <p className="page-subtitle">
-            {relationName(product.category, product.category)} · {relationName(product.brand, product.brand)}
+            {relationName(product.author, product.author)} · {relationName(product.category, product.category)}
           </p>
         </div>
 

@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\Stock\Adjustments\StockAdjustmentReasonController;
 use App\Http\Controllers\Api\Stock\StockLocationController;
 use App\Http\Controllers\Api\Stock\Inventory\InventoryItemController;
 use App\Http\Controllers\Api\Stock\Transfers\InternalTransferController;
+use App\Http\Controllers\Api\Products\Masters\Authors\AuthorController;
 use App\Http\Controllers\Api\Products\Masters\Brands\BrandController;
 use App\Http\Controllers\Api\Products\Masters\Publishers\PublisherController;
 use App\Http\Controllers\Api\Products\Masters\Collections\CollectionController;
@@ -172,6 +173,7 @@ Route::post('/internal-transfers', [InternalTransferController::class, 'store'])
 Route::get('/internal-transfers/{internalTransfer}', [InternalTransferController::class, 'show']);
 
 // Catalogos de productos, variantes y promociones.
+Route::apiResource('authors', AuthorController::class);
 Route::get('/product-categories', [ProductCategoryController::class, 'index']);
 Route::post('/product-categories', [ProductCategoryController::class, 'store']);
 Route::get('/product-categories/{productCategory}', [ProductCategoryController::class, 'show']);

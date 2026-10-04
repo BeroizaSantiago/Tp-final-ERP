@@ -70,6 +70,7 @@ export function toProductPayload(values, { imageUrls = [], removeImageIds = [] }
     publisher_id: optional(values.publisher_id),
     product_model_id: optional(values.product_model_id),
     collection_id: optional(values.collection_id),
+    author_id: optional(values.author_id),
 
     aliquot_name: values.aliquot_name || 'IVA 21%',
     currency_symbol: optional(values.currency_symbol),

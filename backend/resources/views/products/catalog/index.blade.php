@@ -33,7 +33,7 @@
             <thead>
                 <tr>
                     <th>Producto</th>
-                    <th>Categoría / Marca</th>
+                    <th>Autor / Categoría</th>
                     <th class="text-end">Precio</th>
                     <th class="text-center">Stock</th>
                     <th class="text-center">Estado</th>
@@ -106,17 +106,17 @@ function renderProducts(items) {
                         <div>
                             <h6 class="mb-0">${p.name ?? ''}</h6>
                             <small class="text-muted">
-                                Código: ${p.code ?? '-'} · ID ${p.id}
+                                ISBN: ${p.bar_code ?? '-'} · ID ${p.id}
                             </small>
                         </div>
                     </div>
                 </td>
 
                 <td>
-                    <strong>${p.category?.name ?? p.category ?? '-'}</strong><br>
+                    <strong>${p.author?.name ?? p.author ?? '-'}</strong><br>
                     <small class="text-muted">
-                        ${p.brand?.name ?? p.brand ?? '-'}
-                        ${p.model?.name || p.model ? ' · ' + (p.model?.name ?? p.model) : ''}
+                        ${p.category?.name ?? p.category ?? '-'}
+                        ${p.category?.name || p.category ? ' · ' + (p.model?.name ?? p.model) : ''}
                     </small>
                 </td>
 

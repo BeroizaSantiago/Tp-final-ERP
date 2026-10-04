@@ -4,6 +4,7 @@ namespace App\Models\Products;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Stock\InventoryItem;
+use App\Models\Products\Author;
 
 /**
  * Modelo de Producto.
@@ -32,6 +33,11 @@ class Product extends Model
       return filter_var($this->image_url, FILTER_VALIDATE_URL)
          ? $this->image_url
          : url('media/' . $this->image_url);
+   }
+
+   public function author()
+   {
+      return $this->belongsTo(Author::class);
    }
 
    public function images()
