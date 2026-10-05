@@ -92,8 +92,6 @@
             <thead>
                 <tr>
                     <th style="width:35%">Producto</th>
-                    <th>Talle</th>
-                    <th>Color</th>
                     <th>Cant.</th>
                     <th>P.Unit.</th>
                     <th>%IVA</th>
