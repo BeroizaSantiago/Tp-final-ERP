@@ -136,7 +136,7 @@ function MasterForm({ config, draft, onClose, onSaved }) {
         <form onSubmit={handleSubmit} noValidate>
           <div className="modal-card-head">
             <h3 className="modal-card-title" id="masterFormTitle">
-              {isEditing ? `Editar ${config.singular}` : `Nueva ${config.singular}`}
+              {isEditing ? `Editar ${config.singular}` : `${config.article ?? 'Nueva'} ${config.singular}`}
             </h3>
             <button className="modal-card-close" type="button" onClick={onClose} aria-label="Cerrar">
               <Icon name="close" size={18} />
@@ -339,7 +339,7 @@ export function MasterCrudPage({ config }) {
         <div className="page-actions">
           <button className="erp-btn erp-btn-primary" type="button" onClick={openCreate}>
             <Icon name="add" size={18} />
-            Nueva {config.singular}
+            {config.article ?? 'Nueva'} {config.singular}
           </button>
         </div>
       </div>
@@ -450,6 +450,7 @@ export function MasterCrudPage({ config }) {
 }
 
 const COLUMN_LABELS = {
+  description: 'Descripción',
   external_code: 'Código externo',
   web_order: 'Orden',
   is_active: 'Estado',

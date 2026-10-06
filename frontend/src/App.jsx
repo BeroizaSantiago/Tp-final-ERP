@@ -7,6 +7,18 @@ import { BookFormPage } from './features/books/BookFormPage'
 import { BookListPage } from './features/books/BookListPage'
 import { MasterCrudPage } from './features/masters/MasterCrudPage'
 import { MASTERS } from './features/masters/registry'
+import { PurchaseListPage } from './features/purchases/PurchaseListPage'
+import { PurchaseFormPage } from './features/purchases/PurchaseFormPage'
+import { PurchaseDetailPage } from './features/purchases/PurchaseDetailPage'
+import { PurchasePaymentPage } from './features/purchases/PurchasePaymentPage'
+import { OrderListPage } from './features/purchases/OrderListPage'
+import { OrderFormPage } from './features/purchases/OrderFormPage'
+import { OrderDetailPage } from './features/purchases/OrderDetailPage'
+import { ExpenseListPage } from './features/purchases/ExpenseListPage'
+import { ExpenseFormPage } from './features/purchases/ExpenseFormPage'
+import { ExpenseDetailPage } from './features/purchases/ExpenseDetailPage'
+import { ExpensePaymentPage } from './features/purchases/ExpensePaymentPage'
+import { ProvidersPage } from './features/purchases/ProvidersPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/PlaceholderPages'
 import { RegisterPage } from './pages/RegisterPage'
@@ -55,6 +67,21 @@ export default function App() {
         <Route path="/libros/nuevo" element={<BookFormPage />} />
         <Route path="/libros/:id" element={<BookDetailPage />} />
         <Route path="/libros/:id/editar" element={<BookFormPage />} />
+
+        <Route path="/compras" element={<PurchaseListPage />} />
+        <Route path="/compras/nueva" element={<PurchaseFormPage />} />
+        <Route path="/compras/:id" element={<PurchaseDetailPage />} />
+        <Route path="/compras/:id/pago" element={<PurchasePaymentPage />} />
+
+        <Route path="/ordenes" element={<OrderListPage />} />
+        <Route path="/ordenes/nueva" element={<OrderFormPage />} />
+        <Route path="/ordenes/:id" element={<OrderDetailPage />} />
+
+        <Route path="/gastos" element={<ExpenseListPage />} />
+        <Route path="/gastos/nuevo" element={<ExpenseFormPage />} />
+        <Route path="/gastos/:id" element={<ExpenseDetailPage />} />
+        <Route path="/gastos/:id/pago" element={<ExpensePaymentPage />} />
+        <Route path="/proveedores" element={<ProvidersPage />} />
 
         {Object.values(MASTERS).map((config) => (
           <Route

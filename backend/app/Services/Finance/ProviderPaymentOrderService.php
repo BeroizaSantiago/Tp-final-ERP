@@ -2,6 +2,7 @@
 
 namespace App\Services\Finance;
 
+use App\Models\Finance\CashBox;
 use App\Models\Finance\CashSheet;
 use App\Models\Finance\CashSheetMovement;
 use App\Models\Purchases\Provider;
@@ -113,7 +114,43 @@ class ProviderPaymentOrderService
         $treasuries = CashSheet::query()->where('status_name','Abierta')->whereNull('closing_date')
             ->whereHas('cashBox', fn ($q) => $q->where('box_type_name','TESORERIA'))->limit(2)->lockForUpdate()->get();
         if ($treasuries->count() === 1) return $treasuries->first();
-        throw ValidationException::withMessages(['treasury'=>$treasuries->isEmpty() ? 'La Tesorería debe estar abierta para emitir la orden de pago.' : 'No se pudo determinar la Tesorería de la sucursal.']);
+        if ($treasuries->count() > 1) {
+            throw ValidationException::withMessages(['treasury'=>'No se pudo determinar la Tesorería de la sucursal.']);
+        }
+
+        // La Tesorería abierta ya no es un requisito: si está cerrada, se abre
+        // automáticamente para registrar el egreso del pago.
+        $treasuryBox = CashBox::query()
+            ->where('box_type_name', 'TESORERIA')
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->first();
+
+        // Si no hay caja de Tesorería configurada, se crea una para poder
+        // registrar el egreso sin pedir que la configuren antes.
+        $treasuryBox ??= CashBox::create([
+            'name' => 'Tesorería',
+            'box_type_name' => 'TESORERIA',
+            'branch_name' => 'SUCURSAL',
+            'is_active' => true,
+        ]);
+
+        $nextNumber = (CashSheet::max('number') ?? 0) + 1;
+
+        return CashSheet::create([
+            'cash_box_id' => $treasuryBox->id,
+            'user_id' => $userId,
+            'cash_box_name' => $treasuryBox->name,
+            'number' => $nextNumber,
+            'pos_name' => str_pad((string) config('arca.pto_vta', 4), 4, '0', STR_PAD_LEFT),
+            'cashier_name' => auth()->user()->name ?? auth()->user()->email ?? 'Usuario',
+            'opening_date' => now(),
+            'opening_cash_amount' => 0,
+            'closing_date' => null,
+            'status_name' => 'Abierta',
+            'branch_name' => $treasuryBox->branch_name ?? 'SUCURSAL',
+            'warehouse_name' => 'DEPÓSITO',
+        ]);
     }
 
     private function nextNumber(): string

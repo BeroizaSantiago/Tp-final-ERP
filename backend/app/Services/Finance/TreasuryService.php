@@ -63,9 +63,8 @@ class TreasuryService
             return;
         }
 
-        if (!$this->openTreasuryFor($cashBox)) {
-            throw ValidationException::withMessages(['cash_box_id' => 'No se puede abrir la caja porque la Tesorería de la sucursal está cerrada.']);
-        }
+        // La Tesorería abierta ya no es requisito para operar cajas.
+        return;
     }
 
     public function ensureTreasuryCanClose(CashSheet $treasurySheet): void

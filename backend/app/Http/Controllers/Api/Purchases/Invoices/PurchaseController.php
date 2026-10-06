@@ -68,7 +68,7 @@ class PurchaseController extends Controller
 
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', Rule::exists('products', 'id')->where('is_active', true)],
-            'items.*.product_variant_id' => ['required', 'exists:product_variants,id'],
+            'items.*.product_variant_id' => ['nullable', 'exists:product_variants,id'],
             'items.*.quantity' => ['required', 'numeric', 'min:0.01'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
             'items.*.discount_percentage' => ['nullable', 'numeric', 'min:0'],
@@ -90,13 +90,24 @@ class PurchaseController extends Controller
             foreach ($data['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
 
-                $variant = ProductVariant::with(['size', 'color'])
-                    ->findOrFail($item['product_variant_id']);
+                // La variante es opcional: si el producto maneja una sola, se
+                // usa la primera; si no tiene ninguna, la compra igual se
+                // permite y el ítem queda sin variante.
+                $variant = null;
 
-                if ((int) $variant->product_id !== (int) $product->id) {
-                    throw new \InvalidArgumentException(
-                        'La variante seleccionada no pertenece al producto.'
-                    );
+                if (! empty($item['product_variant_id'])) {
+                    $variant = ProductVariant::with(['size', 'color'])
+                        ->findOrFail($item['product_variant_id']);
+
+                    if ((int) $variant->product_id !== (int) $product->id) {
+                        throw new \InvalidArgumentException(
+                            'La variante seleccionada no pertenece al producto.'
+                        );
+                    }
+                } else {
+                    $variant = ProductVariant::with(['size', 'color'])
+                        ->where('product_id', $product->id)
+                        ->first();
                 }
 
                 $qty = (float) $item['quantity'];
@@ -178,16 +189,16 @@ class PurchaseController extends Controller
                     'purchase_id' => $purchase->id,
 
                     'product_id' => $product->id,
-                    'product_variant_id' => $variant->id,
+                    'product_variant_id' => $variant?->id,
 
                     'product_code' => $product->code,
                     'product_name' => $product->name,
 
-                    'size_id' => $variant->size_id,
-                    'size_name' => $variant->size->name ?? null,
+                    'size_id' => $variant?->size_id,
+                    'size_name' => $variant?->size?->name,
 
-                    'color_id' => $variant->color_id,
-                    'color_name' => $variant->color->name ?? null,
+                    'color_id' => $variant?->color_id,
+                    'color_name' => $variant?->color?->name,
 
                     'quantity' => $calculated['qty'],
                     'unit_price' => $calculated['price'],
@@ -199,19 +210,27 @@ class PurchaseController extends Controller
                     'total_amount' => $calculated['line_total'],
                 ]);
 
-                $newStock = (float) $variant->current_stock + (float) $calculated['qty'];
+                if ($variant) {
+                    $newStock = (float) $variant->current_stock + (float) $calculated['qty'];
 
-                $variant->update([
-                    'current_stock' => $newStock,
-                    'available_stock' => $newStock,
-                ]);
+                    $variant->update([
+                        'current_stock' => $newStock,
+                        'available_stock' => $newStock,
+                    ]);
+                }
 
-                $inventoryItem = InventoryItem::firstOrNew([
-                    'product_id' => $product->id,
-                    'product_variant_id' => $variant->id,
-                    'branch_name' => $data['branch_name'],
-                    'warehouse_name' => $data['warehouse_name'],
-                ]);
+                $inventoryQuery = InventoryItem::query()
+                    ->where('product_id', $product->id)
+                    ->where('branch_name', $data['branch_name'])
+                    ->where('warehouse_name', $data['warehouse_name']);
+
+                if ($variant) {
+                    $inventoryQuery->where('product_variant_id', $variant->id);
+                } else {
+                    $inventoryQuery->whereNull('product_variant_id');
+                }
+
+                $inventoryItem = $inventoryQuery->firstOrNew([]);
                 $inventoryStockBefore = (float) ($inventoryItem->current_stock ?? 0);
                 $inventoryStockAfter = $inventoryStockBefore + (float) $calculated['qty'];
                 $previousUnitCost = (float) (
@@ -230,16 +249,19 @@ class PurchaseController extends Controller
                     : $purchasedUnitCost;
 
                 $inventoryItem->fill([
+                    'product_id' => $product->id,
+                    'product_variant_id' => $variant?->id,
+                    'warehouse_name' => $data['warehouse_name'],
                     'product_external_id' => $product->external_id,
-                    'product_variant_external_id' => $variant->external_id,
+                    'product_variant_external_id' => $variant?->external_id,
                     'code' => $product->code,
-                    'bar_code' => $variant->bar_code ?: $product->bar_code,
+                    'bar_code' => $variant?->bar_code ?: $product->bar_code,
                     'reference_code' => $product->reference_code,
                     'product_name' => $product->name,
                     'branch_name' => $data['branch_name'],
                     'current_stock' => $inventoryStockAfter,
-                    'color_name' => $variant->color?->name,
-                    'size_name' => $variant->size?->name,
+                    'color_name' => $variant?->color?->name,
+                    'size_name' => $variant?->size?->name,
                     'valued_item' => round($weightedUnitCost, 4),
                     'currency_symbol' => $product->currency_symbol ?: '$',
                 ])->save();

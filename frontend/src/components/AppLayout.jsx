@@ -24,8 +24,20 @@ const MASTER_ENTRIES = menuMasters().map((config) => ({
   icon: config.icon,
 }))
 
+/** Contenido del desplegable "Compras", en el orden pedido. */
+const PURCHASE_ENTRIES = [
+  { to: '/compras', label: 'Compras', icon: 'receipt' },
+  { to: '/ordenes', label: 'Órdenes de compra', icon: 'fileList' },
+  { to: '/gastos', label: 'Gastos varios', icon: 'money' },
+  { to: '/proveedores', label: 'Proveedores', icon: 'users' },
+  { to: '/tipos-de-gasto', label: 'Tipos de gasto', icon: 'priceTag' },
+]
+
 /** Clave para recordar si el grupo quedó desplegado. */
 const NAV_OPEN_KEY = 'erp.nav.productos'
+
+/** Clave para recordar si el grupo de compras quedó desplegado. */
+const NAV_COMPRAS_OPEN_KEY = 'erp.nav.compras'
 
 function ThemeButton() {
   const { theme, toggleTheme } = useTheme()
@@ -104,6 +116,15 @@ export function AppLayout() {
     }
   })
 
+  // Lo mismo para el grupo de Compras.
+  const [comprasOpen, setComprasOpen] = useState(() => {
+    try {
+      return localStorage.getItem(NAV_COMPRAS_OPEN_KEY) !== '0'
+    } catch {
+      return true
+    }
+  })
+
   // Aviso de una sola vez (por ejemplo la contraseña inicial tras el alta).
   useEffect(() => {
     setNotice(takeNotice())
@@ -126,12 +147,34 @@ export function AppLayout() {
     }
   }, [location.pathname])
 
+  useEffect(() => {
+    const inside = PURCHASE_ENTRIES.some((item) => location.pathname.startsWith(item.to))
+
+    if (inside) {
+      setComprasOpen(true)
+    }
+  }, [location.pathname])
+
   const toggleNav = () => {
     setNavOpen((current) => {
       const next = !current
 
       try {
         localStorage.setItem(NAV_OPEN_KEY, next ? '1' : '0')
+      } catch {
+        /* Sin storage la preferencia sólo vive en memoria. */
+      }
+
+      return next
+    })
+  }
+
+  const toggleComprasNav = () => {
+    setComprasOpen((current) => {
+      const next = !current
+
+      try {
+        localStorage.setItem(NAV_COMPRAS_OPEN_KEY, next ? '1' : '0')
       } catch {
         /* Sin storage la preferencia sólo vive en memoria. */
       }
@@ -190,6 +233,34 @@ export function AppLayout() {
                 <NavLink
                   key={item.to}
                   to={item.to}
+                  className={({ isActive }) => `app-nav-link app-nav-link--child${isActive ? ' is-active' : ''}`}
+                >
+                  <Icon name={item.icon} size={18} />
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+
+          <div className="app-nav-section">
+            <button
+              className={`app-nav-toggle${comprasOpen ? ' is-open' : ''}`}
+              type="button"
+              onClick={toggleComprasNav}
+              aria-expanded={comprasOpen}
+              aria-controls="nav-compras"
+            >
+              <Icon name="cart" size={18} />
+              <span>Compras</span>
+              <Icon name={comprasOpen ? 'chevronUp' : 'chevronDown'} size={16} className="app-nav-caret" />
+            </button>
+
+            <div className="app-nav-sublist" id="nav-compras" hidden={!comprasOpen}>
+              {PURCHASE_ENTRIES.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/compras' || item.to === '/ordenes' || item.to === '/gastos'}
                   className={({ isActive }) => `app-nav-link app-nav-link--child${isActive ? ' is-active' : ''}`}
                 >
                   <Icon name={item.icon} size={18} />

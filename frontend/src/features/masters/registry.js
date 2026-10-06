@@ -133,6 +133,23 @@ export const MASTERS = {
       { name: 'is_active', label: 'Activo', type: 'switch', default: true },
     ],
   },
+
+  tiposDeGasto: {
+    key: 'tipos-de-gasto',
+    path: '/tipos-de-gasto',
+    resource: 'expense-types',
+    label: 'Tipos de gasto',
+    singular: 'tipo de gasto',
+    article: 'Nuevo',
+    icon: 'priceTag',
+    description: 'Catálogo para clasificar gastos varios.',
+    columns: ['name', 'description', 'is_active'],
+    fields: [
+      { name: 'name', label: 'Nombre', type: 'text', required: true, placeholder: 'Servicios' },
+      { name: 'description', label: 'Descripción', type: 'text', placeholder: 'Gastos de servicios y suministros' },
+      { name: 'is_active', label: 'Activo', type: 'switch', default: true },
+    ],
+  },
 }
 
 export const MASTER_LIST = Object.values(MASTERS)
