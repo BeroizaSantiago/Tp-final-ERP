@@ -10,6 +10,45 @@ use Illuminate\Validation\ValidationException;
 
 class StockService
 {
+    /**
+     * Garantiza la variante técnica utilizada por los productos simples.
+     * También vincula inventario legado que todavía no tenía variante.
+     */
+    public function ensureTechnicalVariant(Product $product): ProductVariant
+    {
+        $variant = $product->variants()->orderBy('id')->first();
+
+        if (! $variant) {
+            $variant = ProductVariant::create([
+                'product_id' => $product->id,
+                'sku' => $product->code ?: $product->reference_code,
+                'bar_code' => $product->bar_code,
+                'price_a_with_tax' => $product->price_a_with_tax,
+                'current_stock' => 0,
+                'available_stock' => 0,
+                'is_active' => true,
+            ]);
+        } else {
+            $variant->update([
+                'sku' => $variant->sku ?: ($product->code ?: $product->reference_code),
+                'bar_code' => $variant->bar_code ?: $product->bar_code,
+                'price_a_with_tax' => $product->price_a_with_tax,
+                'is_active' => true,
+            ]);
+        }
+
+        InventoryItem::query()
+            ->where('product_id', $product->id)
+            ->whereNull('product_variant_id')
+            ->update(['product_variant_id' => $variant->id]);
+
+        if ($variant->inventoryItems()->exists()) {
+            $this->recalculateVariantStock($variant);
+        }
+
+        return $variant->fresh();
+    }
+
     public function recalculateProductStock(Product $product): void
     {
         $totalStock = $product->variants()->sum('current_stock');

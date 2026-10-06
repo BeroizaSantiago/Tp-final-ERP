@@ -199,11 +199,6 @@ export function BookListPage() {
       render: (book) => <ActiveBadge active={book.is_active} />,
     },
     {
-      key: 'warehouse',
-      header: 'Depósito',
-      render: (book) => book.inventory_items?.[0]?.warehouse_name || '—',
-    },
-    {
       key: 'actions',
       header: 'Acciones',
       align: 'end',

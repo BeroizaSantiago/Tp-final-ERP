@@ -68,13 +68,10 @@ function money(value) {
 
 function labelMethod(method) {
     return {
+        card: 'Tarjeta',
         cash: 'Efectivo',
-        credit_card: 'Tarjeta crédito',
-        debit_card: 'Tarjeta débito',
         transfer: 'Transferencia',
-        current_account:'Cuenta Corriente',
-        mercado_pago_qr: 'Mercado Pago QR',
-        voucher: 'Voucher',
+        check: 'Cheque',
     }[method] ?? method;
 }
 
@@ -154,12 +151,10 @@ function render() {
                         <hr>
 
                         <div class="d-flex flex-wrap gap-2">
+                            ${methodButton('card', 'Tarjeta', isPaid)}
                             ${methodButton('cash', 'Efectivo', isPaid)}
-                            ${methodButton('credit_card', 'Tarjeta crédito', isPaid)}
-                            ${methodButton('debit_card', 'Tarjeta débito', isPaid)}
                             ${methodButton('transfer', 'Transferencia', isPaid)}
-                            ${methodButton('voucher', 'Voucher', isPaid)}
-                            ${methodButton('current_account', 'Cuenta Corriente', isPaid)}
+                            ${methodButton('check', 'Cheque', isPaid)}
                         </div>
                     </div>
                 </div>
@@ -319,6 +314,46 @@ function renderMethod(balance) {
         `;
     }
 
+    if (selectedMethod === 'card') {
+        methodBox.innerHTML = `
+            <h5>Tarjeta</h5>
+            <p class="text-muted">Los datos se registran manualmente.</p>
+            <div class="row">
+                <div class="col-md-3 mb-3"><label>Tipo</label><select class="form-select" id="card_type"><option value="credit">Crédito</option><option value="debit">Débito</option></select></div>
+                <div class="col-md-3 mb-3"><label>Tarjeta</label><input class="form-control" id="card_name" placeholder="Visa, Mastercard..."></div>
+                <div class="col-md-3 mb-3"><label>Titular</label><input class="form-control" id="card_holder"></div>
+                <div class="col-md-3 mb-3"><label>Últimos 4 dígitos</label><input class="form-control" id="last_digits_card" maxlength="4"></div>
+                <div class="col-md-3 mb-3"><label>Cuotas</label><input class="form-control" id="card_plan" type="number" min="1" value="1"></div>
+                <div class="col-md-3 mb-3"><label>Autorización / cupón</label><input class="form-control" id="coupon_number"></div>
+                <div class="col-md-3 mb-3"><label>Importe</label><input class="form-control" id="amount" type="number" min="0.01" step="0.01" value="${balance}"></div>
+            </div>
+            <button class="btn btn-primary fw-semibold" onclick="addPayment()">Agregar pago</button>
+        `;
+    }
+
+    if (selectedMethod === 'check') {
+        const title = labelMethod(selectedMethod);
+        methodBox.innerHTML = `
+            <h5>${title}</h5>
+            <p class="text-muted">Los datos se registran manualmente.</p>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label>Banco</label>
+                    <input class="form-control" id="bank_name">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Referencia</label>
+                    <input class="form-control" id="reference">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Importe</label>
+                    <input class="form-control" id="amount" type="number" min="0.01" step="0.01" value="${balance}">
+                </div>
+            </div>
+            <button class="btn btn-primary fw-semibold" onclick="addPayment()">Agregar pago</button>
+        `;
+    }
+
     if (selectedMethod === 'mercado_pago_qr') {
         const pendingPayment = (invoice.payments ?? []).find(payment =>
             payment.provider === 'mercado_pago' && payment.status === 'pending'
@@ -348,13 +383,8 @@ function renderMethod(balance) {
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="bank_account">Cuenta bancaria</label>
-                    <select class="form-select" id="bank_account"
-                        data-remote-url="${window.APP_BASE_URL}/api/bank-accounts"
-                        data-remote-placeholder="Ingresá al menos 3 caracteres..."
-                        data-remote-minimum="3">
-                        <option value=""></option>
-                    </select>
+                    <label>Banco / cuenta</label>
+                    <input class="form-control" id="bank_name">
                 </div>
 
                 <div class="col-md-3 mb-3">
@@ -594,19 +624,30 @@ async function addPayment() {
     };
 
     if (selectedMethod === 'transfer') {
-        const bankAccount = document.getElementById('bank_account');
-        const selectedAccount = bankAccount?._remoteSelected;
-
-        if (!selectedAccount) {
-            alert('Seleccioná una cuenta bancaria cargada.');
-            return;
-        }
-
-        payload.bank_name = [
-            selectedAccount.bank_name,
-            selectedAccount.account_number
-        ].filter(Boolean).join(' · ');
+        payload.bank_name = document.getElementById('bank_name')?.value || null;
         payload.reference = document.getElementById('reference').value;
+    }
+
+    if (selectedMethod === 'check') {
+        payload.reference = document.getElementById('reference')?.value || null;
+        payload.bank_name = document.getElementById('bank_name')?.value || null;
+    }
+
+    if (selectedMethod === 'card') {
+        const cardType = document.getElementById('card_type')?.value;
+        const cardHolder = document.getElementById('card_holder')?.value;
+        const lastFour = document.getElementById('last_digits_card')?.value;
+        const authorization = document.getElementById('coupon_number')?.value;
+
+        payload.card_name = document.getElementById('card_name')?.value || null;
+        payload.card_plan = document.getElementById('card_plan')?.value || '1';
+        payload.reference = authorization || null;
+        payload.notes = [
+            cardType === 'debit' ? 'Débito' : 'Crédito',
+            cardHolder && `Titular: ${cardHolder}`,
+            lastFour && `Terminación: ${lastFour}`,
+            authorization && `Autorización: ${authorization}`,
+        ].filter(Boolean).join(' | ') || null;
     }
 
     if (selectedMethod === 'credit_card') {

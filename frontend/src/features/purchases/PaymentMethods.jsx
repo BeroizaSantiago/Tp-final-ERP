@@ -8,23 +8,19 @@ import { ApiError } from '../../lib/api'
 import { money } from '../../lib/format'
 
 export const PAYMENT_METHODS = [
+  { key: 'card', label: 'Tarjeta' },
   { key: 'cash', label: 'Efectivo' },
   { key: 'transfer', label: 'Transferencia' },
-  { key: 'third_party_check', label: 'Cheques de terceros' },
-  { key: 'own_check', label: 'Cheques propios' },
-  { key: 'supplier_account', label: 'Cta. Cte proveedor' },
-  { key: 'retention', label: 'Retenciones' },
+  { key: 'check', label: 'Cheque' },
 ]
 
 export function paymentMethodLabel(method) {
   return (
     {
+      card: 'Tarjeta',
       cash: 'Efectivo',
       transfer: 'Transferencia',
-      third_party_check: 'Cheque de terceros',
-      own_check: 'Cheque propio',
-      supplier_account: 'Cta. Cte proveedor',
-      retention: 'Retención',
+      check: 'Cheque',
     }[method] ?? method
   )
 }
@@ -38,7 +34,19 @@ export function paymentMethodLabel(method) {
 export function PaymentMethods({ total, payments, onAdd, addLabel = 'Agregar pago' }) {
   const toast = useToast()
   const [selectedMethod, setSelectedMethod] = useState('cash')
-  const [form, setForm] = useState({ amount: String(Math.max(0, Number(total ?? 0))), discount: '0', surcharge: '0', bank_name: '', reference: '' })
+  const [form, setForm] = useState({
+    amount: String(Math.max(0, Number(total ?? 0))),
+    discount: '0',
+    surcharge: '0',
+    bank_name: '',
+    reference: '',
+    card_type: 'credit',
+    card_name: '',
+    card_holder: '',
+    card_last_four: '',
+    card_installments: '1',
+    card_authorization: '',
+  })
   const [saving, setSaving] = useState(false)
 
   const paid = useMemo(() => payments.reduce((acc, p) => acc + Number(p.total_paid ?? 0), 0), [payments])
@@ -62,13 +70,24 @@ export function PaymentMethods({ total, payments, onAdd, addLabel = 'Agregar pag
     setSaving(true)
 
     try {
+      const cardReference = selectedMethod === 'card'
+        ? [
+            form.card_type === 'debit' ? 'Débito' : 'Crédito',
+            form.card_name,
+            form.card_holder && `Titular: ${form.card_holder}`,
+            form.card_last_four && `Terminación: ${form.card_last_four}`,
+            form.card_installments && `Cuotas: ${form.card_installments}`,
+            form.card_authorization && `Autorización: ${form.card_authorization}`,
+          ].filter(Boolean).join(' | ')
+        : form.reference
+
       await onAdd({
         payment_method: selectedMethod,
         amount,
         discount_amount: Number(form.discount || 0),
         surcharge_amount: Number(form.surcharge || 0),
         bank_name: form.bank_name || null,
-        reference: form.reference || null,
+        reference: cardReference || null,
       })
 
       toast.success('Pago agregado', `${paymentMethodLabel(selectedMethod)} por ${money(amount)}.`)
@@ -148,10 +167,46 @@ export function PaymentMethods({ total, payments, onAdd, addLabel = 'Agregar pag
               </>
             ) : null}
 
-            {selectedMethod === 'third_party_check' || selectedMethod === 'own_check' ? (
+            {selectedMethod === 'card' ? (
               <>
                 <label className="erp-field-block">
-                  <span className="erp-label">Número / Referencia</span>
+                  <span className="erp-label">Tipo</span>
+                  <select className="erp-control" value={form.card_type} onChange={set('card_type')}>
+                    <option value="credit">Crédito</option>
+                    <option value="debit">Débito</option>
+                  </select>
+                </label>
+                <label className="erp-field-block">
+                  <span className="erp-label">Tarjeta</span>
+                  <input className="erp-control" value={form.card_name} onChange={set('card_name')} placeholder="Visa, Mastercard..." />
+                </label>
+                <label className="erp-field-block">
+                  <span className="erp-label">Titular</span>
+                  <input className="erp-control" value={form.card_holder} onChange={set('card_holder')} />
+                </label>
+                <label className="erp-field-block">
+                  <span className="erp-label">Últimos 4 dígitos</span>
+                  <input className="erp-control" value={form.card_last_four} onChange={set('card_last_four')} maxLength={4} inputMode="numeric" />
+                </label>
+                <label className="erp-field-block">
+                  <span className="erp-label">Cuotas</span>
+                  <input className="erp-control" type="number" min="1" value={form.card_installments} onChange={set('card_installments')} />
+                </label>
+                <label className="erp-field-block">
+                  <span className="erp-label">Autorización / cupón</span>
+                  <input className="erp-control" value={form.card_authorization} onChange={set('card_authorization')} />
+                </label>
+                <label className="erp-field-block">
+                  <span className="erp-label">Importe</span>
+                  <input className="erp-control" type="number" value={form.amount} onChange={set('amount')} />
+                </label>
+              </>
+            ) : null}
+
+            {selectedMethod === 'check' ? (
+              <>
+                <label className="erp-field-block">
+                  <span className="erp-label">Referencia</span>
                   <input className="erp-control" value={form.reference} onChange={set('reference')} />
                 </label>
                 <label className="erp-field-block">
@@ -165,30 +220,6 @@ export function PaymentMethods({ total, payments, onAdd, addLabel = 'Agregar pag
               </>
             ) : null}
 
-            {selectedMethod === 'supplier_account' ? (
-              <>
-                <p className="detail-text detail-text--muted" style={{ gridColumn: '1 / -1' }}>
-                  Registra la compra como deuda pendiente con el proveedor.
-                </p>
-                <label className="erp-field-block">
-                  <span className="erp-label">Importe</span>
-                  <input className="erp-control" type="number" value={form.amount} onChange={set('amount')} />
-                </label>
-              </>
-            ) : null}
-
-            {selectedMethod === 'retention' ? (
-              <>
-                <label className="erp-field-block">
-                  <span className="erp-label">Concepto</span>
-                  <input className="erp-control" value={form.reference} onChange={set('reference')} />
-                </label>
-                <label className="erp-field-block">
-                  <span className="erp-label">Importe</span>
-                  <input className="erp-control" type="number" value={form.amount} onChange={set('amount')} />
-                </label>
-              </>
-            ) : null}
           </div>
 
           <div style={{ marginTop: '1rem' }}>

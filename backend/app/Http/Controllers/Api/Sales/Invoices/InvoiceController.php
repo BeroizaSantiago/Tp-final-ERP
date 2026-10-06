@@ -19,6 +19,7 @@ use App\Services\InvoiceFiscalService;
 use App\Services\Payments\VoucherService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 /**
@@ -238,7 +239,7 @@ class InvoiceController extends SalesDocumentController
     public function storePayment(Request $request, Invoice $invoice)
     {
         $data = $request->validate([
-            'payment_method' => ['required', 'string'],
+            'payment_method' => ['required', Rule::in(['card', 'cash', 'transfer', 'check'])],
             'amount' => ['required', 'numeric', 'min:0.01'],
 
             'discount_amount' => ['nullable', 'numeric', 'min:0'],
@@ -831,5 +832,3 @@ class InvoiceController extends SalesDocumentController
         ]);
     }
 }
-
-

@@ -105,9 +105,12 @@ class PurchaseController extends Controller
                         );
                     }
                 } else {
-                    $variant = ProductVariant::with(['size', 'color'])
-                        ->where('product_id', $product->id)
-                        ->first();
+                    $variant = ! $product->has_variants
+                        ? app(\App\Services\StockService::class)->ensureTechnicalVariant($product)
+                        : ProductVariant::with(['size', 'color'])
+                            ->where('product_id', $product->id)
+                            ->where('is_active', true)
+                            ->first();
                 }
 
                 $qty = (float) $item['quantity'];
@@ -266,8 +269,11 @@ class PurchaseController extends Controller
                     'currency_symbol' => $product->currency_symbol ?: '$',
                 ])->save();
 
-                app(\App\Services\StockService::class)
-                    ->recalculateProductStock($product);
+                $stockService = app(\App\Services\StockService::class);
+                if ($variant) {
+                    $stockService->recalculateVariantStock($variant);
+                }
+                $stockService->recalculateProductStock($product);
             }
 
             return $purchase->fresh()->load([
@@ -295,7 +301,7 @@ class PurchaseController extends Controller
     public function storePayment(Request $request, Purchase $purchase)
 {
     $data = $request->validate([
-        'payment_method' => ['required', 'string'],
+        'payment_method' => ['required', Rule::in(['card', 'cash', 'transfer', 'check'])],
         'amount' => ['required', 'numeric', 'min:0.01'],
         'discount_amount' => ['nullable', 'numeric', 'min:0'],
         'surcharge_amount' => ['nullable', 'numeric', 'min:0'],

@@ -405,14 +405,6 @@ export function PurchaseFormPage() {
           />
 
           <Select
-            name="branch_name"
-            label="Sucursal"
-            value={values.branch_name}
-            onChange={change('branch_name')}
-            options={stockLocations.map((branch) => ({ value: branch.name, label: branch.name }))}
-          />
-
-          <Select
             name="warehouse_name"
             label="Depósito"
             value={values.warehouse_name}
@@ -471,49 +463,6 @@ export function PurchaseFormPage() {
         </div>
       </FormSection>
 
-      <FormSection title="Percepción del proveedor (opcional)" description="Percepciones aplicadas por el proveedor en el comprobante.">
-        <div className="form-grid">
-          <Select
-            name="perception_type"
-            label="Tipo"
-            value={perception.tax_type}
-            onChange={(event) => setPerception((current) => ({ ...current, tax_type: event.target.value }))}
-            options={[
-              { value: 'IVA', label: 'IVA' },
-              { value: 'Ingresos Brutos', label: 'Ingresos Brutos' },
-              { value: 'Otra', label: 'Otra' },
-            ]}
-            placeholder="Sin percepción"
-          />
-
-          <TextInput
-            name="perception_regime"
-            label="Régimen"
-            value={perception.regime_name}
-            onChange={(event) => setPerception((current) => ({ ...current, regime_name: event.target.value }))}
-          />
-
-          <TextInput
-            name="perception_amount"
-            label="Importe aplicado"
-            type="number"
-            min="0"
-            step="0.01"
-            value={perception.amount}
-            onChange={(event) => setPerception((current) => ({ ...current, amount: event.target.value }))}
-          />
-
-          <TextInput
-            name="perception_calculated"
-            label="Importe calculado"
-            type="number"
-            min="0"
-            step="0.01"
-            value={perception.calculated_amount}
-            onChange={(event) => setPerception((current) => ({ ...current, calculated_amount: event.target.value }))}
-          />
-        </div>
-      </FormSection>
 
       <div className="form-actions">
         <button className="erp-btn erp-btn-outline" type="button" onClick={() => navigate('/compras')} disabled={saving}>

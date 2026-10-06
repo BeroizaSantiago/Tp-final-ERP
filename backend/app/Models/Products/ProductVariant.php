@@ -83,23 +83,21 @@ class ProductVariant extends Model
      * Busca una variante por su combinación de atributos maestros.
      *
      * @param int $productId
-     * @param array $attrs Claves posibles: category_id, brand_id, publisher_id, product_model_id, collection_id
+     * @param array $attrs Claves posibles: sku, bar_code
      */
     public static function findByAttributes(int $productId, array $attrs): ?self
     {
-        $fillable = ['category_id', 'brand_id', 'publisher_id', 'product_model_id', 'collection_id'];
+        $sku = $attrs['sku'] ?? null;
+        $barCode = $attrs['bar_code'] ?? null;
 
         return self::query()
             ->where('product_id', $productId)
-            ->where(function (Builder $query) use ($attrs, $fillable) {
-                foreach ($fillable as $field) {
-                    $value = $attrs[$field] ?? null;
-
-                    if ($value !== null && $value !== '') {
-                        $query->where($field, (int) $value);
-                    } else {
-                        $query->whereNull($field);
-                    }
+            ->where(function (Builder $query) use ($sku, $barCode) {
+                if ($sku) {
+                    $query->orWhere('sku', $sku);
+                }
+                if ($barCode) {
+                    $query->orWhere('bar_code', $barCode);
                 }
             })
             ->first();
@@ -111,11 +109,8 @@ class ProductVariant extends Model
     public function attributeValues(): array
     {
         return [
-            'category_id' => $this->category_id,
-            'brand_id' => $this->brand_id,
-            'publisher_id' => $this->publisher_id,
-            'product_model_id' => $this->product_model_id,
-            'collection_id' => $this->collection_id,
+            'sku' => $this->sku,
+            'bar_code' => $this->bar_code,
         ];
     }
 

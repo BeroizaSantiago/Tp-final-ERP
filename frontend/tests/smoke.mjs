@@ -612,7 +612,7 @@ const sent = multipartCall?.body
 check('con portada la peticion va en multipart', sent instanceof dom.window.FormData)
 check('multipart manda el archivo como images[]', sent?.getAll('images[]').length === 1)
 // Laravel solo acepta 1/0 para booleanos: "true"/"false" rompe la validacion.
-check('multipart manda has_variants como 1 (no "false")', sent?.get('has_variants') === null)
+check('multipart manda has_variants como 0', sent?.get('has_variants') === '0')
 check('multipart manda auto_calculate_tax como 1', sent?.get('auto_calculate_tax') === '1')
 check('multipart manda is_active como 1', sent?.get('is_active') === '1')
 check('multipart manda el nombre', sent?.get('name') === 'Libro con portada')

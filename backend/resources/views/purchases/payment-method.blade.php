@@ -23,12 +23,10 @@ function money(value) {
 
 function labelMethod(method) {
     return {
+        card: 'Tarjeta',
         cash: 'Efectivo',
         transfer: 'Transferencia',
-        third_party_check: 'Cheque de terceros',
-        own_check: 'Cheque propio',
-        supplier_account: 'Cta. Cte proveedor',
-        retention: 'Retención'
+        check: 'Cheque'
     }[method] ?? method;
 }
 
@@ -57,12 +55,10 @@ function render() {
                         <hr>
 
                         <div class="d-flex flex-wrap gap-2">
+                            ${methodButton('card', 'Tarjeta')}
                             ${methodButton('cash', 'Efectivo')}
                             ${methodButton('transfer', 'Transferencia')}
-                            ${methodButton('third_party_check', 'Cheques de terceros')}
-                            ${methodButton('own_check', 'Cheques propios')}
-                            ${methodButton('supplier_account', 'Cta. Cte proveedor')}
-                            ${methodButton('retention', 'Retenciones')}
+                            ${methodButton('check', 'Cheque')}
                         </div>
                     </div>
                 </div>
@@ -193,13 +189,29 @@ function renderMethod(balance) {
         `;
     }
 
-    if (selectedMethod === 'third_party_check' || selectedMethod === 'own_check') {
+    if (selectedMethod === 'card') {
+        methodBox.innerHTML = `
+            <h5>Tarjeta</h5>
+            <div class="row">
+                <div class="col-md-3 mb-3"><label>Tipo</label><select class="form-select" id="card_type"><option value="Crédito">Crédito</option><option value="Débito">Débito</option></select></div>
+                <div class="col-md-3 mb-3"><label>Tarjeta</label><input class="form-control" id="card_name" placeholder="Visa, Mastercard..."></div>
+                <div class="col-md-3 mb-3"><label>Titular</label><input class="form-control" id="card_holder"></div>
+                <div class="col-md-3 mb-3"><label>Últimos 4 dígitos</label><input class="form-control" id="card_last_four" maxlength="4"></div>
+                <div class="col-md-3 mb-3"><label>Cuotas</label><input class="form-control" id="card_installments" type="number" min="1" value="1"></div>
+                <div class="col-md-3 mb-3"><label>Autorización / cupón</label><input class="form-control" id="card_authorization"></div>
+                <div class="col-md-3 mb-3"><label>Importe</label><input class="form-control" id="amount" type="number" value="${balance}"></div>
+            </div>
+            <button class="btn btn-dark" onclick="addPayment()">Agregar pago</button>
+        `;
+    }
+
+    if (selectedMethod === 'check') {
         methodBox.innerHTML = `
             <h5>${labelMethod(selectedMethod)}</h5>
 
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label>Número / Referencia</label>
+                    <label>Referencia</label>
                     <input class="form-control" id="reference">
                 </div>
 
@@ -258,13 +270,22 @@ async function addPayment() {
     const discount = Number(document.getElementById('discount')?.value || 0);
     const surcharge = Number(document.getElementById('surcharge')?.value || 0);
 
+    const cardReference = selectedMethod === 'card' ? [
+        document.getElementById('card_type')?.value,
+        document.getElementById('card_name')?.value,
+        document.getElementById('card_holder')?.value && `Titular: ${document.getElementById('card_holder').value}`,
+        document.getElementById('card_last_four')?.value && `Terminación: ${document.getElementById('card_last_four').value}`,
+        document.getElementById('card_installments')?.value && `Cuotas: ${document.getElementById('card_installments').value}`,
+        document.getElementById('card_authorization')?.value && `Autorización: ${document.getElementById('card_authorization').value}`,
+    ].filter(Boolean).join(' | ') : null;
+
     const payload = {
         payment_method: selectedMethod,
         amount,
         discount_amount: discount,
         surcharge_amount: surcharge,
         bank_name: document.getElementById('bank_name')?.value ?? null,
-        reference: document.getElementById('reference')?.value ?? null
+        reference: cardReference || document.getElementById('reference')?.value || null
     };
 
     const res = await fetch(`${window.APP_BASE_URL}/api/purchases/${purchaseId}/payments`, {

@@ -263,7 +263,6 @@ export function BookDetailPage() {
                 <table className="erp-table">
                   <thead>
                     <tr>
-                      <th>Atributos</th>
                       <th>SKU</th>
                       <th>Código de barras</th>
                       <th className="is-center">Stock</th>
@@ -272,25 +271,6 @@ export function BookDetailPage() {
                   <tbody>
                     {variants.map((variant) => (
                       <tr key={variant.id}>
-                        <td>
-                          <div className="variant-attributes">
-                            {variant.category?.name && (
-                              <span className="erp-badge">{variant.category.name}</span>
-                            )}
-                            {variant.brand?.name && (
-                              <span className="erp-badge">{variant.brand.name}</span>
-                            )}
-                            {variant.publisher?.name && (
-                              <span className="erp-badge">{variant.publisher.name}</span>
-                            )}
-                            {variant.model?.name && (
-                              <span className="erp-badge">{variant.model.name}</span>
-                            )}
-                            {variant.collection?.name && (
-                              <span className="erp-badge">{variant.collection.name}</span>
-                            )}
-                          </div>
-                        </td>
                         <td>{variant.sku || '—'}</td>
                         <td>{variant.bar_code || '—'}</td>
                         <td className="is-center">{number(variant.current_stock)}</td>

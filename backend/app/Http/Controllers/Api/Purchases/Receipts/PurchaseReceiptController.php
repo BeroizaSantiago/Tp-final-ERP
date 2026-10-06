@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\Stock\InventoryItem;
 use App\Models\Stock\StockMovement;
+use App\Services\StockService;
 
 /**
  * Gestiona comprobantes de compra recibidos de proveedores.
@@ -76,6 +77,8 @@ class PurchaseReceiptController extends Controller
 
             foreach ($data['items'] as $item) {
                 $product = Product::findOrFail($item['product_id']);
+                $stockService = app(StockService::class);
+                $variant = $stockService->ensureTechnicalVariant($product);
 
                 $subtotal = $item['quantity'] * $item['unit_price'];
                 $tax = $subtotal * (($item['tax_percentage'] ?? 0) / 100);
@@ -93,11 +96,14 @@ class PurchaseReceiptController extends Controller
                 ]);
                 $inventoryItem = InventoryItem::firstOrCreate(
                 [
-                    'product_external_id' => $product->external_id,
-                    'product_variant_external_id' => null,
+                    'product_id' => $product->id,
+                    'product_variant_id' => $variant->id,
+                    'branch_name' => 'SUCURSAL',
                     'warehouse_name' => 'DEPÓSITO RIOS LORENA BEATRIZ',
                 ],
                 [
+                    'product_external_id' => $product->external_id,
+                    'product_variant_external_id' => $variant->external_id,
                     'code' => $product->code,
                     'bar_code' => $product->bar_code,
                     'reference_code' => $product->reference_code,
@@ -125,6 +131,9 @@ class PurchaseReceiptController extends Controller
                     'reference_id' => $purchase->id,
                     'notes' => 'Compra ' . $purchase->receipt_number,
                 ]);
+
+                $stockService->recalculateVariantStock($variant);
+                $stockService->recalculateProductStock($product);
             }
 
             return $purchase->load('provider', 'items.product');

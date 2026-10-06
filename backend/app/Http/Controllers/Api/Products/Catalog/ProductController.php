@@ -77,11 +77,7 @@ class ProductController extends Controller
             'model',
             'size',
             'color',
-            'variants.category',
-            'variants.brand',
-            'variants.publisher',
-            'variants.model',
-            'variants.collection',
+            'variants' => fn ($query) => $query->where('is_active', true),
             'images',
             // El listado muestra el deposito de cada libro, asi que hace falta
             // traerlo. Antes no se cargaba y la columna siempre quedaba vacia.
@@ -129,11 +125,7 @@ class ProductController extends Controller
             'size',
             'color',
             'inventoryItems',
-            'variants.category',
-            'variants.brand',
-            'variants.publisher',
-            'variants.model',
-            'variants.collection',
+            'variants' => fn ($query) => $query->where('is_active', true),
             'images',
         ]);
     }
@@ -263,7 +255,13 @@ class ProductController extends Controller
                 'notes' => ['nullable', 'string', 'max:65535'],
                 'web_title' => ['nullable', 'string', 'max:255'],
                 'min_stock' => ['nullable', 'numeric', 'min:0'],
-                'reposition_stock' => ['nullable', 'numeric', 'min:0'],
+            'reposition_stock' => ['nullable', 'numeric', 'min:0'],
+            'variants' => ['nullable', 'array'],
+            'variants.*.id' => ['nullable', 'integer'],
+            'variants.*.sku' => ['nullable', 'string', 'max:255', 'required_without:variants.*.bar_code', 'distinct'],
+            'variants.*.bar_code' => ['nullable', 'string', 'max:255', 'required_without:variants.*.sku', 'distinct'],
+            'variants.*.price_a_with_tax' => ['nullable', 'numeric', 'min:0'],
+            'variants.*.current_stock' => ['required', 'numeric', 'min:0'],
             ], [
                 'name.required' => 'Ingresá el nombre del libro.',
                 'name.max' => 'El nombre no puede superar los 255 caracteres.',
@@ -285,9 +283,9 @@ class ProductController extends Controller
             }
 
             $imageUrls = $data['image_urls'] ?? [];
-            unset($data['images'], $data['image_urls'], $data['auto_calculate_tax']);
+            unset($data['images'], $data['image_urls'], $data['auto_calculate_tax'], $data['variants']);
 
-            $data['has_variants'] = $request->boolean('has_variants', true);
+            $data['has_variants'] = $request->boolean('has_variants', false);
             // En el alta no hay un selector de estado: el producto debe nacer
             // habilitado. Definirlo también en el modelo evita que el valor
             // por defecto de MySQL todavía aparezca como null en memoria al
@@ -347,22 +345,15 @@ class ProductController extends Controller
                     foreach ($variantsInput as $variantData) {
                         $stock = (float) ($variantData['current_stock'] ?? 0);
 
-                        $variant = ProductVariant::findByAttributes($product->id, $variantData);
-
-                        if ($variant) {
-                            $variant->update([
-                                'sku' => $variantData['sku'] ?? $variant->sku,
-                                'bar_code' => $variantData['bar_code'] ?? $variant->bar_code,
-                                'price_a_with_tax' => $variantData['price_a_with_tax'] ?? $variant->price_a_with_tax,
-                            ]);
-                        } else {
-                            $variant = ProductVariant::create(array_merge($variantData, [
-                                'product_id' => $product->id,
-                                'current_stock' => $stock,
-                                'available_stock' => $stock,
-                                'is_active' => true,
-                            ]));
-                        }
+                        $variant = ProductVariant::create([
+                            'product_id' => $product->id,
+                            'sku' => $variantData['sku'] ?? null,
+                            'bar_code' => $variantData['bar_code'] ?? null,
+                            'price_a_with_tax' => $variantData['price_a_with_tax'] ?? $product->price_a_with_tax,
+                            'current_stock' => $stock,
+                            'available_stock' => $stock,
+                            'is_active' => true,
+                        ]);
 
                         if ($stock > 0) {
                             $stockService->initializeVariantStock($product, $variant, $stock);
@@ -480,7 +471,13 @@ class ProductController extends Controller
             'notes' => ['nullable', 'string', 'max:65535'],
             'web_title' => ['nullable', 'string', 'max:255'],
             'min_stock' => ['nullable', 'numeric', 'min:0'],
-            'reposition_stock' => ['nullable', 'numeric', 'min:0'],
+                'reposition_stock' => ['nullable', 'numeric', 'min:0'],
+                'variants' => ['nullable', 'array'],
+                'variants.*.id' => ['nullable', 'integer'],
+                'variants.*.sku' => ['nullable', 'string', 'max:255', 'required_without:variants.*.bar_code', 'distinct'],
+                'variants.*.bar_code' => ['nullable', 'string', 'max:255', 'required_without:variants.*.sku', 'distinct'],
+                'variants.*.price_a_with_tax' => ['nullable', 'numeric', 'min:0'],
+                'variants.*.current_stock' => ['required', 'numeric', 'min:0'],
         ], [
             'name.required' => 'Ingresá el nombre del libro.',
             'name.max' => 'El nombre no puede superar los 255 caracteres.',
@@ -509,22 +506,12 @@ class ProductController extends Controller
             $this->calculateTaxInclusivePrices($data, $tax);
         }
 
-        unset($data['images'], $data['image_urls'], $data['remove_image_ids'], $data['auto_calculate_tax']);
+        unset($data['images'], $data['image_urls'], $data['remove_image_ids'], $data['auto_calculate_tax'], $data['variants']);
 
         $variantsInput = $request->input('variants', []);
 
         DB::transaction(function () use ($product, $data, $imagesToRemove, $newImages, $newImageUrls, $variantsInput) {
             $product->update($data);
-
-            // Las variantes no administran un precio independiente en la
-            // interfaz actual: heredan el Precio Final A del producto padre.
-            // Mantener la columna sincronizada evita mostrar o facturar el
-            // valor anterior después de editar el producto.
-            if (array_key_exists('price_a_with_tax', $data)) {
-                $product->variants()->update([
-                    'price_a_with_tax' => $data['price_a_with_tax'],
-                ]);
-            }
 
             foreach ($imagesToRemove as $image) {
                 if (! filter_var($image->path, FILTER_VALIDATE_URL)) {
@@ -553,43 +540,46 @@ class ProductController extends Controller
             // sincronizarla: si no, available_stock y la variante quedan con el
             // valor anterior y el detalle muestra un stock distinto al listado.
             if (! $product->has_variants && array_key_exists('current_stock', $data)) {
-                $variant = $product->variants()->first();
+                $variant = $stockService->ensureTechnicalVariant($product);
+                $stock = (float) $data['current_stock'];
 
-                if ($variant) {
-                    $stock = (float) $data['current_stock'];
-
-                    $variant->update([
-                        'current_stock' => $stock,
-                        'available_stock' => $stock,
-                    ]);
-
-                    $stockService->initializeVariantStock($product, $variant, $stock);
-                }
+                $stockService->setVariantStockAtDefaultLocation($product, $variant, $stock);
             } elseif ($product->has_variants && is_array($variantsInput)) {
+                $processedVariantIds = [];
+
                 foreach ($variantsInput as $variantData) {
                     $stock = (float) ($variantData['current_stock'] ?? 0);
 
-                    $variant = ProductVariant::findByAttributes($product->id, $variantData);
+                    $variant = ! empty($variantData['id'])
+                        ? $product->variants()->whereKey($variantData['id'])->first()
+                        : ProductVariant::findByAttributes($product->id, $variantData);
 
                     if ($variant) {
                         $variant->update([
                             'sku' => $variantData['sku'] ?? $variant->sku,
                             'bar_code' => $variantData['bar_code'] ?? $variant->bar_code,
                             'price_a_with_tax' => $variantData['price_a_with_tax'] ?? $variant->price_a_with_tax,
+                            'is_active' => true,
                         ]);
                     } else {
-                        $variant = ProductVariant::create(array_merge($variantData, [
+                        $variant = ProductVariant::create([
                             'product_id' => $product->id,
+                            'sku' => $variantData['sku'] ?? null,
+                            'bar_code' => $variantData['bar_code'] ?? null,
+                            'price_a_with_tax' => $variantData['price_a_with_tax'] ?? $product->price_a_with_tax,
                             'current_stock' => $stock,
                             'available_stock' => $stock,
                             'is_active' => true,
-                        ]));
+                        ]);
                     }
 
-                    if ($stock > 0) {
-                        $stockService->initializeVariantStock($product, $variant, $stock);
-                    }
+                    $stockService->setVariantStockAtDefaultLocation($product, $variant, $stock);
+                    $processedVariantIds[] = $variant->id;
                 }
+
+                $product->variants()
+                    ->when($processedVariantIds, fn ($query) => $query->whereNotIn('id', $processedVariantIds))
+                    ->update(['is_active' => false]);
             }
 
             $stockService->recalculateProductStock($product);

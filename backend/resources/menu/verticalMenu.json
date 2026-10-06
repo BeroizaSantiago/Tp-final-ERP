@@ -56,11 +56,7 @@
           "name": "Tipos de Gasto",
           "slug": "compras-tipos-gasto"
         },
-        {
-          "url": "/demo/misc-expenses",
-          "name": "Gastos Varios",
-          "slug": "compras-gastos-varios"
-        },
+
         {
           "url": "/demo/providers",
           "name": "Proveedores",
@@ -107,11 +103,6 @@
           "url": "/demo/brands",
           "name": "Marcas",
           "slug": "productos-marcas"
-        },
-        {
-          "url": "/demo/colors",
-          "name": "Colores",
-          "slug": "productos-colores"
         },
         {
           "url": "/demo/sizes",

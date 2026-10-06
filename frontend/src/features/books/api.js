@@ -51,7 +51,7 @@ export function toProductPayload(values, { imageUrls = [], removeImageIds = [] }
 
   return {
     code: optional(values.code),
-    bar_code: optional(values.bar_code),
+    bar_code: values.has_variants ? null : optional(values.bar_code),
     reference_code: optional(values.reference_code),
     name: values.name?.trim(),
     web_title: optional(values.web_title),
@@ -119,25 +119,37 @@ function appendImages(formData, files) {
 function toFormData(payload) {
   const formData = new FormData()
 
-  Object.entries(payload).forEach(([key, value]) => {
+  const appendValue = (key, value) => {
     if (value === null || value === undefined) {
       return
     }
 
     if (typeof value === 'boolean') {
-      if (value) {
-        formData.append(key, '1')
-      }
+      formData.append(key, value ? '1' : '0')
       return
     }
 
     if (Array.isArray(value)) {
-      value.forEach((item) => formData.append(`${key}[]`, item))
+      value.forEach((item, index) => {
+        const itemKey = typeof item === 'object' && item !== null
+          ? `${key}[${index}]`
+          : `${key}[]`
+        appendValue(itemKey, item)
+      })
+      return
+    }
+
+    if (typeof value === 'object') {
+      Object.entries(value).forEach(([field, fieldValue]) => {
+        appendValue(`${key}[${field}]`, fieldValue)
+      })
       return
     }
 
     formData.append(key, value)
-  })
+  }
+
+  Object.entries(payload).forEach(([key, value]) => appendValue(key, value))
 
   return formData
 }
@@ -148,11 +160,7 @@ export function createBook(values, { files = [], imageUrls = [], variants = null
   // Si se proporcionan variantes, las incluimos en el payload
   if (variants !== null) {
     payload.variants = variants.map((v) => ({
-      category_id: v.category_id || null,
-      brand_id: v.brand_id || null,
-      publisher_id: v.publisher_id || null,
-      product_model_id: v.product_model_id || null,
-      collection_id: v.collection_id || null,
+      id: v.id || null,
       sku: v.sku || null,
       bar_code: v.bar_code || null,
       price_a_with_tax: v.price_a_with_tax || null,
@@ -177,11 +185,7 @@ export function updateBook(id, values, { files = [], imageUrls = [], removeImage
   // Si se proporcionan variantes, las incluimos en el payload
   if (variants !== null) {
     payload.variants = variants.map((v) => ({
-      category_id: v.category_id || null,
-      brand_id: v.brand_id || null,
-      publisher_id: v.publisher_id || null,
-      product_model_id: v.product_model_id || null,
-      collection_id: v.collection_id || null,
+      id: v.id || null,
       sku: v.sku || null,
       bar_code: v.bar_code || null,
       price_a_with_tax: v.price_a_with_tax || null,

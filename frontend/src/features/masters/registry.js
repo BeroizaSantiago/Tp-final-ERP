@@ -166,7 +166,6 @@ export const MENU_ORDER = [
   'editoriales',
   'modelos',
   'colecciones',
-  'colores',
 ]
 
 /** Entradas del desplegable, en el orden pedido. */

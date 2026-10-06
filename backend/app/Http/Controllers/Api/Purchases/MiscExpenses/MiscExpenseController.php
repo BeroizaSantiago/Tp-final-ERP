@@ -7,6 +7,7 @@ use App\Models\Purchases\ExpenseType;
 use App\Models\Purchases\MiscExpense;
 use App\Models\Purchases\Provider;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Purchases\MiscExpensePayment;
 
 /**
@@ -100,7 +101,7 @@ class MiscExpenseController extends Controller
     public function storePayment(Request $request, MiscExpense $miscExpense)
 {
     $data = $request->validate([
-        'payment_method' => ['required', 'string'],
+        'payment_method' => ['required', Rule::in(['card', 'cash', 'transfer', 'check'])],
         'amount' => ['required', 'numeric', 'min:0.01'],
         'discount_amount' => ['nullable', 'numeric', 'min:0'],
         'surcharge_amount' => ['nullable', 'numeric', 'min:0'],

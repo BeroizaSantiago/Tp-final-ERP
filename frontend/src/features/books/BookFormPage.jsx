@@ -11,17 +11,13 @@ import { useApiResource } from '../../lib/useApiResource'
 import { useMasterOptions } from '../masters/useMasterOptions'
 import { createBook, getBook, updateBook } from './api'
 
-/** Campos que definen una variante de producto. */
-const VARIANT_FIELDS = ['category_id', 'brand_id', 'publisher_id', 'product_model_id', 'collection_id']
+/** Identificadores comerciales propios de una variante. */
+const VARIANT_FIELDS = ['sku', 'bar_code']
 
 /** Crea una variante vacía con todos los campos en blanco. */
 function emptyVariant() {
   return {
-    category_id: '',
-    brand_id: '',
-    publisher_id: '',
-    product_model_id: '',
-    collection_id: '',
+    id: null,
     sku: '',
     bar_code: '',
     price_a_with_tax: '',
@@ -37,21 +33,14 @@ function hasAnyAttribute(variant) {
 /**
  * Administrador de variantes de producto.
  *
- * Permite crear, editar y eliminar variantes. Cada variante es una combinación
- * única de atributos maestros (categoría, marca, editorial, modelo, colección)
- * con su propio stock, SKU y código de barras.
+ * Los datos bibliográficos pertenecen al libro. Cada variante conserva sus
+ * propios SKU, ISBN, precio y stock.
  */
-function VariantManager({ variants, onChange, masterOptions, errors }) {
+function VariantManager({ variants, onChange }) {
   const toast = useToast()
   const [showForm, setShowForm] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
   const [formData, setFormData] = useState(emptyVariant())
-
-  const categories = masterOptions.categories
-  const brands = masterOptions.brands
-  const publishers = masterOptions.publishers
-  const models = masterOptions.models
-  const collections = masterOptions.collections
 
   const openCreate = () => {
     setFormData(emptyVariant())
@@ -71,18 +60,21 @@ function VariantManager({ variants, onChange, masterOptions, errors }) {
 
   const handleSave = () => {
     if (!hasAnyAttribute(formData)) {
-      toast.error('Variante incompleta', 'Seleccioná al menos un atributo para la variante.')
+      toast.error('Variante incompleta', 'Ingresá un SKU o un ISBN para identificar la variante.')
       return
     }
 
     // Verificar duplicados
     const isDuplicate = variants.some((v, index) => {
       if (index === editingIndex) return false
-      return VARIANT_FIELDS.every((field) => (v[field] || '') === (formData[field] || ''))
+      return VARIANT_FIELDS.some((field) => {
+        const value = String(formData[field] || '').trim()
+        return value !== '' && String(v[field] || '').trim() === value
+      })
     })
 
     if (isDuplicate) {
-      toast.error('Variante duplicada', 'Ya existe una variante con esa combinación de atributos.')
+      toast.error('Variante duplicada', 'Ya existe una variante con el mismo SKU o ISBN.')
       return
     }
 
@@ -117,7 +109,7 @@ function VariantManager({ variants, onChange, masterOptions, errors }) {
       <div className="form-section-head">
         <h3 className="form-section-title">Variantes</h3>
         <p className="form-section-text">
-          Cada combinación de atributos crea una variante única con su propio stock.
+          Cada variante tiene su propio SKU o ISBN, precio y stock. Los datos bibliográficos pertenecen al libro.
         </p>
       </div>
 
@@ -127,7 +119,7 @@ function VariantManager({ variants, onChange, masterOptions, errors }) {
             <table className="erp-table">
               <thead>
                 <tr>
-                  <th>Atributos</th>
+                  <th>Identificación</th>
                   <th>SKU</th>
                   <th>Stock</th>
                   <th className="is-end">Acciones</th>
@@ -137,23 +129,7 @@ function VariantManager({ variants, onChange, masterOptions, errors }) {
                 {variants.map((variant, index) => (
                   <tr key={index}>
                     <td>
-                      <div className="variant-attributes">
-                        {variant.category_id && (
-                          <span className="erp-badge">{categories.find(c => c.value === variant.category_id)?.label || 'Categoría'}</span>
-                        )}
-                        {variant.brand_id && (
-                          <span className="erp-badge">{brands.find(b => b.value === variant.brand_id)?.label || 'Marca'}</span>
-                        )}
-                        {variant.publisher_id && (
-                          <span className="erp-badge">{publishers.find(p => p.value === variant.publisher_id)?.label || 'Editorial'}</span>
-                        )}
-                        {variant.product_model_id && (
-                          <span className="erp-badge">{models.find(m => m.value === variant.product_model_id)?.label || 'Modelo'}</span>
-                        )}
-                        {variant.collection_id && (
-                          <span className="erp-badge">{collections.find(c => c.value === variant.collection_id)?.label || 'Colección'}</span>
-                        )}
-                      </div>
+                      {variant.bar_code || variant.sku || '—'}
                     </td>
                     <td>{variant.sku || '—'}</td>
                     <td>{number(Number(variant.current_stock) || 0)}</td>
@@ -183,47 +159,6 @@ function VariantManager({ variants, onChange, masterOptions, errors }) {
         {showForm ? (
           <div className="variant-form">
             <div className="form-grid">
-              <Select
-                name="category_id"
-                label="Categoría"
-                value={formData.category_id}
-                onChange={(e) => handleFieldChange('category_id', e.target.value)}
-                options={categories}
-                placeholder="Sin categoría"
-              />
-              <Select
-                name="brand_id"
-                label="Marca"
-                value={formData.brand_id}
-                onChange={(e) => handleFieldChange('brand_id', e.target.value)}
-                options={brands}
-                placeholder="Sin marca"
-              />
-              <Select
-                name="publisher_id"
-                label="Editorial"
-                value={formData.publisher_id}
-                onChange={(e) => handleFieldChange('publisher_id', e.target.value)}
-                options={publishers}
-                placeholder="Sin editorial"
-              />
-              <Select
-                name="product_model_id"
-                label="Modelo"
-                value={formData.product_model_id}
-                onChange={(e) => handleFieldChange('product_model_id', e.target.value)}
-                options={models}
-                placeholder="Sin modelo"
-              />
-              <Select
-                name="collection_id"
-                label="Colección"
-                value={formData.collection_id}
-                onChange={(e) => handleFieldChange('collection_id', e.target.value)}
-                options={collections}
-                placeholder="Sin colección"
-              />
-
               <TextInput
                 name="sku"
                 label="SKU"
@@ -501,11 +436,7 @@ export function BookFormPage() {
     // Cargar variantes existentes
     if (product.variants && product.variants.length > 0) {
       setVariants(product.variants.map((v) => ({
-        category_id: v.category_id || '',
-        brand_id: v.brand_id || '',
-        publisher_id: v.publisher_id || '',
-        product_model_id: v.product_model_id || '',
-        collection_id: v.collection_id || '',
+        id: v.id,
         sku: v.sku || '',
         bar_code: v.bar_code || '',
         price_a_with_tax: v.price_a_with_tax ? String(v.price_a_with_tax) : '',
@@ -648,7 +579,10 @@ export function BookFormPage() {
             onChange={change('bar_code')}
             error={errors.bar_code}
             placeholder="9788497592228"
-            hint="Se carga en el código de barras del producto."
+            disabled={values.has_variants}
+            hint={values.has_variants
+              ? 'Cada variante debe indicar su propio ISBN.'
+              : 'Se carga en el código de barras del producto.'}
           />
 
           <TextInput
@@ -668,14 +602,6 @@ export function BookFormPage() {
             error={errors.reference_code}
           />
 
-          <TextInput
-            name="web_title"
-            label="Título para la web"
-            value={values.web_title}
-            onChange={change('web_title')}
-            error={errors.web_title}
-            hint="Opcional, para la ficha pública."
-          />
 
           <Field
             className="form-span-2"
@@ -765,13 +691,6 @@ export function BookFormPage() {
             placeholder="Sin colección"
           />
 
-          <TextInput
-            name="unit_measure_name"
-            label="Unidad de medida"
-            value={values.unit_measure_name}
-            onChange={change('unit_measure_name')}
-            error={errors.unit_measure_name}
-          />
         </div>
       </FormSection>
 
@@ -901,8 +820,6 @@ export function BookFormPage() {
         <VariantManager
           variants={variants}
           onChange={setVariants}
-          masterOptions={masterOptions}
-          errors={errors}
         />
       ) : null}
 
