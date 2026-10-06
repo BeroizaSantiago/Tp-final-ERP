@@ -116,7 +116,7 @@ export function listStockLocations() {
 }
 
 export function searchProducts(query) {
-  return apiRequest(`/products?${new URLSearchParams({ search: query, per_page: '10' }).toString()}`)
+  return apiRequest(`/products?${new URLSearchParams({ search: query, per_page: '10', is_active: '1' }).toString()}`)
 }
 
 export function getProduct(id) {

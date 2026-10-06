@@ -7,6 +7,7 @@ use App\Models\Products\SalesPromotion;
 use App\Models\Products\SalesPromotionItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\Sales\Invoice;
 use App\Services\Sales\SalesPromotionService;
 
@@ -61,7 +62,7 @@ class SalesPromotionController extends Controller
 
     public function compatible(Request $request)
     {
-        $data=$request->validate(['date'=>['nullable','date'],'currency_name'=>['nullable','string'],'company_name'=>['nullable','string'],'branch_name'=>['nullable','string'],'price_list_name'=>['nullable','string'],'payment_methods'=>['nullable','array'],'items'=>['required','array','min:1'],'items.*.product_id'=>['required','exists:products,id'],'items.*.quantity'=>['required','numeric','min:0.01'],'items.*.unit_price'=>['required','numeric','min:0']]);
+        $data=$request->validate(['date'=>['nullable','date'],'currency_name'=>['nullable','string'],'company_name'=>['nullable','string'],'branch_name'=>['nullable','string'],'price_list_name'=>['nullable','string'],'payment_methods'=>['nullable','array'],'items'=>['required','array','min:1'],'items.*.product_id'=>['required',Rule::exists('products','id')->where('is_active',true)],'items.*.quantity'=>['required','numeric','min:0.01'],'items.*.unit_price'=>['required','numeric','min:0']]);
         return $this->promotionService->compatible($data);
     }
 

@@ -226,6 +226,33 @@
   font-size: 0.75rem;
 }
 
+.sidebar-user-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sidebar-user-row .sidebar-user-button {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-user-logout {
+  display: grid;
+  flex-shrink: 0;
+  padding: 0.35rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--erp-secondary-color);
+  cursor: pointer;
+}
+
+.sidebar-user-logout:hover {
+  color: var(--erp-heading-color);
+  background: var(--erp-body-bg);
+}
+
 .sidebar-user-menu {
   position: absolute;
   right: 0;

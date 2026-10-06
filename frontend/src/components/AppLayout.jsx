@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
-import { Icon } from './icons'
+import { Icon, OutlinedIcon } from './icons'
 import { Logo } from './Logo'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../hooks/useTheme'
@@ -79,19 +79,30 @@ function UserMenu({ onLogout }) {
 
   return (
     <div className="sidebar-user">
-      <button className="sidebar-user-button" type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
-        <span className="sidebar-user-avatar">{initials}</span>
-        <span className="sidebar-user-meta">
-          <strong>{user?.name ?? 'Usuario'}</strong>
-          <small>{user?.role ?? 'Sin rol'}</small>
-        </span>
-      </button>
+      <div className="sidebar-user-row">
+        <button className="sidebar-user-button" type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
+          <span className="sidebar-user-avatar">{initials}</span>
+          <span className="sidebar-user-meta">
+            <strong>{user?.name ?? 'Usuario'}</strong>
+            <small>{user?.role ?? 'Sin rol'}</small>
+          </span>
+        </button>
+        <button
+          className="sidebar-user-logout"
+          type="button"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
+          onClick={onLogout}
+        >
+          <OutlinedIcon name="logout" size={16} />
+        </button>
+      </div>
 
       {open ? (
         <div className="sidebar-user-menu" onClick={(event) => event.stopPropagation()}>
           <p className="sidebar-user-email">{user?.email}</p>
           <button className="sidebar-user-action" type="button" onClick={onLogout}>
-            <Icon name="logout" size={16} />
+            <OutlinedIcon name="logout" size={16} />
             Cerrar sesión
           </button>
         </div>

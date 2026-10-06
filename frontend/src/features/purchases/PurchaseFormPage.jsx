@@ -54,7 +54,7 @@ function PurchaseItemRow({ index, item, onChange, onRemove }) {
           return
         }
 
-        const list = detail?.variants ?? []
+        const list = (detail?.variants ?? []).filter((v) => v.is_active !== false)
 
         setVariants(list)
         setVariant(list[0] ?? null)
