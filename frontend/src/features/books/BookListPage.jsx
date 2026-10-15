@@ -48,10 +48,12 @@ export function BookListPage() {
   const page = Number(searchParams.get('page') ?? 1)
   const categoryId = searchParams.get('category_id') ?? ''
   const brandId = searchParams.get('publisher_id') ?? ''
+  const authorId = searchParams.get('author_id') ?? ''
   const status = searchParams.get('is_active') ?? ''
 
   const { options: categories } = useMasterOptions('product-categories')
   const { options: publishers } = useMasterOptions('publishers')
+  const { options: authors } = useMasterOptions('authors')
 
   // Búsqueda con rebote de 300 ms, igual que el backend.
   useEffect(() => {
@@ -88,12 +90,16 @@ export function BookListPage() {
       params.set('publisher_id', brandId)
     }
 
+    if (authorId) {
+      params.set('author_id', authorId)
+    }
+
     if (status !== '') {
       params.set('is_active', status)
     }
 
     return `/products?${params.toString()}`
-  }, [page, searchParams, categoryId, brandId, status])
+  }, [page, searchParams, categoryId, brandId, authorId, status])
 
   const { data, loading, error, reload } = useApiResource(path)
 
@@ -236,7 +242,7 @@ export function BookListPage() {
     },
   ]
 
-  const hasFilters = Boolean(categoryId || brandId || status !== '' || searchParams.get('search'))
+  const hasFilters = Boolean(categoryId || brandId || authorId || status !== '' || searchParams.get('search'))
 
   return (
     <>
@@ -303,6 +309,20 @@ export function BookListPage() {
           >
             <option value="">Todas las editoriales</option>
             {publishers.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="erp-control erp-select erp-filter"
+            value={authorId}
+            onChange={(event) => updateParam('author_id', event.target.value)}
+            aria-label="Filtrar por autor"
+          >
+            <option value="">Todos los autores</option>
+            {authors.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>

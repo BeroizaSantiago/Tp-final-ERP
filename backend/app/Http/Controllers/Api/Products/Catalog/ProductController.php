@@ -86,6 +86,7 @@ class ProductController extends Controller
             ->when($request->boolean('lookup'), fn ($query) => $query->where('is_active', true))
             ->when($request->filled('category_id'), fn ($query) => $query->where('category_id', $request->integer('category_id')))
             ->when($request->filled('publisher_id'), fn ($query) => $query->where('publisher_id', $request->integer('publisher_id')))
+            ->when($request->filled('author_id'), fn ($query) => $query->where('author_id', $request->integer('author_id')))
             ->when(
                 $request->has('is_active') && $request->query('is_active') !== '',
                 fn ($query) => $query->where('is_active', $request->boolean('is_active'))
