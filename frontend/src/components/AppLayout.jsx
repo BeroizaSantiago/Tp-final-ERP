@@ -33,11 +33,20 @@ const PURCHASE_ENTRIES = [
   { to: '/tipos-de-gasto', label: 'Tipos de gasto', icon: 'priceTag' },
 ]
 
+/** Contenido del desplegable "Ventas", en el orden pedido. */
+const SALES_ENTRIES = [
+  { to: '/ventas', label: 'Facturas', icon: 'receipt' },
+  { to: '/ventas/nueva', label: 'Nueva factura', icon: 'add' },
+]
+
 /** Clave para recordar si el grupo quedó desplegado. */
 const NAV_OPEN_KEY = 'erp.nav.productos'
 
 /** Clave para recordar si el grupo de compras quedó desplegado. */
 const NAV_COMPRAS_OPEN_KEY = 'erp.nav.compras'
+
+/** Clave para recordar si el grupo de ventas quedó desplegado. */
+const NAV_VENTAS_OPEN_KEY = 'erp.nav.ventas'
 
 function ThemeButton() {
   const { theme, toggleTheme } = useTheme()
@@ -136,6 +145,15 @@ export function AppLayout() {
     }
   })
 
+  // Lo mismo para el grupo de Ventas.
+  const [ventasOpen, setVentasOpen] = useState(() => {
+    try {
+      return localStorage.getItem(NAV_VENTAS_OPEN_KEY) !== '0'
+    } catch {
+      return true
+    }
+  })
+
   // Aviso de una sola vez (por ejemplo la contraseña inicial tras el alta).
   useEffect(() => {
     setNotice(takeNotice())
@@ -166,6 +184,15 @@ export function AppLayout() {
     }
   }, [location.pathname])
 
+  // Lo mismo para el grupo de Ventas.
+  useEffect(() => {
+    const inside = SALES_ENTRIES.some((item) => location.pathname.startsWith(item.to))
+
+    if (inside) {
+      setVentasOpen(true)
+    }
+  }, [location.pathname])
+
   const toggleNav = () => {
     setNavOpen((current) => {
       const next = !current
@@ -186,6 +213,20 @@ export function AppLayout() {
 
       try {
         localStorage.setItem(NAV_COMPRAS_OPEN_KEY, next ? '1' : '0')
+      } catch {
+        /* Sin storage la preferencia sólo vive en memoria. */
+      }
+
+      return next
+    })
+  }
+
+  const toggleVentasNav = () => {
+    setVentasOpen((current) => {
+      const next = !current
+
+      try {
+        localStorage.setItem(NAV_VENTAS_OPEN_KEY, next ? '1' : '0')
       } catch {
         /* Sin storage la preferencia sólo vive en memoria. */
       }
@@ -272,6 +313,34 @@ export function AppLayout() {
                   key={item.to}
                   to={item.to}
                   end={item.to === '/compras' || item.to === '/ordenes' || item.to === '/gastos'}
+                  className={({ isActive }) => `app-nav-link app-nav-link--child${isActive ? ' is-active' : ''}`}
+                >
+                  <Icon name={item.icon} size={18} />
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+
+          <div className="app-nav-section">
+            <button
+              className={`app-nav-toggle${ventasOpen ? ' is-open' : ''}`}
+              type="button"
+              onClick={toggleVentasNav}
+              aria-expanded={ventasOpen}
+              aria-controls="nav-ventas"
+            >
+              <Icon name="sales" size={18} />
+              <span>Ventas</span>
+              <Icon name={ventasOpen ? 'chevronUp' : 'chevronDown'} size={16} className="app-nav-caret" />
+            </button>
+
+            <div className="app-nav-sublist" id="nav-ventas" hidden={!ventasOpen}>
+              {SALES_ENTRIES.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/ventas' || item.to === '/ventas/nueva'}
                   className={({ isActive }) => `app-nav-link app-nav-link--child${isActive ? ' is-active' : ''}`}
                 >
                   <Icon name={item.icon} size={18} />

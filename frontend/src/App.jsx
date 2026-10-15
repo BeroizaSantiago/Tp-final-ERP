@@ -11,6 +11,10 @@ import { PurchaseListPage } from './features/purchases/PurchaseListPage'
 import { PurchaseFormPage } from './features/purchases/PurchaseFormPage'
 import { PurchaseDetailPage } from './features/purchases/PurchaseDetailPage'
 import { PurchasePaymentPage } from './features/purchases/PurchasePaymentPage'
+import { SaleListPage } from './features/sales/SaleListPage'
+import { SaleFormPage } from './features/sales/SaleFormPage'
+import { SalePaymentPage } from './features/sales/SalePaymentPage'
+import { SaleDetailPage } from './features/sales/SaleDetailPage'
 import { OrderListPage } from './features/purchases/OrderListPage'
 import { OrderFormPage } from './features/purchases/OrderFormPage'
 import { OrderDetailPage } from './features/purchases/OrderDetailPage'
@@ -60,7 +64,7 @@ export default function App() {
         }
       >
         <Route path="/" element={<Navigate to={HOME_PATH} replace />} />
-        {/* El dashboard se retiró: la ruta vieja lleva al catálogo. */}
+        {/* Dashboard con sección de ventas */}
         <Route path="/dashboard" element={<Navigate to={HOME_PATH} replace />} />
 
         <Route path="/libros" element={<BookListPage />} />
@@ -72,6 +76,11 @@ export default function App() {
         <Route path="/compras/nueva" element={<PurchaseFormPage />} />
         <Route path="/compras/:id" element={<PurchaseDetailPage />} />
         <Route path="/compras/:id/pago" element={<PurchasePaymentPage />} />
+
+        <Route path="/ventas" element={<SaleListPage />} />
+        <Route path="/ventas/nueva" element={<SaleFormPage />} />
+        <Route path="/ventas/:id" element={<SaleDetailPage />} />
+        <Route path="/ventas/:id/pago" element={<SalePaymentPage />} />
 
         <Route path="/ordenes" element={<OrderListPage />} />
         <Route path="/ordenes/nueva" element={<OrderFormPage />} />

@@ -251,7 +251,7 @@ Route::get('/purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 
 Route::get('/demo/purchase-orders/{purchaseOrder}', function ($purchaseOrder) {
     return view('purchases.purchase-orders.show', ['purchaseOrderId' => $purchaseOrder]);
 });
-Route::post('/purchases/{purchase}/payments', [PurchaseController::class, 'storePayment']);
+Route::middleware('auth:sanctum')->post('/purchases/{purchase}/payments', [PurchaseController::class, 'storePayment']);
 
 
 
@@ -269,7 +269,7 @@ Route::delete('/expense-types/{expenseType}', [ExpenseTypeController::class, 'de
 Route::get('/misc-expenses', [MiscExpenseController::class, 'index']);
 Route::post('/misc-expenses', [MiscExpenseController::class, 'store']);
 Route::get('/misc-expenses/{miscExpense}', [MiscExpenseController::class, 'show']);
-Route::post('/misc-expenses/{miscExpense}/payments', [MiscExpenseController::class, 'storePayment']);
+Route::middleware('auth:sanctum')->post('/misc-expenses/{miscExpense}/payments', [MiscExpenseController::class, 'storePayment']);
 
 
 Route::get('/cash-concept-types', [CashConceptTypeController::class, 'index']);
@@ -322,10 +322,10 @@ Route::post('/product-variants', [ProductVariantController::class, 'store']);
 Route::get('/product-variants/{productVariant}', [ProductVariantController::class, 'show']);
 
 
-Route::post('/invoices/{invoice}/payments', [InvoiceController::class, 'storePayment']);
-Route::delete('/invoices/{invoice}/payments/{payment}/voucher', [InvoiceController::class, 'destroyVoucherPayment']);
-Route::post('/invoices/{invoice}/finalize', [InvoiceController::class, 'finalize']);
-Route::delete('/invoices/{invoice}/draft', [InvoiceController::class, 'discardDraft']);
+Route::middleware('auth:sanctum')->post('/invoices/{invoice}/payments', [InvoiceController::class, 'storePayment']);
+Route::middleware('auth:sanctum')->delete('/invoices/{invoice}/payments/{payment}/voucher', [InvoiceController::class, 'destroyVoucherPayment']);
+Route::middleware('auth:sanctum')->post('/invoices/{invoice}/finalize', [InvoiceController::class, 'finalize']);
+Route::middleware('auth:sanctum')->delete('/invoices/{invoice}/draft', [InvoiceController::class, 'discardDraft']);
 
 // Reporte de Ventas Consolidado: una única consulta alimenta pantalla y exportaciones.
 Route::middleware('auth:sanctum')->prefix('reports/sales/consolidated')->group(function () {

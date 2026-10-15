@@ -99,7 +99,7 @@ export function PaymentMethods({ total, payments, onAdd, addLabel = 'Agregar pag
   }
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
       <div>
         <div className="erp-card">
           <div className="erp-card-head" style={{ justifyContent: 'space-between', display: 'flex' }}>
@@ -262,7 +262,7 @@ export function PaymentMethods({ total, payments, onAdd, addLabel = 'Agregar pag
           </tbody>
         </table>
 
-        <div className="payment-summary" style={{ marginTop: '1rem', borderTop: '1px solid var(--erp-border-color)', paddingTop: '0.85rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="payment-summary" style={{ marginTop: '1rem', borderTop: '1px solid var(--erp-border-color)', padding: '0.85rem 1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', justifyItems: 'center' }}>
           <div>
             <small className="detail-label">Saldo</small>
             <h4 style={{ margin: 0 }}>{money(balance)}</h4>
