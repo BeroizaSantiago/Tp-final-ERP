@@ -841,3 +841,253 @@
   cursor: default;
 }
 
+/* Errores de validación de campos (replican el criterio de los formularios Blade). */
+.erp-control.is-invalid {
+  border-color: var(--erp-danger);
+}
+
+.erp-invalid-feedback {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--erp-danger);
+  font-size: 0.8rem;
+}
+
+/* Chips de ítems alcanzados por una promoción. */
+.promo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  margin: 0.2rem 0.4rem 0.2rem 0;
+  border: 1px solid var(--erp-border-color);
+  border-radius: 2rem;
+  background: var(--erp-body-bg);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.promo-chip button {
+  background: none;
+  border: none;
+  color: var(--erp-secondary-color);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 0.15rem;
+}
+
+.promo-chip button:hover {
+  color: var(--erp-danger);
+}
+
+/* Tarjeta de promoción aplicable en la pantalla de formas de pago. */
+.promo-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.6rem;
+  background: var(--erp-body-bg);
+  margin-bottom: 0.5rem;
+}
+
+.promo-card .promo-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.promo-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--erp-accent) 12%, transparent);
+  color: var(--erp-accent);
+  border: 1px solid color-mix(in srgb, var(--erp-accent) 35%, transparent);
+}
+
+/* Listado y formulario de promociones. */
+.promotion-count {
+  color: var(--erp-secondary-color);
+  font-size: 0.82rem;
+}
+
+.promotion-filter-bar {
+  display: grid;
+  grid-template-columns: minmax(15rem, 2fr) repeat(2, minmax(10rem, 1fr)) auto;
+  gap: 0.85rem;
+  align-items: end;
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid var(--erp-border-color);
+  background: color-mix(in srgb, var(--erp-body-bg) 65%, transparent);
+}
+
+.promotion-filter-bar .erp-filter {
+  min-width: 0;
+  padding: 0;
+}
+
+.promotion-filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 0.05rem;
+}
+
+.promotion-pill,
+.promotion-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.22rem 0.55rem;
+  border: 1px solid var(--erp-border-color);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.promotion-pill--neutral {
+  color: var(--erp-body-color);
+  background: var(--erp-body-bg);
+}
+
+.promotion-pill--scope {
+  color: var(--erp-accent);
+  border-color: color-mix(in srgb, var(--erp-accent) 30%, var(--erp-border-color));
+  background: color-mix(in srgb, var(--erp-accent) 9%, transparent);
+}
+
+.promotion-validity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  line-height: 1.25;
+}
+
+.promotion-validity small {
+  color: var(--erp-secondary-color);
+  font-size: 0.76rem;
+}
+
+.promotion-discount {
+  color: var(--erp-accent);
+  font-size: 0.95rem;
+}
+
+.promotion-row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.promotion-form,
+.promotion-form-head,
+.promotion-form-error {
+  width: min(100%, 60rem);
+}
+
+.promotion-form-head {
+  align-items: center;
+}
+
+.promotion-status.is-active {
+  color: var(--erp-success);
+  border-color: color-mix(in srgb, var(--erp-success) 35%, var(--erp-border-color));
+  background: color-mix(in srgb, var(--erp-success) 10%, transparent);
+}
+
+.promotion-status.is-inactive {
+  color: var(--erp-secondary-color);
+  background: var(--erp-body-bg);
+}
+
+.promotion-form-error {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  color: var(--erp-danger);
+  border: 1px solid color-mix(in srgb, var(--erp-danger) 35%, var(--erp-border-color));
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--erp-danger) 8%, transparent);
+  font-size: 0.85rem;
+}
+
+.promotion-scope-picker {
+  margin: 0.15rem 0 1rem;
+  padding: 1rem;
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.65rem;
+  background: var(--erp-body-bg);
+}
+
+.promotion-selected-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-height: 2rem;
+  margin-bottom: 0.65rem;
+}
+
+.promotion-add-scope {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: start;
+}
+
+.promotion-add-scope .erp-field-block {
+  margin-bottom: 0;
+}
+
+.promotion-form-actions {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 899.98px) {
+  .promotion-filter-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .promotion-filter-bar .erp-filter:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .promotion-filter-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .promotion-filter-bar .erp-filter:first-child {
+    grid-column: auto;
+  }
+
+  .promotion-filter-actions,
+  .promotion-filter-actions .erp-btn,
+  .promotion-form-actions .erp-btn {
+    width: 100%;
+  }
+
+  .promotion-add-scope {
+    grid-template-columns: 1fr;
+  }
+
+  .promotion-form-actions {
+    flex-direction: column-reverse;
+  }
+}
+
+/* Formulario de medios de pago: campos en dos columnas. */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0 1rem;
+}
+
+.form-span-2 {
+  grid-column: 1 / -1;
+}
+

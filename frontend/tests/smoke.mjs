@@ -84,6 +84,26 @@ let registerResponse = {
   body: { token: 'token-registro', user, initial_password: 'ERP123' },
 }
 
+// Clientes de ejemplo que devuelve GET /api/clients.
+let clients = [
+  {
+    id: 1,
+    name: 'Consumidor Final',
+    code: 'CF',
+    document_type: 'DNI',
+    document_number: '0',
+    fantasy_name: null,
+    first_phone: null,
+    email: null,
+    city: null,
+    credit_limit: null,
+    discount: '0.00',
+    is_active: true,
+    is_wholesaler: false,
+    use_credit_invoice: false,
+  },
+]
+
 global.fetch = async (url, options = {}) => {
   const target = String(url)
 
@@ -136,6 +156,33 @@ global.fetch = async (url, options = {}) => {
         per_page: 20,
         from: 1,
         to: products.length,
+      }),
+    }
+  }
+
+  // Clientes: el ABM del módulo de ventas.
+  if (target.includes('/api/clients')) {
+    const match = target.match(/\/api\/clients\/(\d+)/)
+
+    if (match) {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => clients.find((item) => item.id === Number(match[1])) ?? clients[0],
+      }
+    }
+
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({
+        data: clients,
+        current_page: 1,
+        last_page: 1,
+        total: clients.length,
+        per_page: 20,
+        from: 1,
+        to: clients.length,
       }),
     }
   }
@@ -625,6 +672,83 @@ check(
 await updateBook(9, formValues, { files: [fakeFile] })
 const multipartUpdate = calls.find((c) => c.url.endsWith('/api/products/9') && c.method === 'PUT')
 check('la edicion con portada tambien va en multipart', multipartUpdate?.body instanceof dom.window.FormData)
+
+// --- ABM de clientes del módulo de ventas ------------------------------------
+const clientsPage = await renderAt('/ventas/clientes')
+check('el ABM de clientes se monta', clientsPage.text().includes('Listado de clientes registrados'))
+check('el ABM lista el cliente', clientsPage.text().includes('Consumidor Final'))
+check('el ABM ofrece crear', clientsPage.text().includes('Nuevo cliente'))
+check('el ABM lista la columna Límite de crédito', clientsPage.text().includes('Límite de crédito'))
+
+const clientsListCall = calls.find((c) => c.url.includes('/api/clients?'))
+check('el ABM consulta GET /api/clients', Boolean(clientsListCall))
+check('el ABM pide paginación de 20', clientsListCall?.url.includes('per_page=20'))
+
+// El alta de cliente se hace en un modal.
+calls.length = 0
+
+await act(async () => {
+  const button = [...clientsPage.container.querySelectorAll('.page-actions button')].find((b) =>
+    b.textContent.includes('Nuevo cliente'),
+  )
+  button.dispatchEvent(new dom.window.Event('click', { bubbles: true }))
+})
+
+const clientModal = clientsPage.container.querySelector('.modal-card--form')
+check('se abre el modal de alta de cliente', Boolean(clientModal))
+
+await act(async () => {
+  const input = clientModal.querySelector('input[name="name"]')
+  const setter = Object.getOwnPropertyDescriptor(
+    Object.getPrototypeOf(input),
+    'value',
+  ).set
+
+  setter.call(input, 'Cliente desde el test')
+  input.dispatchEvent(new dom.window.Event('input', { bubbles: true }))
+})
+
+await act(async () => {
+  clientModal.querySelector('form').dispatchEvent(
+    new dom.window.Event('submit', { bubbles: true, cancelable: true }),
+  )
+})
+
+const clientCall = calls.find((c) => c.url.endsWith('/api/clients') && c.method === 'POST')
+check('el alta de cliente llega a la API', Boolean(clientCall))
+check('el alta manda el nombre', clientCall?.body?.name === 'Cliente desde el test')
+check('el alta manda el descuento en 0', clientCall?.body?.discount === 0)
+check('el alta manda is_active', clientCall?.body?.is_active === true)
+check('los campos vacíos se mandan como null', clientCall?.body?.email === null)
+
+// La baja se hace passiveando el cliente, no borrándolo.
+calls.length = 0
+
+const { updateClient } = await import('../src/features/sales/api.js')
+await updateClient(1, { ...clients[0], is_active: false })
+
+const clientUpdate = calls.find((c) => c.url.endsWith('/api/clients/1') && c.method === 'PUT')
+check('la baja de cliente va a PUT /api/clients/{id}', Boolean(clientUpdate))
+check('la baja manda is_active en false', clientUpdate?.body?.is_active === false)
+
+// --- Alta rápida de cliente desde la pantalla de venta ----------------------
+const saleForm = await renderAt('/ventas/nueva')
+check('la venta ofrece crear un cliente', saleForm.text().includes('Nuevo cliente'))
+
+await act(async () => {
+  const button = [...saleForm.container.querySelectorAll('button')].find((b) =>
+    b.textContent.includes('Nuevo cliente'),
+  )
+  button.dispatchEvent(new dom.window.Event('click', { bubbles: true }))
+})
+
+const quickModal = saleForm.container.querySelector('.modal-card--form')
+check('se abre el alta rápida de cliente', Boolean(quickModal))
+check(
+  'el alta rápida pide sólo los datos indispensable',
+  Boolean(quickModal.querySelector('input[name="name"]')) &&
+    !quickModal.querySelector('input[name="credit_limit"]'),
+)
 
 const failedCount = checks.filter(([, ok]) => !ok).length
 console.log(`\n${checks.length - failedCount}/${checks.length} verificaciones correctas`)

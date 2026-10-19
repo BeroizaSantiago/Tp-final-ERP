@@ -379,6 +379,12 @@ class InvoiceController extends SalesDocumentController
                 ], 401);
             }
 
+            /*
+             * La venta ya no exige una planilla de caja abierta. Si el usuario
+             * no tiene ninguna, el cobro se registra igual y simplemente no se
+             * genera el movimiento de caja: la planilla se puede abrir más
+             * tarde, pero ese cobro no va a sumar a su arqueo.
+             */
             $openCashSheet = CashSheet::query()
                 ->where('user_id', auth()->id())
                 ->where('status_name', 'Abierta')
@@ -386,11 +392,6 @@ class InvoiceController extends SalesDocumentController
                 ->latest('opening_date')
                 ->first();
 
-            if (!$openCashSheet) {
-                return response()->json([
-                    'message' => 'No tenés una caja abierta. Abrí una planilla de caja antes de registrar la venta.',
-                ], 422);
-            }
             /*
         |--------------------------------------------------------------------------
         | Pago de factura
@@ -426,46 +427,48 @@ class InvoiceController extends SalesDocumentController
 
             ]);
 
-            $cashMovement = CashSheetMovement::create([
-                'cash_sheet_id' => $openCashSheet->id,
-                'cash_box_id' => $openCashSheet->cash_box_id,
+            $cashMovement = $openCashSheet
+                ? CashSheetMovement::create([
+                    'cash_sheet_id' => $openCashSheet->id,
+                    'cash_box_id' => $openCashSheet->cash_box_id,
 
-                'invoice_id' => $invoice->id,
-                'invoice_payment_id' => $payment->id,
+                    'invoice_id' => $invoice->id,
+                    'invoice_payment_id' => $payment->id,
 
-                'user_id' => auth()->id(),
+                    'user_id' => auth()->id(),
 
-                'movement_type' => 'income',
+                    'movement_type' => 'income',
 
-                'payment_method' =>
-                $data['payment_method'],
+                    'payment_method' =>
+                    $data['payment_method'],
 
-                'affects_cash_balance' =>
-                $data['payment_method'] === 'cash',
+                    'affects_cash_balance' =>
+                    $data['payment_method'] === 'cash',
 
-                'amount' => $totalPaid,
+                    'amount' => $totalPaid,
 
-                'document_number' =>
-                $invoice->full_number
-                    ?? 'Venta #' . $invoice->id,
+                    'document_number' =>
+                    $invoice->full_number
+                        ?? 'Venta #' . $invoice->id,
 
-                'customer_name' =>
-                $invoice->customer_name,
+                    'customer_name' =>
+                    $invoice->customer_name,
 
-                'reference' =>
-                $data['reference']
-                    ?? $data['coupon_number']
-                    ?? null,
+                    'reference' =>
+                    $data['reference']
+                        ?? $data['coupon_number']
+                        ?? null,
 
-                'description' =>
-                'Cobro de venta '
-                    . (
-                        $invoice->full_number
-                        ?? '#' . $invoice->id
-                    ),
+                    'description' =>
+                    'Cobro de venta '
+                        . (
+                            $invoice->full_number
+                            ?? '#' . $invoice->id
+                        ),
 
-                'status' => 'active',
-            ]);
+                    'status' => 'active',
+                ])
+                : null;
 
             /*
         |--------------------------------------------------------------------------
@@ -620,10 +623,12 @@ class InvoiceController extends SalesDocumentController
 
                 ]);
 
-                $cashMovement->update([
-                    'customer_receipt_id' => $receipt->id,
-                    'customer_receipt_payment_id' => $receiptPayment->id,
-                ]);
+                if ($cashMovement) {
+                    $cashMovement->update([
+                        'customer_receipt_id' => $receipt->id,
+                        'customer_receipt_payment_id' => $receiptPayment->id,
+                    ]);
+                }
 
                 $invoice->client()->update([
 

@@ -1,18 +1,20 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 
 import { BackLink } from '../../components/fields'
 import { useApiResource } from '../../lib/useApiResource'
 import { useToast } from '../../context/ToastContext'
 import { addInvoicePayment } from './api'
+import { applyPromotion } from './api'
 import { finalizeInvoice } from './api'
-import { PaymentMethods } from './PaymentMethods'
+import { getCompatiblePromotions } from './api'
+import { PaymentPanel } from '../../components/PaymentPanel'
 
 export function SalePaymentPage() {
   const toast = useToast()
   const { id } = useParams()
   const [saving, setSaving] = useState(false)
-  const { data: sale, loading, error, setData } = useApiResource(`/invoices/${id}`, { deps: [id] })
+  const { data: sale, loading, error, reload } = useApiResource(`/invoices/${id}`, { deps: [id] })
 
   if (loading) {
     return (
@@ -32,6 +34,28 @@ export function SalePaymentPage() {
     )
   }
 
+  const handleFinish = async () => {
+    setSaving(true)
+    try {
+      const res = await finalizeInvoice(id)
+      if (res && res.invoice) {
+        toast.success(
+          'Venta finalizada exitosamente',
+          'Comprobante: ' + (res.invoice.full_number ?? res.invoice.id)
+        )
+        window.location.href = `/ventas`
+      } else if (res && res.message) {
+        toast.error(res.message)
+      } else {
+        toast.success('Venta finalizada exitosamente')
+      }
+    } catch (error) {
+      toast.error('Error al finalizar', error.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <>
       <div className="page-head">
@@ -42,47 +66,24 @@ export function SalePaymentPage() {
         </div>
       </div>
 
-      <PaymentMethods
+      <PaymentPanel
+        itemType="venta"
         total={sale.total_amount}
         payments={sale.payments ?? []}
+        items={sale.items ?? []}
+        invoiceId={id}
         onAdd={async (payload) => {
-          const updated = await addInvoicePayment(id, payload)
-
-          setData(updated)
+          await addInvoicePayment(id, payload)
+          await reload()
         }}
+        onRefresh={reload}
+        applyPromotion={applyPromotion}
+        getCompatiblePromotions={getCompatiblePromotions}
+        appliedPromotion={sale.sales_promotion}
+        promotionDiscount={sale.promotion_discount_amount}
+        onFinish={handleFinish}
+        finishLabel="Finalizar Venta"
       />
-
-      <div className="detail-footer" style={{ marginTop: '1rem' }}>
-        <button
-          className="erp-btn erp-btn-primary"
-          onClick={async () => {
-            setSaving(true)
-            try {
-              const res = await finalizeInvoice(id)
-              if (res && res.invoice) {
-                // Usar los datos del invoice regresado para actualizar el estado
-                setData(res.invoice)
-                toast.success(
-                  'Venta finalizada exitosamente',
-                  'Comprobante: ' + (res.invoice.full_number ?? res.invoice.id)
-                )
-                window.location.href = `/ventas`
-              } else if (res && res.message) {
-                toast.error(res.message)
-              } else {
-                toast.success('Venta finalizada exitosamente')
-              }
-            } catch (error) {
-              toast.error('Error al finalizar', error.message)
-            } finally {
-              setSaving(false)
-            }
-          }}
-          disabled={saving}
-        >
-          {saving ? 'Finalizando…' : 'Finalizar Venta'}
-        </button>
-      </div>
     </>
   )
 }

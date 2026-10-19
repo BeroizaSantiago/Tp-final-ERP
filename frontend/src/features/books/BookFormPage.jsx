@@ -206,7 +206,7 @@ function VariantManager({ variants, onChange }) {
           </div>
         ) : (
           <button type="button" className="erp-btn erp-btn-outline" onClick={openCreate}>
-            <Icon name="plus" size={16} />
+            <Icon name="add" size={16} />
             Agregar variante
           </button>
         )}

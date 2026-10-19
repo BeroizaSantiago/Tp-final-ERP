@@ -114,6 +114,9 @@ const FILLED_PATHS = {
   // ri-shopping-cart-line
   cart:
     'M4.005 16V4h-2V2h3a1 1 0 0 1 1 1v12h12.438l2-8H8.005V5h13.72a1 1 0 0 1 .97 1.243l-2.5 10a1 1 0 0 1-.97.757H5.004a1 1 0 0 1-1-1m2 7a2 2 0 1 1 0-4a2 2 0 0 1 0 4m12 0a2 2 0 1 1 0-4a2 2 0 0 1 0 4',
+  // ri-shopping-bag-line
+  sales:
+    'M7.005 8V6a5 5 0 0 1 10 0v2h3a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-16a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zm0 2h-2v10h14V10h-2v2h-2v-2h-6v2h-2zm2-2h6V6a3 3 0 0 0-6 0z',
   // ri-filter-3-line
   filter:
     'M10 18h4v-2h-4zM3 6v2h18V6zm3 7h12v-2H6z',
@@ -188,6 +191,12 @@ export function Icon({ name, size = '1em', className, ...rest }) {
   const d = FILLED_PATHS[name]
 
   if (!d) {
+    // Un nombre mal escrito dejaba el ícono invisible sin avisar. En
+    // desarrollo se advierte en consola para poder detectarlo enseguida.
+    if (import.meta.env.DEV) {
+      console.warn(`[Icon] "${name}" no existe en el catálogo de iconos.`)
+    }
+
     return null
   }
 
@@ -212,6 +221,10 @@ export function OutlinedIcon({ name, size = '1em', className, ...rest }) {
   const shapes = OUTLINED_SHAPES[name]
 
   if (!shapes) {
+    if (import.meta.env.DEV) {
+      console.warn(`[OutlinedIcon] "${name}" no existe en el catálogo de iconos.`)
+    }
+
     return null
   }
 

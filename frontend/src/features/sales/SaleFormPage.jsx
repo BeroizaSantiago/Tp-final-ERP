@@ -7,6 +7,7 @@ import { useToast } from '../../context/ToastContext'
 import { ApiError } from '../../lib/api'
 import { money } from '../../lib/format'
 import { RemoteSearchSelect, useRemoteSearch } from './RemoteSearchSelect'
+import { ClientFormModal } from './ClientFormModal'
 import { createInvoice, getProduct, listStockLocations, searchProducts, searchClients, variantLabel } from './api'
 
 const RECEIPT_TYPES = ['Factura A', 'Factura B', 'Factura C']
@@ -179,6 +180,7 @@ export function SaleFormPage() {
     currency_name: 'Pesos',
   })
   const [client, setClient] = useState(null)
+  const [creatingClient, setCreatingClient] = useState(false)
   const [items, setItems] = useState([emptyItem()])
   const [stockLocations, setStockLocations] = useState([])
   const [perception, setPerception] = useState({
@@ -320,123 +322,143 @@ export function SaleFormPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
-      <div className="page-head">
-        <div>
-          <BackLink to="/ventas">Volver a ventas</BackLink>
-          <h1 className="page-title">Nueva venta</h1>
-          <p className="page-subtitle">Registrá un comprobante de venta a un cliente.</p>
+    <>
+      <form onSubmit={handleSubmit} noValidate>
+        <div className="page-head">
+          <div>
+            <BackLink to="/ventas">Volver a ventas</BackLink>
+            <h1 className="page-title">Nueva venta</h1>
+            <p className="page-subtitle">Registrá un comprobante de venta a un cliente.</p>
+          </div>
         </div>
 
-        <div className="page-actions">
+        <FormSection title="Comprobante" description="Datos del encabezado de la venta.">
+          <div className="form-grid">
+            <RemoteSearchSelect
+              label="Cliente"
+              placeholder="Buscar cliente por nombre, código o identificación…"
+              onSearch={clientSearch.setQuery}
+              results={clientSearch.results}
+              loading={clientSearch.loading}
+              selected={client ? { label: client.label } : null}
+              onSelect={(picked) => {
+                setClient(picked)
+                setValues((current) => ({ ...current, client_id: picked ? picked.value : '' }))
+              }}
+              action={
+                <button
+                  type="button"
+                  className="erp-btn erp-btn-outline erp-btn--sm"
+                  onClick={() => setCreatingClient(true)}
+                >
+                  <Icon name="userAdd" size={16} />
+                  Nuevo cliente
+                </button>
+              }
+            />
+
+            <TextInput
+              name="issue_date"
+              label="Fecha y Hora"
+              type="datetime-local"
+              value={values.issue_date}
+              onChange={change('issue_date')}
+            />
+
+            <Select
+              name="receipt_type_name"
+              label="Tipo comprobante"
+              value={values.receipt_type_name}
+              onChange={change('receipt_type_name')}
+              options={RECEIPT_TYPES.map((value) => ({ value, label: value }))}
+            />
+
+            <TextInput
+              name="first_number"
+              label="Pto. Vta."
+              value={values.first_number}
+              onChange={change('first_number')}
+            />
+
+            <Select
+              name="currency_name"
+              label="Moneda"
+              value={values.currency_name}
+              onChange={change('currency_name')}
+              options={CURRENCIES.map((value) => ({ value, label: value }))}
+            />
+          </div>
+        </FormSection>
+
+        <FormSection title="Productos" description="Ítems del comprobante.">
+          <div className="table-scroll">
+            <table className="erp-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Código</th>
+                  <th>Cant.</th>
+                  <th>P. Unit.</th>
+                  <th>% IVA</th>
+                  <th className="is-end">Total</th>
+                  <th className="is-end" />
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => (
+                  <SaleItemRow
+                    key={index}
+                    index={index}
+                    item={item}
+                    onChange={updateItem}
+                    onRemove={(i) => setItems((current) => current.filter((_, j) => j !== i))}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+            <button type="button" className="erp-btn erp-btn-outline" onClick={() => setItems((current) => [...current, emptyItem()])}>
+              <Icon name="add" size={16} />
+              Agregar producto
+            </button>
+
+            <h4 style={{ margin: 0 }}>
+              Total venta: <strong>{money(total)}</strong>
+            </h4>
+          </div>
+        </FormSection>
+
+
+        <div className="form-actions">
           <button className="erp-btn erp-btn-outline" type="button" onClick={() => navigate('/ventas')} disabled={saving}>
             Cancelar
           </button>
           <button className="erp-btn erp-btn-primary" type="submit" disabled={saving}>
-            <Icon name="save" size={18} />
-            {saving ? 'Guardando…' : 'Continuar a método de pago'}
+            {saving ? 'Guardando…' : 'Continuar'}
           </button>
         </div>
-      </div>
+      </form>
 
-      <FormSection title="Comprobante" description="Datos del encabezado de la venta.">
-        <div className="form-grid">
-          <RemoteSearchSelect
-            label="Cliente"
-            placeholder="Buscar cliente por nombre, código o identificación…"
-            onSearch={clientSearch.setQuery}
-            results={clientSearch.results}
-            loading={clientSearch.loading}
-            selected={client ? { label: client.label } : null}
-            onSelect={(picked) => {
-              setClient(picked)
-              setValues((current) => ({ ...current, client_id: picked ? picked.value : '' }))
-            }}
-          />
+      {creatingClient ? (
+        <ClientFormModal
+          mode="quick"
+          onClose={() => setCreatingClient(false)}
+          onSaved={(saved) => {
+            // El cliente recién creado queda elegido de una: la venta puede
+            // seguir sin salir de la pantalla.
+            const picked = {
+              value: String(saved.id),
+              label: saved.name,
+              hint: saved.document_number ?? '',
+            }
 
-          <TextInput
-            name="issue_date"
-            label="Fecha y Hora"
-            type="datetime-local"
-            value={values.issue_date}
-            onChange={change('issue_date')}
-          />
-
-          <Select
-            name="receipt_type_name"
-            label="Tipo comprobante"
-            value={values.receipt_type_name}
-            onChange={change('receipt_type_name')}
-            options={RECEIPT_TYPES.map((value) => ({ value, label: value }))}
-          />
-
-          <TextInput
-            name="first_number"
-            label="Pto. Vta."
-            value={values.first_number}
-            onChange={change('first_number')}
-          />
-
-          <Select
-            name="currency_name"
-            label="Moneda"
-            value={values.currency_name}
-            onChange={change('currency_name')}
-            options={CURRENCIES.map((value) => ({ value, label: value }))}
-          />
-        </div>
-      </FormSection>
-
-      <FormSection title="Productos" description="Ítems del comprobante.">
-        <div className="table-scroll">
-          <table className="erp-table">
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Código</th>
-                <th>Cant.</th>
-                <th>P. Unit.</th>
-                <th>% IVA</th>
-                <th className="is-end">Total</th>
-                <th className="is-end" />
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item, index) => (
-                <SaleItemRow
-                  key={index}
-                  index={index}
-                  item={item}
-                  onChange={updateItem}
-                  onRemove={(i) => setItems((current) => current.filter((_, j) => j !== i))}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
-          <button type="button" className="erp-btn erp-btn-outline" onClick={() => setItems((current) => [...current, emptyItem()])}>
-            <Icon name="add" size={16} />
-            Agregar producto
-          </button>
-
-          <h4 style={{ margin: 0 }}>
-            Total venta: <strong>{money(total)}</strong>
-          </h4>
-        </div>
-      </FormSection>
-
-
-      <div className="form-actions">
-        <button className="erp-btn erp-btn-outline" type="button" onClick={() => navigate('/ventas')} disabled={saving}>
-          Cancelar
-        </button>
-        <button className="erp-btn erp-btn-primary" type="submit" disabled={saving}>
-          <Icon name="save" size={18} />
-          {saving ? 'Guardando…' : 'Continuar a método de pago'}
-        </button>
-      </div>
-    </form>
+            setClient(picked)
+            setValues((current) => ({ ...current, client_id: picked.value }))
+          }}
+        />
+      ) : null}
+    </>
   )
 }

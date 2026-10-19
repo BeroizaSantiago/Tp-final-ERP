@@ -330,16 +330,6 @@ export function PurchaseFormPage() {
           <h1 className="page-title">Nueva compra</h1>
           <p className="page-subtitle">Registrá un comprobante de compra a un proveedor.</p>
         </div>
-
-        <div className="page-actions">
-          <button className="erp-btn erp-btn-outline" type="button" onClick={() => navigate('/compras')} disabled={saving}>
-            Cancelar
-          </button>
-          <button className="erp-btn erp-btn-primary" type="submit" disabled={saving}>
-            <Icon name="save" size={18} />
-            {saving ? 'Guardando…' : 'Continuar a método de pago'}
-          </button>
-        </div>
       </div>
 
       <FormSection title="Comprobante" description="Datos del encabezado de la compra.">

@@ -20,6 +20,7 @@ export function RemoteSearchSelect({
   onSelect,
   error,
   minChars = 2,
+  action,
 }) {
   const [open, setOpen] = useState(false)
   const [text, setText] = useState(selected?.label ?? '')
@@ -155,6 +156,8 @@ export function RemoteSearchSelect({
         : null}
 
       {error ? <div className="erp-invalid-feedback">{error}</div> : null}
+
+      {action ? <div style={{ marginTop: '0.5rem' }}>{action}</div> : null}
     </div>
   )
 }

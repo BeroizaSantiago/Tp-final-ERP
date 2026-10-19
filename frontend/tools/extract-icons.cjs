@@ -43,6 +43,7 @@ const ICONS = {
   'group-line': 'users',
   'alarm-warning-line': 'warning',
   'shopping-cart-line': 'cart',
+  'shopping-bag-line': 'sales',
   'filter-3-line': 'filter',
   'file-list-2-line': 'fileList',
   'bar-chart-box-line': 'barChart',

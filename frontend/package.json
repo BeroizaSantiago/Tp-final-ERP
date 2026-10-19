@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "icons": "node tools/extract-icons.cjs",
     "test": "node tests/smoke.build.mjs && node tests/.smoke.bundle.mjs"
   },
   "dependencies": {

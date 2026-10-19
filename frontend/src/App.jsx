@@ -15,6 +15,9 @@ import { SaleListPage } from './features/sales/SaleListPage'
 import { SaleFormPage } from './features/sales/SaleFormPage'
 import { SalePaymentPage } from './features/sales/SalePaymentPage'
 import { SaleDetailPage } from './features/sales/SaleDetailPage'
+import { ClientsPage } from './features/sales/ClientsPage'
+import { PromotionsListPage } from './features/sales/PromotionsListPage'
+import { PromotionFormPage } from './features/sales/PromotionFormPage'
 import { OrderListPage } from './features/purchases/OrderListPage'
 import { OrderFormPage } from './features/purchases/OrderFormPage'
 import { OrderDetailPage } from './features/purchases/OrderDetailPage'
@@ -79,6 +82,10 @@ export default function App() {
 
         <Route path="/ventas" element={<SaleListPage />} />
         <Route path="/ventas/nueva" element={<SaleFormPage />} />
+        <Route path="/ventas/clientes" element={<ClientsPage />} />
+        <Route path="/ventas/promociones" element={<PromotionsListPage />} />
+        <Route path="/ventas/promociones/nuevo" element={<PromotionFormPage />} />
+        <Route path="/ventas/promociones/:id/editar" element={<PromotionFormPage />} />
         <Route path="/ventas/:id" element={<SaleDetailPage />} />
         <Route path="/ventas/:id/pago" element={<SalePaymentPage />} />
 

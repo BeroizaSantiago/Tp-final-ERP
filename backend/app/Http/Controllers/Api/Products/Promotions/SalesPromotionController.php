@@ -38,7 +38,14 @@ class SalesPromotionController extends Controller
 
     public function show(SalesPromotion $salesPromotion)
     {
-        return $salesPromotion->load('items.product', 'items.category', 'items.brand');
+        return $salesPromotion->load(
+            'items.product',
+            'items.author',
+            'items.category',
+            'items.collection',
+            'items.publisher',
+            'items.brand',
+        );
     }
 
     public function store(Request $request)
@@ -87,15 +94,27 @@ class SalesPromotionController extends Controller
             'currency_name' => ['nullable', 'string'],
             'company_name'=>['nullable','string'],'branch_name'=>['nullable','string'],'price_list_name'=>['nullable','string'],
             'payment_methods'=>['nullable','array'],'payment_methods.*'=>['string'],
-            'applies_to' => ['required', 'in:all,product,category,brand'],
+            'applies_to' => ['required', 'in:all,product,author,category,collection,publisher,brand'],
             'discount_type' => ['required', 'in:percentage,fixed_amount,special_price,combo'],
-            'discount_value' => ['required', 'numeric','min:0'],
+            'discount_value' => [
+                'required',
+                'numeric',
+                'min:0',
+                Rule::when($request->input('discount_type') === 'percentage', ['max:100']),
+            ],
             'display_mode'=>['required','in:line,global'],'minimum_amount'=>['nullable','numeric','min:0'],'minimum_quantity'=>['nullable','numeric','min:0'],
             'is_active' => ['nullable', 'boolean'],
 
-            'items' => ['nullable', 'array'],
+            'items' => [
+                Rule::requiredIf($request->input('applies_to') !== 'all'),
+                'array',
+                Rule::when($request->input('applies_to') !== 'all', ['min:1']),
+            ],
             'items.*.product_id' => ['nullable', 'exists:products,id'],
+            'items.*.author_id' => ['nullable', 'exists:authors,id'],
             'items.*.category_id' => ['nullable', 'exists:product_categories,id'],
+            'items.*.collection_id' => ['nullable', 'exists:collections,id'],
+            'items.*.publisher_id' => ['nullable', 'exists:publishers,id'],
             'items.*.brand_id' => ['nullable', 'exists:brands,id'],
         ]);
     }

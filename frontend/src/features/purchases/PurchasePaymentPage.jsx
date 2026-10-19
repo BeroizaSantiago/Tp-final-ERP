@@ -1,9 +1,9 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { BackLink } from '../../components/fields'
 import { useApiResource } from '../../lib/useApiResource'
 import { addPurchasePayment } from './api'
-import { PaymentMethods } from './PaymentMethods'
+import { PaymentPanel } from '../../components/PaymentPanel'
 
 /** Formas de pago de una compra, réplica de `purchases/payment-method.blade.php`. */
 export function PurchasePaymentPage() {
@@ -38,21 +38,18 @@ export function PurchasePaymentPage() {
         </div>
       </div>
 
-      <PaymentMethods
+      <PaymentPanel
+        itemType="compra"
         total={purchase.total_amount}
         payments={purchase.payments ?? []}
+        items={purchase.items ?? []}
         onAdd={async (payload) => {
           const updated = await addPurchasePayment(id, payload)
-
           setData(updated)
         }}
+        finishTo={`/compras/${id}`}
+        finishLabel="Finalizar"
       />
-
-      <div className="detail-footer" style={{ marginTop: '1rem' }}>
-        <Link className="erp-btn erp-btn-primary" to={`/compras/${id}`}>
-          Finalizar
-        </Link>
-      </div>
     </>
   )
 }

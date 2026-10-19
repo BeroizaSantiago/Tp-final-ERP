@@ -1,9 +1,9 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { BackLink } from '../../components/fields'
 import { useApiResource } from '../../lib/useApiResource'
 import { addMiscExpensePayment } from './api'
-import { PaymentMethods } from './PaymentMethods'
+import { PaymentPanel } from '../../components/PaymentPanel'
 
 /** Formas de pago de un gasto vario sobre el comprobante ya cargado. */
 export function ExpensePaymentPage() {
@@ -38,21 +38,18 @@ export function ExpensePaymentPage() {
         </div>
       </div>
 
-      <PaymentMethods
+      <PaymentPanel
+        itemType="gasto"
         total={expense.total_amount}
         payments={expense.payments ?? []}
+        items={expense.items ?? []}
         onAdd={async (payload) => {
           const updated = await addMiscExpensePayment(id, payload)
-
           setData(updated)
         }}
+        finishTo={`/gastos/${id}`}
+        finishLabel="Finalizar"
       />
-
-      <div className="detail-footer" style={{ marginTop: '1rem' }}>
-        <Link className="erp-btn erp-btn-primary" to={`/gastos/${id}`}>
-          Finalizar
-        </Link>
-      </div>
     </>
   )
 }

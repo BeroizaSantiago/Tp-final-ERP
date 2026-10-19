@@ -5,7 +5,7 @@ import { BackLink } from '../../components/fields'
 import { Icon } from '../../components/icons'
 import { dateTime, money } from '../../lib/format'
 import { useApiResource } from '../../lib/useApiResource'
-import { paymentMethodLabel } from './PaymentMethods'
+import { paymentMethodLabel } from '../../components/PaymentPanel'
 import { statusTone } from './api'
 
 function Detail({ label, value, wide }) {

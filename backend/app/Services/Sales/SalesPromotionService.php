@@ -33,14 +33,17 @@ class SalesPromotionService
             })->map(function (SalesPromotion $promotion) use ($context,$products) {
                 $eligibleSubtotal = collect($context['items'] ?? [])->filter(fn ($item) => $this->appliesToProduct($promotion,$products->get($item['product_id'] ?? null)))
                     ->sum(fn ($item) => (float) ($item['quantity'] ?? 0) * (float) ($item['unit_price'] ?? 0));
+                $applicableItems = collect($context['items'] ?? [])->filter(fn ($item) => $this->appliesToProduct($promotion,$products->get($item['product_id'] ?? null)));
                 $discount = match ($promotion->discount_type) {
                     'percentage' => $eligibleSubtotal * (float) $promotion->discount_value / 100,
                     'fixed_amount','combo' => min($eligibleSubtotal, (float) $promotion->discount_value),
-                    'special_price' => collect($context['items'] ?? [])->filter(fn ($item) => $this->appliesToProduct($promotion,$products->get($item['product_id'] ?? null)))
+                    'special_price' => $applicableItems
                         ->sum(fn ($item) => max(0, ((float) ($item['unit_price'] ?? 0) - (float) $promotion->discount_value) * (float) ($item['quantity'] ?? 0))),
                     default => 0,
                 };
                 $promotion->setAttribute('estimated_discount', round($discount, 2));
+                $promotion->setAttribute('applicable_items_count', $applicableItems->count());
+                $promotion->setAttribute('applicable_item_ids', $applicableItems->pluck('id')->all());
                 return $promotion;
             })->values();
     }
@@ -51,7 +54,12 @@ class SalesPromotionService
         return $this->compatible($context + [
             'date'=>$invoice->issue_date, 'currency_name'=>$invoice->currency_name,
             'price_list_name'=>$invoice->client?->price_type, 'branch_name'=>$invoice->client?->branch_origin,
-            'items'=>$invoice->items->map(fn ($item) => ['product_id'=>$this->productForInvoiceItem($item)?->id,'quantity'=>$item->quantity,'unit_price'=>$item->unit_price_with_taxes])->all(),
+            'items'=>$invoice->items->map(fn ($item) => [
+                'id'=>$item->id,
+                'product_id'=>$this->productForInvoiceItem($item)?->id,
+                'quantity'=>$item->quantity,
+                'unit_price'=>$item->unit_price_with_taxes,
+            ])->all(),
         ]);
     }
 
@@ -101,7 +109,10 @@ class SalesPromotionService
         if (($promotion->applies_to ?? 'all') === 'all') return true;
         return $promotion->items->contains(fn ($scope) => match ($promotion->applies_to) {
             'product'=>(int)$scope->product_id===(int)$product->id,
+            'author'=>(int)$scope->author_id===(int)$product->author_id,
             'category'=>(int)$scope->category_id===(int)$product->category_id,
+            'collection'=>(int)$scope->collection_id===(int)$product->collection_id,
+            'publisher'=>(int)$scope->publisher_id===(int)$product->publisher_id,
             'brand'=>(int)$scope->brand_id===(int)$product->brand_id,
             default=>false,
         });

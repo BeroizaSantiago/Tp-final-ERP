@@ -37,6 +37,8 @@ const PURCHASE_ENTRIES = [
 const SALES_ENTRIES = [
   { to: '/ventas', label: 'Facturas', icon: 'receipt' },
   { to: '/ventas/nueva', label: 'Nueva factura', icon: 'add' },
+  { to: '/ventas/clientes', label: 'Clientes', icon: 'users' },
+  { to: '/ventas/promociones', label: 'Promociones y Descuentos', icon: 'priceTag' },
 ]
 
 /** Clave para recordar si el grupo quedó desplegado. */

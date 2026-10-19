@@ -71,7 +71,8 @@ export function getCompatiblePromotions(id, paymentMethods) {
   if (paymentMethods && paymentMethods.length) {
     paymentMethods.forEach((m) => params.append('payment_methods[]', m))
   }
-  return apiRequest(`/invoices/${id}/compatible-promotions${params.toString()}`)
+  const query = params.toString()
+  return apiRequest(`/invoices/${id}/compatible-promotions${query ? `?${query}` : ''}`)
 }
 
 /* ------------------------------------------------------------- crédito y notas */
@@ -100,6 +101,14 @@ export function listClients(params) {
 
 export function getClient(id) {
   return apiRequest(`/clients/${id}`)
+}
+
+export function createClient(payload) {
+  return apiRequest('/clients', { method: 'POST', body: payload })
+}
+
+export function updateClient(id, payload) {
+  return apiRequest(`/clients/${id}`, { method: 'PUT', body: payload })
 }
 
 /* ------------------------------------------------------------- productos */
@@ -156,6 +165,82 @@ export function listReasons(params) {
 
 export function listStockLocations() {
   return apiRequest(`/stock-locations`)
+}
+
+/* ------------------------------------------------------------- promociones de ventas */
+
+export const DISCOUNT_TYPE_LABEL = {
+  percentage: 'Porcentaje',
+  fixed_amount: 'Importe fijo',
+  special_price: 'Precio especial',
+  combo: 'Combo',
+}
+
+export const APPLIES_TO_LABEL = {
+  all: 'Todos',
+  product: 'Libros',
+  author: 'Autores',
+  category: 'Géneros',
+  collection: 'Colecciones',
+  publisher: 'Editoriales',
+  brand: 'Marcas',
+}
+
+export const APPLIES_TO_OPTIONS = Object.entries(APPLIES_TO_LABEL).map(([value, label]) => ({
+  value,
+  label,
+}))
+
+/** Clave de columna de `sales_promotion_items` para cada alcance. */
+export const APPLIES_TO_COLUMN = {
+  product: 'product_id',
+  author: 'author_id',
+  category: 'category_id',
+  collection: 'collection_id',
+  publisher: 'publisher_id',
+  brand: 'brand_id',
+}
+
+export function listSalesPromotions(params) {
+  return apiRequest(`/sales-promotions${buildQuery(params)}`)
+}
+
+export function getSalesPromotion(id) {
+  return apiRequest(`/sales-promotions/${id}`)
+}
+
+export function createSalesPromotion(payload) {
+  return apiRequest(`/sales-promotions`, { method: 'POST', body: payload })
+}
+
+export function updateSalesPromotion(id, payload) {
+  return apiRequest(`/sales-promotions/${id}`, { method: 'PUT', body: payload })
+}
+
+export function toggleSalesPromotion(id) {
+  return apiRequest(`/sales-promotions/${id}/toggle`, { method: 'POST' })
+}
+
+/* ------------------------------------------------------------- maestros para alcances de promocion */
+
+export function listAuthors(params) {
+  return apiRequest(`/authors${buildQuery(params)}`)
+}
+
+export function listProductCategories(params) {
+  return apiRequest(`/product-categories${buildQuery(params)}`)
+}
+
+export function listPublishers(params) {
+  return apiRequest(`/publishers${buildQuery(params)}`)
+}
+
+export function listCollections(params) {
+  return apiRequest(`/collections${buildQuery(params)}`)
+}
+
+export function listBrands(params) {
+  return apiRequest(`/brands${buildQuery(params)}`)
 }
 
 /* ------------------------------------------------------------- utilidades */
