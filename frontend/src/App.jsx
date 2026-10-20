@@ -18,6 +18,7 @@ import { SaleDetailPage } from './features/sales/SaleDetailPage'
 import { ClientsPage } from './features/sales/ClientsPage'
 import { PromotionsListPage } from './features/sales/PromotionsListPage'
 import { PromotionFormPage } from './features/sales/PromotionFormPage'
+import { StockSearch } from './features/books/StockSearch'
 import { OrderListPage } from './features/purchases/OrderListPage'
 import { OrderFormPage } from './features/purchases/OrderFormPage'
 import { OrderDetailPage } from './features/purchases/OrderDetailPage'
@@ -74,6 +75,7 @@ export default function App() {
         <Route path="/libros/nuevo" element={<BookFormPage />} />
         <Route path="/libros/:id" element={<BookDetailPage />} />
         <Route path="/libros/:id/editar" element={<BookFormPage />} />
+        <Route path="/stock" element={<StockSearch />} />
 
         <Route path="/compras" element={<PurchaseListPage />} />
         <Route path="/compras/nueva" element={<PurchaseFormPage />} />

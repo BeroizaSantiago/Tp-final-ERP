@@ -16,6 +16,7 @@ import { menuMasters } from '../features/masters/registry'
 const PRODUCT_ENTRIES = [
   { to: '/libros', label: 'Libros', icon: 'book' },
   { to: '/libros/nuevo', label: 'Cargar libro', icon: 'add' },
+  { to: '/stock', label: 'Stock', icon: 'box' },
 ]
 
 const MASTER_ENTRIES = menuMasters().map((config) => ({
