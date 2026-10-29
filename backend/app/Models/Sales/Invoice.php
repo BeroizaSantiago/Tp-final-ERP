@@ -217,4 +217,9 @@ class Invoice extends Model
     {
         return $this->belongsTo(CreditNoteReason::class);
     }
+
+    public function customerReturns()
+    {
+        return $this->hasMany(CustomerReturn::class,'invoice_id');
+    }
 }

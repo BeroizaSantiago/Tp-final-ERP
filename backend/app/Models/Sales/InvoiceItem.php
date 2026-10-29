@@ -85,4 +85,9 @@ class InvoiceItem extends Model
     {
         return $this->hasMany(self::class, 'original_invoice_item_id');
     }
+
+    public function customerReturnItems()
+    {
+        return $this->hasMany(CustomerReturnItem::class,'invoice_item_id');
+    }
 }

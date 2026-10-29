@@ -51,12 +51,20 @@ class StockService
 
     public function recalculateProductStock(Product $product): void
     {
-        $totalStock = $product->variants()->sum('current_stock');
+    // Si el libro tiene variantes, sumar el stock de sus variantes.
+    if ($product->variants()->exists()) {
+        $totalStock = (float) $product->variants()->sum('current_stock');
+    } else {
+        // Si no tiene variantes, sumar directamente el inventario del libro.
+        $totalStock = (float) InventoryItem::query()
+            ->where('product_id', $product->id)
+            ->sum('current_stock');
+    }
 
-        $product->update([
-            'current_stock' => $totalStock,
-            'available_stock' => $totalStock,
-        ]);
+    $product->update([
+        'current_stock' => $totalStock,
+        'available_stock' => $totalStock,
+    ]);
     }
 
     public function recalculateVariantStock(ProductVariant $variant): float

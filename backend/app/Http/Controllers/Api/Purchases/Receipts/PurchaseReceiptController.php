@@ -24,11 +24,19 @@ use App\Services\StockService;
  */
 class PurchaseReceiptController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return PurchaseReceipt::with('provider')
-            ->latest('issue_date')
-            ->paginate(20);
+        $query = PurchaseReceipt::with('provider');
+
+        if ($request->filled('provider_id')) {
+            $query->where('provider_id', $request->provider_id);
+        }
+
+        if ($request->has('lookup') && $request->lookup == 1) {
+            return $query->latest('issue_date')->get(['id', 'receipt_number', 'provider_name', 'issue_date', 'total_amount']);
+        }
+
+        return $query->latest('issue_date')->paginate(20);
     }
 
     public function show(PurchaseReceipt $purchaseReceipt)
@@ -99,7 +107,7 @@ class PurchaseReceiptController extends Controller
                     'product_id' => $product->id,
                     'product_variant_id' => $variant->id,
                     'branch_name' => 'SUCURSAL',
-                    'warehouse_name' => 'DEPÓSITO RIOS LORENA BEATRIZ',
+                    'warehouse_name' => 'DEPÓSITO PRINCIPAL',
                 ],
                 [
                     'product_external_id' => $product->external_id,

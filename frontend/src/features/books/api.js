@@ -40,6 +40,29 @@ export function setBookStatus(id, isActive) {
   })
 }
 
+/** Funciones para devoluciones de libros */
+export function listBookReturns(params) {
+  return apiRequest(`/book-returns${buildQuery(params)}`)
+}
+
+export function createBookReturn(payload) {
+  return apiRequest('/book-returns', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
+export function getBookReturn(id) {
+  return apiRequest(`/book-returns/${id}`)
+}
+
+export function updateBookReturnStatus(id, status) {
+  return apiRequest(`/book-returns/${id}/status`, {
+    method: 'PUT',
+    body: { status },
+  })
+}
+
 /**
  * Convierte el formulario en el cuerpo que espera la API.
  *

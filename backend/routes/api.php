@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Sales\CreditNotes\CreditNoteController;
 use App\Http\Controllers\Api\Sales\CreditNotes\CreditNoteReasonController;
 use App\Http\Controllers\Api\Sales\Invoices\InvoiceController;
+use App\Http\Controllers\Api\Sales\Invoices\InvoiceLookupController;
 use App\Http\Controllers\Api\Sales\Vouchers\VoucherController;
 use App\Http\Controllers\Api\Reports\Sales\ConsolidatedSalesReportController;
 use App\Http\Controllers\Api\Reports\Sales\SalesCommissionReportController;
@@ -19,6 +20,9 @@ use App\Http\Controllers\Api\Reports\Clients\CustomerReportsController;
 use App\Http\Controllers\Api\Reports\Suppliers\SupplierReportsController;
 use App\Http\Controllers\Api\Reports\CompanyPosition\CompanyPositionReportController;
 use App\Http\Controllers\Api\Reports\Stock\StockReportController;
+use App\Http\Controllers\Api\BookReturnController;
+use App\Http\Controllers\Api\BookReturns\SupplierBookReturnController;
+use App\Http\Controllers\Api\BookReturns\CustomerBookReturnController;
 use App\Http\Controllers\Api\Products\Catalog\ProductController;
 use App\Http\Controllers\Api\Products\Catalog\ProductBulkImportController;
 use App\Http\Controllers\Api\Products\Changes\ProductChangeController;
@@ -85,6 +89,7 @@ Route::delete('/security/roles/{role}', [RoleController::class, 'destroy']);
 Route::post('/invoices', [InvoiceController::class, 'store']);
 Route::get('/invoices', [InvoiceController::class, 'index']);
 Route::get('/invoices/{invoice}', [InvoiceController::class, 'show']);
+Route::get('/invoices/client/{client}', [InvoiceLookupController::class, 'byClient']);
 Route::post('/invoices/{invoice}/exchange-tickets', [InvoiceController::class, 'storeExchangeTickets']);
 Route::get('/vouchers', [VoucherController::class, 'index']);
 Route::post('/vouchers', [VoucherController::class, 'store']);
@@ -209,6 +214,26 @@ Route::post('/publishers', [PublisherController::class, 'store']);
 Route::get('/publishers/{publisher}', [PublisherController::class, 'show']);
 Route::match(['put', 'patch'], '/publishers/{publisher}', [PublisherController::class, 'update']);
 Route::delete('/publishers/{publisher}', [PublisherController::class, 'destroy']);
+
+// Devoluciones de libros.
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/book-returns', [BookReturnController::class, 'index']);
+    Route::post('/book-returns', [BookReturnController::class, 'store']);
+    Route::get('/book-returns/{bookReturn}', [BookReturnController::class, 'show']);
+    Route::put('/book-returns/{bookReturn}/status', [BookReturnController::class, 'updateStatus']);
+
+    // Devoluciones a proveedores
+    Route::get('/supplier-book-returns', [SupplierBookReturnController::class, 'index']);
+    Route::post('/supplier-book-returns', [SupplierBookReturnController::class, 'store']);
+    Route::get('/supplier-book-returns/{supplierBookReturn}', [SupplierBookReturnController::class, 'show']);
+    Route::put('/supplier-book-returns/{supplierBookReturn}/status', [SupplierBookReturnController::class, 'updateStatus']);
+
+    // Devoluciones de clientes
+    Route::get('/customer-book-returns', [CustomerBookReturnController::class, 'index']);
+    Route::post('/customer-book-returns', [CustomerBookReturnController::class, 'store']);
+    Route::get('/customer-book-returns/{customerBookReturn}', [CustomerBookReturnController::class, 'show']);
+    Route::put('/customer-book-returns/{customerBookReturn}/status', [CustomerBookReturnController::class, 'updateStatus']);
+});
 
 Route::get('/collections', [CollectionController::class, 'index']);
 Route::post('/collections', [CollectionController::class, 'store']);

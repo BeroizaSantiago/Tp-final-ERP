@@ -32,6 +32,7 @@ const PURCHASE_ENTRIES = [
   { to: '/gastos', label: 'Gastos varios', icon: 'money' },
   { to: '/proveedores', label: 'Proveedores', icon: 'users' },
   { to: '/tipos-de-gasto', label: 'Tipos de gasto', icon: 'priceTag' },
+  { to: '/devoluciones-compras', label: 'Devoluciones Compras', icon: 'back' },
 ]
 
 /** Contenido del desplegable "Ventas", en el orden pedido. */
@@ -40,6 +41,7 @@ const SALES_ENTRIES = [
   { to: '/ventas/nueva', label: 'Nueva factura', icon: 'add' },
   { to: '/ventas/clientes', label: 'Clientes', icon: 'users' },
   { to: '/ventas/promociones', label: 'Promociones y Descuentos', icon: 'priceTag' },
+  { to: '/devoluciones-ventas', label: 'Devoluciones Ventas', icon: 'back' },
 ]
 
 /** Clave para recordar si el grupo quedó desplegado. */

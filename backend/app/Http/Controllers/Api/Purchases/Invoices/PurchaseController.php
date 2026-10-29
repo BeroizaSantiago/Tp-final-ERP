@@ -22,21 +22,38 @@ use App\Services\Finance\ProviderPaymentOrderService;
 class PurchaseController extends Controller
 {
     public function __construct(private readonly ProviderPaymentOrderService $paymentOrderService) {}
+    
     public function index(Request $request)
     {
         $search = $request->query('search');
 
-        return Purchase::query()
+        $query = Purchase::query()
             ->with('provider')
             ->when($search, function ($query) use ($search) {
-                $query->where('full_number', 'like', "%{$search}%")
-                    ->orWhere('provider_name', 'like', "%{$search}%")
-                    ->orWhere('receipt_type_name', 'like', "%{$search}%")
-                    ->orWhere('status_name', 'like', "%{$search}%");
+                $query->where(function ($q) use ($search) {
+                    $q->where('full_number', 'like', "%{$search}%")
+                        ->orWhere('provider_name', 'like', "%{$search}%")
+                        ->orWhere('receipt_type_name', 'like', "%{$search}%")
+                        ->orWhere('status_name', 'like', "%{$search}%");
+                });
             })
             ->orderByDesc('issue_date')
-            ->orderByDesc('id')
-            ->paginate(20);
+            ->orderByDesc('id');
+
+        if ($request->boolean('lookup')) {
+            return $query->get([
+                'id',
+                'receipt_type_name',
+                'full_number',
+                'provider_name',
+                'issue_date',
+                'total_amount',
+            ]);
+        }
+
+        return $query->paginate(
+            min((int) $request->query('per_page', 20), 100)
+        );
     }
 
     public function show(Purchase $purchase)

@@ -29,4 +29,9 @@ class PurchaseItem extends Model
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
+
+    public function providerReturnItems()
+    {
+        return $this->hasMany(ProviderReturnItem::class,'purchase_item_id');
+    }
 }

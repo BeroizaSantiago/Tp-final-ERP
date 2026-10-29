@@ -11,6 +11,12 @@ import { PurchaseListPage } from './features/purchases/PurchaseListPage'
 import { PurchaseFormPage } from './features/purchases/PurchaseFormPage'
 import { PurchaseDetailPage } from './features/purchases/PurchaseDetailPage'
 import { PurchasePaymentPage } from './features/purchases/PurchasePaymentPage'
+import { BookReturnPurchaseListPage } from './features/purchases/BookReturnPurchaseListPage'
+import { BookReturnPurchaseFormPage } from './features/purchases/BookReturnPurchaseFormPage'
+import { BookReturnPurchaseDetailPage } from './features/purchases/BookReturnPurchaseDetailPage'
+import { BookReturnSaleListPage } from './features/sales/BookReturnSaleListPage'
+import { BookReturnSaleFormPage } from './features/sales/BookReturnSaleFormPage'
+import { BookReturnSaleDetailPage } from './features/sales/BookReturnSaleDetailPage'
 import { SaleListPage } from './features/sales/SaleListPage'
 import { SaleFormPage } from './features/sales/SaleFormPage'
 import { SalePaymentPage } from './features/sales/SalePaymentPage'
@@ -81,6 +87,10 @@ export default function App() {
         <Route path="/compras/nueva" element={<PurchaseFormPage />} />
         <Route path="/compras/:id" element={<PurchaseDetailPage />} />
         <Route path="/compras/:id/pago" element={<PurchasePaymentPage />} />
+        <Route path="/devoluciones-compras" element={<BookReturnPurchaseListPage />} />
+        <Route path="/devoluciones-compras/nueva" element={<BookReturnPurchaseFormPage />} />
+        <Route path="/devoluciones-proveedor/:id" element={<BookReturnPurchaseDetailPage />} />
+        <Route path="/devoluciones-proveedor/:id/editar" element={<BookReturnPurchaseDetailPage />} />
 
         <Route path="/ventas" element={<SaleListPage />} />
         <Route path="/ventas/nueva" element={<SaleFormPage />} />
@@ -90,6 +100,10 @@ export default function App() {
         <Route path="/ventas/promociones/:id/editar" element={<PromotionFormPage />} />
         <Route path="/ventas/:id" element={<SaleDetailPage />} />
         <Route path="/ventas/:id/pago" element={<SalePaymentPage />} />
+        <Route path="/devoluciones-ventas" element={<BookReturnSaleListPage />} />
+        <Route path="/devoluciones-ventas/nueva" element={<BookReturnSaleFormPage />} />
+        <Route path="/devoluciones-cliente/:id" element={<BookReturnSaleDetailPage />} />
+        <Route path="/devoluciones-cliente/:id/editar" element={<BookReturnSaleDetailPage />} />
 
         <Route path="/ordenes" element={<OrderListPage />} />
         <Route path="/ordenes/nueva" element={<OrderFormPage />} />

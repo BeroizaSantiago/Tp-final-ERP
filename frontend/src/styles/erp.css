@@ -1091,3 +1091,40 @@
   grid-column: 1 / -1;
 }
 
+.return-status-form {
+  padding: 1rem;
+}
+
+.return-status-form .form-grid {
+  gap: 1rem;
+}
+
+.return-status-form .erp-field-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.return-status-form .erp-control {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+}
+
+.return-status-form .form-actions {
+  margin-top: 1rem;
+}
+
+.return-filters {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.return-filters .erp-field-block {
+  flex: 0 0 220px;
+  max-width: 220px;
+  margin: 0;
+}

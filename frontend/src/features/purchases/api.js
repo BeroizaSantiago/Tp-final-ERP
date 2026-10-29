@@ -25,7 +25,7 @@ function buildQuery(params = {}) {
 
 /* ---------------------------------------------------------------- compras */
 
-export function listPurchases(params) {
+export function listPurchases(params = {}) {
   return apiRequest(`/purchases${buildQuery(params)}`)
 }
 
@@ -107,6 +107,25 @@ export function createProvider(payload) {
 
 export function updateProvider(id, payload) {
   return apiRequest(`/providers/${id}`, { method: 'PUT', body: payload })
+}
+
+
+/* ------------------------------------------------------Devoluciones de libros a proveedores*/
+
+export function listSupplierBookReturns(params) {
+  return apiRequest(`/supplier-book-returns${buildQuery(params)}`)
+}
+
+export function createSupplierBookReturn(payload) {
+  return apiRequest('/supplier-book-returns', {method: 'POST', body: payload})
+}
+
+export function getSupplierBookReturn(id) {
+  return apiRequest(`/supplier-book-returns/${id}`)
+}
+
+export function updateSupplierBookReturnStatus(id, status) {
+  return apiRequest(`/supplier-book-returns/${id}/status`, {method: 'PUT', body: { status }})
 }
 
 /* ------------------------------------------------------ catálogos usados */

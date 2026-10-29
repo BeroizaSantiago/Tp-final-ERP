@@ -42,6 +42,11 @@ class InvoiceController extends SalesDocumentController
                     ->orWhereNull('receipt_types_prefix');
             });
 
+        // Filtrar por client_id
+        if ($request->filled('client_id')) {
+            $query->where('client_id', $request->client_id);
+        }
+
         // Los registros sin aplicación de stock son borradores de la pantalla
         // de pago, no facturas finalizadas.
         $query->whereNotNull('stock_applied_at');

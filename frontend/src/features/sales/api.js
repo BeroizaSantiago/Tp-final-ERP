@@ -111,6 +111,24 @@ export function updateClient(id, payload) {
   return apiRequest(`/clients/${id}`, { method: 'PUT', body: payload })
 }
 
+/* ------------------------------------------------------ devoluciones de clientes */
+
+export function listCustomerBookReturns(params = {}) {
+  return apiRequest(`/customer-book-returns${buildQuery(params)}`)
+}
+
+export function getCustomerBookReturn(id) {
+  return apiRequest(`/customer-book-returns/${id}`)
+}
+
+export function createCustomerBookReturn(payload) {
+  return apiRequest('/customer-book-returns', {method: 'POST', body: payload,})
+}
+
+export function updateCustomerBookReturnStatus(id, status) {
+  return apiRequest(`/customer-book-returns/${id}/status`, {method: 'PUT',body: { status },})
+}
+
 /* ------------------------------------------------------------- productos */
 
 export function listProducts(params) {
