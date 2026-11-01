@@ -45,9 +45,38 @@ export function finalizeInvoice(id) {
   return apiRequest(`/invoices/${id}/finalize`, { method: 'POST' })
 }
 
-export function getInvoicePdf(id) {
+export async function getInvoicePdf(id) {
   return apiRequest(`/invoices/${id}/pdf`, { method: 'GET' })
 }
+
+export async function downloadInvoicePdf(id) {
+  const result = await getInvoicePdf(id)
+
+  if (!result?.pdf) {
+    throw new Error('No se pudo generar el PDF del comprobante.')
+  }
+
+  const binary = atob(result.pdf)
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
+  const blob = new Blob([bytes], { type: 'application/pdf' })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = result.filename || `comprobante-${id}.pdf`
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+
+  URL.revokeObjectURL(url)
+}
+
+export function sendInvoicePdfEmail(id) {
+  return apiRequest(`/invoices/${id}/send-email`, {
+    method: 'POST',
+  })
+}
+
 
 /* ------------------------------------------------------------- formas de pago */
 

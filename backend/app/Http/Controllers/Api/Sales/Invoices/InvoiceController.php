@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Throwable;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Controlador de Factura.
@@ -841,4 +843,70 @@ class InvoiceController extends SalesDocumentController
             'movements' => $movements,
         ]);
     }
+
+            
+    public function pdf(Invoice $invoice)
+    {
+    $invoice->load(['client', 'items', 'payments']);
+
+    $pdf = Pdf::loadView('invoices.pdf', [
+        'invoice' => $invoice,
+    ])->setPaper('a4');
+
+    $filename = 'comprobante-' . $invoice->id . '.pdf';
+
+    return response()->json([
+        'filename' => $filename,
+        'pdf' => base64_encode($pdf->output()),
+    ]);
+}
+
+public function sendEmail(Invoice $invoice)
+{
+    $invoice->load(['client', 'items', 'payments']);
+
+    // Se prioriza el email actual del cliente.
+    // Si no está disponible, se usa el email guardado en la venta.
+    $email = $invoice->client?->email
+        ?: $invoice->customer_email;
+
+    if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return response()->json([
+            'message' => 'El cliente no tiene una dirección de email válida.',
+        ], 422);
+    }
+
+    $pdf = Pdf::loadView('invoices.pdf', [
+        'invoice' => $invoice,
+    ])->setPaper('a4');
+
+    $filename = 'comprobante-' . $invoice->id . '.pdf';
+
+    Mail::raw(
+        'Hola ' . ($invoice->client?->name
+            ?: $invoice->customer_name
+            ?: 'cliente') . ",\n\n"
+            . 'Adjuntamos el comprobante de tu compra '
+            . $invoice->display_number . ".\n\n"
+            . 'Gracias por tu compra.',
+        function ($message) use ($email, $filename, $pdf, $invoice) {
+            $message
+                ->to($email)
+                ->subject(
+                    'Comprobante de compra '
+                    . $invoice->display_number
+                )
+                ->attachData(
+                    $pdf->output(),
+                    $filename,
+                    ['mime' => 'application/pdf']
+                );
+        }
+    );
+
+    return response()->json([
+        'message' => 'Comprobante enviado correctamente a ' . $email,
+    ]);
+}
+
 }
