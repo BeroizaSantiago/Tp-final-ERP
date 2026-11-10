@@ -85,6 +85,294 @@
   font-size: 0.85rem;
 }
 
+/* ---------------------------------------------------------- resumen reportes */
+
+.report-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.report-summary-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1.15rem;
+  background: var(--erp-paper-bg);
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.125rem 0.375rem rgb(0 0 0 / 4%);
+}
+
+.report-summary-card--income { --summary-color: #22c55e; }
+.report-summary-card--expense { --summary-color: #ef4444; }
+.report-summary-card--net,
+.report-summary-card--count { --summary-color: var(--erp-primary); }
+
+.report-summary-label {
+  color: var(--erp-secondary-color);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.report-summary-value {
+  margin: 0.35rem 0 0.2rem;
+  color: var(--summary-color);
+  font-size: clamp(1.55rem, 2vw, 2rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.report-summary-card small {
+  overflow: hidden;
+  color: var(--erp-secondary-color);
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stock-adjustment-current {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 4.3rem;
+  padding: 0.75rem 1rem;
+  background: var(--erp-body-bg);
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.65rem;
+}
+
+.stock-adjustment-current strong {
+  margin-top: 0.15rem;
+  color: var(--erp-heading-color);
+  font-size: 1.35rem;
+}
+
+.stock-adjustment-difference {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  color: var(--erp-heading-color);
+  background: color-mix(in srgb, var(--erp-primary) 8%, transparent);
+  border-radius: 0.65rem;
+}
+
+.stock-adjustment-difference.is-positive strong { color: var(--erp-success); }
+.stock-adjustment-difference.is-negative strong { color: var(--erp-danger); }
+
+/* ---------------------------------------------------------------- dashboard */
+
+.dashboard-heading { align-items: center; }
+
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.dashboard-metric {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 10.5rem;
+  padding: 1rem;
+  background: var(--erp-paper-bg);
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.25rem 1rem rgb(35 28 75 / 5%);
+}
+
+.dashboard-metric-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--erp-primary);
+  background: color-mix(in srgb, var(--erp-primary) 12%, transparent);
+  border-radius: 0.55rem;
+}
+
+.dashboard-metric-icon.is-green { color: #16a34a; background: rgb(34 197 94 / 12%); }
+.dashboard-metric-icon.is-blue { color: #2563eb; background: rgb(59 130 246 / 12%); }
+.dashboard-metric-icon.is-orange { color: #d97706; background: rgb(245 158 11 / 14%); }
+
+.dashboard-metric-label {
+  min-height: 2.25rem;
+  color: var(--erp-secondary-color);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.dashboard-metric > strong {
+  overflow: hidden;
+  margin: 0.2rem 0 0.55rem;
+  color: var(--erp-heading-color);
+  font-size: clamp(1.35rem, 1.8vw, 1.8rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-metric > small {
+  margin-top: auto;
+  overflow: hidden;
+  padding-top: 0.65rem;
+  color: var(--erp-secondary-color);
+  border-top: 1px solid var(--erp-border-color);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-grid--charts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dashboard-grid--lists { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.dashboard-panel {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--erp-paper-bg);
+  border: 1px solid var(--erp-border-color);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.25rem 1rem rgb(35 28 75 / 5%);
+}
+
+.dashboard-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.2rem 0;
+}
+
+.dashboard-panel-head h2 {
+  margin: 0;
+  color: var(--erp-heading-color);
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.dashboard-panel-head p {
+  margin: 0.25rem 0 0;
+  color: var(--erp-secondary-color);
+  font-size: 0.78rem;
+}
+
+.dashboard-period {
+  flex: 0 0 auto;
+  padding: 0.4rem 0.65rem;
+  color: var(--erp-heading-color);
+  background: var(--erp-body-bg);
+  border-radius: 2rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.dashboard-panel-body { padding: 1rem 1.2rem 1.2rem; }
+.dashboard-chart { position: relative; height: 19rem; }
+
+.dashboard-doughnut-layout {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.9fr) minmax(11rem, 1.1fr);
+  align-items: center;
+  gap: 1rem;
+  min-height: 19rem;
+}
+
+.dashboard-doughnut { position: relative; height: 14rem; }
+.dashboard-legend { display: flex; flex-direction: column; gap: 0.7rem; }
+.dashboard-legend > div { display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+.dashboard-legend > div > span { flex: 0 0 auto; width: 0.65rem; height: 0.65rem; border-radius: 50%; }
+.dashboard-legend p { min-width: 0; margin: 0; }
+.dashboard-legend strong, .dashboard-legend small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dashboard-legend strong { color: var(--erp-heading-color); font-size: 0.8rem; }
+.dashboard-legend small { margin-top: 0.1rem; color: var(--erp-secondary-color); font-size: 0.72rem; }
+
+.dashboard-status-breakdown {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  min-height: 19rem;
+  align-content: center;
+}
+
+.dashboard-status-breakdown > div {
+  display: flex;
+  flex-direction: column;
+  min-height: 6.5rem;
+  padding: 1rem;
+  background: var(--erp-body-bg);
+  border-radius: 0.7rem;
+}
+
+.dashboard-status-breakdown strong { color: var(--erp-primary); font-size: 1.75rem; }
+.dashboard-status-breakdown span { margin-top: auto; color: var(--erp-secondary-color); font-size: 0.76rem; }
+
+.dashboard-list { display: flex; flex-direction: column; margin: 0 -1.2rem -1.2rem; }
+.dashboard-list > a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.85rem 1.2rem;
+  color: inherit;
+  border-top: 1px solid var(--erp-border-color);
+  text-decoration: none;
+}
+.dashboard-list > a:hover { background: var(--erp-body-bg); }
+.dashboard-list > a > div { min-width: 0; }
+.dashboard-list strong, .dashboard-list small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dashboard-list strong { color: var(--erp-heading-color); font-size: 0.82rem; }
+.dashboard-list small { margin-top: 0.2rem; color: var(--erp-secondary-color); font-size: 0.72rem; }
+.dashboard-list-value { flex: 0 0 auto; color: var(--erp-heading-color); font-size: 0.8rem; font-weight: 700; }
+.dashboard-empty { margin: 0; padding: 2rem 1.2rem; color: var(--erp-secondary-color); text-align: center; }
+
+@media (max-width: 1100px) {
+  .dashboard-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1280px) {
+  .dashboard-grid--lists { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 850px) {
+  .dashboard-grid--charts { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  .dashboard-doughnut-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 430px) {
+  .dashboard-metrics { grid-template-columns: 1fr; }
+  .dashboard-status-breakdown { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 1050px) {
+  .report-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .report-summary-grid { grid-template-columns: 1fr; }
+}
+
 /* -------------------------------------------------------------------- tabla */
 
 .table-scroll {

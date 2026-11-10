@@ -25,7 +25,7 @@ const DISCOUNT_TYPE_OPTIONS = [
   { value: 'percentage', label: 'Porcentaje' },
   { value: 'fixed_amount', label: 'Importe fijo' },
   { value: 'special_price', label: 'Precio especial' },
-  { value: 'combo', label: 'Combo' },
+
 ]
 
 /** Fetchers de opciones por alcance de la promoción. */

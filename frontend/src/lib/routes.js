@@ -7,4 +7,4 @@
  */
 
 /** Destino al entrar y tras iniciar sesión: el catálogo de libros. */
-export const HOME_PATH = '/libros'
+export const HOME_PATH = '/dashboard'

@@ -9,6 +9,7 @@ use App\Models\Purchases\Provider;
 use App\Models\Purchases\Purchase;
 use App\Models\Purchases\PurchaseItem;
 use App\Models\Stock\InventoryItem;
+use App\Models\Stock\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -285,6 +286,17 @@ class PurchaseController extends Controller
                     'valued_item' => round($weightedUnitCost, 4),
                     'currency_symbol' => $product->currency_symbol ?: '$',
                 ])->save();
+
+                StockMovement::create([
+                    'inventory_item_id' => $inventoryItem->id,
+                    'movement_type' => 'purchase',
+                    'quantity' => (float) $calculated['qty'],
+                    'stock_before' => $inventoryStockBefore,
+                    'stock_after' => $inventoryStockAfter,
+                    'reference_type' => 'purchase',
+                    'reference_id' => $purchase->id,
+                    'notes' => 'Compra '.($purchase->full_number ?: '#'.$purchase->id),
+                ]);
 
                 $stockService = app(\App\Services\StockService::class);
                 if ($variant) {

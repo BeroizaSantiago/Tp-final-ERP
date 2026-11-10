@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { ActiveBadge, StockBadge, Badge } from '../../components/Badge'
 import { BackLink, Field, FormSection, Select, Switch, TextInput } from '../../components/fields'
@@ -578,6 +578,12 @@ export function StockSearch() {
             Existencias actuales valorizadas por sucursal, depósito y variante
           </p>
         </div>
+        <div className="page-actions">
+          <Link className="erp-btn erp-btn-primary" to="/stock/ajuste">
+            <Icon name="edit" size={17} />
+            Nuevo ajuste
+          </Link>
+        </div>
       </div>
 
       {errors.bar_code ? (
@@ -675,6 +681,16 @@ export function StockSearch() {
                     </div>
                   )
                 },
+              },
+              {
+                key: 'unit_value',
+                header: 'Valor unitario',
+                align: 'end',
+                render: (row) => (
+                  <div style={{ fontSize: '20px' }}>
+                    {money(Number(row.price_a_with_tax ?? 0))}
+                  </div>
+                ),
               },
               {
                 key: 'price_a_with_tax',

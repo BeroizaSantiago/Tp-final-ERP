@@ -10,7 +10,7 @@ const DISCOUNT_TYPE_LABEL = {
   percentage: 'Porcentaje',
   fixed_amount: 'Importe fijo',
   special_price: 'Precio especial',
-  combo: 'Combo',
+
 }
 
 const LIGHT_PURPLE_BG = 'rgba(139, 92, 246, 0.08)'
@@ -69,6 +69,12 @@ export function PaymentPanel({
   )
   const balance = Math.max(0, Number(total ?? 0) - paid)
 
+  // Si una promoción modifica el total o se agrega un pago parcial, propone
+  // automáticamente el saldo actualizado como importe del próximo pago.
+  useEffect(() => {
+    setForm((current) => ({ ...current, amount: String(balance) }))
+  }, [balance])
+
   const paymentMethodUsed = useMemo(() => {
     return selectedMethod === 'card' ? 'card' : selectedMethod
   }, [selectedMethod])
@@ -81,6 +87,7 @@ export function PaymentPanel({
       setForm((current) => ({
         ...current,
         card_type: type ?? 'credit',
+        card_installments: type === 'debit' ? '1' : current.card_installments,
         amount: String(Math.max(0, Number(total ?? 0))),
       }))
     } else {
@@ -162,6 +169,12 @@ export function PaymentPanel({
         surcharge_amount: Number(form.surcharge || 0),
         bank_name: form.bank_name || null,
         reference: cardReference || null,
+        card_name: selectedMethod === 'card' ? form.card_name || null : null,
+        card_plan: selectedMethod === 'card' ? form.card_installments : null,
+        last_digits_card: selectedMethod === 'card' ? form.card_last_four || null : null,
+        coupon_number: selectedMethod === 'card' ? form.reference || null : null,
+        lot_number: selectedMethod === 'card' ? form.card_authorization || null : null,
+        trade_number: selectedMethod === 'card' ? form.card_holder || null : null,
       })
 
       await onRefresh?.()
@@ -177,6 +190,11 @@ export function PaymentPanel({
   }
 
   const handleFinish = async () => {
+    if (balance > 0.005) {
+      toast.error('Saldo pendiente', `Todavía faltan cobrar ${money(balance)}.`)
+      return
+    }
+
     if (onFinish) {
       await onFinish()
       return
@@ -192,9 +210,6 @@ export function PaymentPanel({
     { key: 'card_credit', label: 'Tarjeta Crédito', method: 'card', type: 'credit' },
     { key: 'card_debit', label: 'Tarjeta Débito', method: 'card', type: 'debit' },
     { key: 'transfer', label: 'Transferencia', method: 'transfer', type: null },
-    { key: 'mp_qr', label: 'Mercado Pago QR', method: null, type: null, disabled: true },
-    { key: 'voucher', label: 'Voucher', method: null, type: null, disabled: true },
-    { key: 'current_account', label: 'Cuenta Corriente', method: null, type: null, disabled: true },
   ]
 
   const buttonStyle = (active) => ({
@@ -371,15 +386,19 @@ export function PaymentPanel({
               <>
                 <label className="erp-field-block">
                   <span className="erp-label">Tarjeta</span>
-                  <select className="erp-control" value={form.card_name || ''} onChange={set('card_name')} placeholder="Seleccione tarjeta...">
+                  <select className="erp-control" value={form.card_name || ''} onChange={set('card_name')}>
                     <option value="">Seleccione tarjeta...</option>
+                    <option value="Visa">Visa</option>
+                    <option value="Mastercard">Mastercard</option>
+                    <option value="American Express">American Express</option>
+                    <option value="Cabal">Cabal</option>
+                    <option value="Naranja X">Naranja X</option>
                   </select>
                 </label>
                 <label className="erp-field-block">
                   <span className="erp-label">Plan</span>
                   <select className="erp-control" value={form.card_installments} onChange={set('card_installments')}>
-                    <option value="1">Seleccione plan</option>
-                    {[1, 3, 6, 12].map((n) => (
+                    {(form.card_type === 'debit' ? [1] : [1, 3, 6, 12]).map((n) => (
                       <option key={n} value={String(n)}>
                         {n} cuota{n === 1 ? '' : 's'}
                       </option>
@@ -402,10 +421,6 @@ export function PaymentPanel({
                   <span className="erp-label">Últimos 4 dígitos</span>
                   <input className="erp-control" value={form.card_last_four} onChange={set('card_last_four')} maxLength={4} inputMode="numeric" />
                 </label>
-                <label className="erp-field-block">
-                  <span className="erp-label">Nro. Comercio</span>
-                  <input className="erp-control" value={form.card_holder} onChange={set('card_holder')} />
-                </label>
               </>
             ) : null}
           </div>
@@ -414,7 +429,7 @@ export function PaymentPanel({
           <div style={{ padding: '0.85rem 1.15rem', background: LIGHT_PURPLE_BG, borderRadius: '0 0 0.85rem 0.85rem', border: '1px solid var(--erp-border-color)', borderTop: '0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.2rem' }}>
               <span>Recargo: ${money(Number(form.surcharge || 0)).replace('$', '')}</span>
-              <span style={{ fontWeight: 700 }}>Total a pagar: ${money(balance)}</span>
+              <span style={{ fontWeight: 700 }}>Total a pagar: {money(balance)}</span>
             </div>
           </div>
 
@@ -550,8 +565,14 @@ export function PaymentPanel({
           </div>
 
           <div style={{ marginTop: 'auto' }}>
-            <button className="erp-btn erp-btn-primary" style={{ width: '100%', backgroundColor: '#22c55e', borderColor: '#22c55e' }} onClick={handleFinish}>
-              {itemType === 'venta' ? 'Saldo Pendiente' : 'Finalizar'}
+            <button
+              type="button"
+              className="erp-btn erp-btn-primary"
+              style={{ width: '100%', backgroundColor: balance <= 0.005 ? '#22c55e' : undefined, borderColor: balance <= 0.005 ? '#22c55e' : undefined }}
+              onClick={handleFinish}
+              disabled={saving || balance > 0.005}
+            >
+              {balance <= 0.005 ? finishLabel : `Saldo pendiente: ${money(balance)}`}
             </button>
           </div>
         </div>

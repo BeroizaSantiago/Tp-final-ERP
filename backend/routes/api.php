@@ -163,7 +163,7 @@ Route::match(['put', 'patch'], '/stock-adjustment-reasons/{stockAdjustmentReason
 Route::delete('/stock-adjustment-reasons/{stockAdjustmentReason}', [StockAdjustmentReasonController::class, 'destroy']);
 
 Route::get('/stock-adjustments', [StockAdjustmentController::class, 'index']);
-Route::post('/stock-adjustments', [StockAdjustmentController::class, 'store']);
+Route::post('/stock-adjustments', [StockAdjustmentController::class, 'store'])->middleware('auth:sanctum');
 Route::get('/stock-adjustments-options', [StockAdjustmentController::class, 'options']);
 Route::get('/stock-adjustments-current-stock', [StockAdjustmentController::class, 'currentStock']);
 Route::get('/stock-adjustments/{stockAdjustment}', [StockAdjustmentController::class, 'show']);

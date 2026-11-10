@@ -11,7 +11,9 @@
     "test": "node tests/smoke.build.mjs && node tests/.smoke.bundle.mjs"
   },
   "dependencies": {
+    "chart.js": "^4.6.1",
     "react": "^19.1.1",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.18.4"
   },

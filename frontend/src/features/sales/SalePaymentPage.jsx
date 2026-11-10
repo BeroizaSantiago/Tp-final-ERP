@@ -43,7 +43,7 @@ export function SalePaymentPage() {
           'Venta finalizada exitosamente',
           'Comprobante: ' + (res.invoice.full_number ?? res.invoice.id)
         )
-        window.location.href = `/ventas`
+        window.location.href = `/ventas/${res.invoice.id ?? id}`
       } else if (res && res.message) {
         toast.error(res.message)
       } else {

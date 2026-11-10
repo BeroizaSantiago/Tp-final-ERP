@@ -17,6 +17,7 @@ const PRODUCT_ENTRIES = [
   { to: '/libros', label: 'Libros', icon: 'book' },
   { to: '/libros/nuevo', label: 'Cargar libro', icon: 'add' },
   { to: '/stock', label: 'Stock', icon: 'box' },
+  { to: '/stock/ajuste', label: 'Ajuste de stock', icon: 'edit' },
 ]
 
 const MASTER_ENTRIES = menuMasters().map((config) => ({
@@ -44,6 +45,10 @@ const SALES_ENTRIES = [
   { to: '/devoluciones-ventas', label: 'Devoluciones Ventas', icon: 'back' },
 ]
 
+const REPORT_ENTRIES = [
+  { to: '/reportes/trazabilidad-stock', label: 'Trazabilidad de inventario', icon: 'barChart' },
+]
+
 /** Clave para recordar si el grupo quedó desplegado. */
 const NAV_OPEN_KEY = 'erp.nav.productos'
 
@@ -52,6 +57,8 @@ const NAV_COMPRAS_OPEN_KEY = 'erp.nav.compras'
 
 /** Clave para recordar si el grupo de ventas quedó desplegado. */
 const NAV_VENTAS_OPEN_KEY = 'erp.nav.ventas'
+
+const NAV_REPORTES_OPEN_KEY = 'erp.nav.reportes'
 
 function ThemeButton() {
   const { theme, toggleTheme } = useTheme()
@@ -159,6 +166,14 @@ export function AppLayout() {
     }
   })
 
+  const [reportesOpen, setReportesOpen] = useState(() => {
+    try {
+      return localStorage.getItem(NAV_REPORTES_OPEN_KEY) !== '0'
+    } catch {
+      return true
+    }
+  })
+
   // Aviso de una sola vez (por ejemplo la contraseña inicial tras el alta).
   useEffect(() => {
     setNotice(takeNotice())
@@ -195,6 +210,12 @@ export function AppLayout() {
 
     if (inside) {
       setVentasOpen(true)
+    }
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (REPORT_ENTRIES.some((item) => location.pathname.startsWith(item.to))) {
+      setReportesOpen(true)
     }
   }, [location.pathname])
 
@@ -240,6 +261,18 @@ export function AppLayout() {
     })
   }
 
+  const toggleReportesNav = () => {
+    setReportesOpen((current) => {
+      const next = !current
+      try {
+        localStorage.setItem(NAV_REPORTES_OPEN_KEY, next ? '1' : '0')
+      } catch {
+        /* Sin storage la preferencia sólo vive en memoria. */
+      }
+      return next
+    })
+  }
+
   const handleLogout = async () => {
     await logout()
   }
@@ -248,7 +281,7 @@ export function AppLayout() {
     <div className={`app-frame${mobileNavOpen ? ' app-frame--nav-open' : ''}`}>
       <aside className="app-sidebar">
         <div className="app-sidebar-head">
-          <NavLink className="app-sidebar-brand" to="/libros">
+          <NavLink className="app-sidebar-brand" to="/dashboard">
             <Logo width={26} height={26} />
             <span>ORBY</span>
           </NavLink>
@@ -258,6 +291,14 @@ export function AppLayout() {
         </div>
 
         <nav className="app-sidebar-nav">
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) => `app-nav-link${isActive ? ' is-active' : ''}`}
+          >
+            <Icon name="dashboard" size={18} />
+            <span>Dashboard</span>
+          </NavLink>
+
           <div className="app-nav-section">
             <button
               className={`app-nav-toggle${navOpen ? ' is-open' : ''}`}
@@ -346,6 +387,33 @@ export function AppLayout() {
                   key={item.to}
                   to={item.to}
                   end={item.to === '/ventas' || item.to === '/ventas/nueva'}
+                  className={({ isActive }) => `app-nav-link app-nav-link--child${isActive ? ' is-active' : ''}`}
+                >
+                  <Icon name={item.icon} size={18} />
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+
+          <div className="app-nav-section">
+            <button
+              className={`app-nav-toggle${reportesOpen ? ' is-open' : ''}`}
+              type="button"
+              onClick={toggleReportesNav}
+              aria-expanded={reportesOpen}
+              aria-controls="nav-reportes"
+            >
+              <Icon name="barChart" size={18} />
+              <span>Reportes</span>
+              <Icon name={reportesOpen ? 'chevronUp' : 'chevronDown'} size={16} className="app-nav-caret" />
+            </button>
+
+            <div className="app-nav-sublist" id="nav-reportes" hidden={!reportesOpen}>
+              {REPORT_ENTRIES.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
                   className={({ isActive }) => `app-nav-link app-nav-link--child${isActive ? ' is-active' : ''}`}
                 >
                   <Icon name={item.icon} size={18} />

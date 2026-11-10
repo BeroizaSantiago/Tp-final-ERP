@@ -58,12 +58,22 @@ class DashboardService
         $todayInvoices = $this->salesInvoices()->whereDate('issue_date', $today);
         $monthTotal = (float) (clone $monthInvoices)->sum('total_amount');
         $monthTransactions = (int) (clone $monthInvoices)->count();
+        $periodInvoices = $this->salesInvoices()->whereDate('issue_date', '>=', today()->subDays(29));
+        $periodTotal = (float) (clone $periodInvoices)->sum('total_amount');
+        $periodTransactions = (int) (clone $periodInvoices)->count();
 
         return [
             'generated_at' => now()->toIso8601String(),
+            'period' => [
+                'from' => today()->subDays(29)->toDateString(),
+                'to' => today()->toDateString(),
+                'label' => 'Últimos 30 días',
+            ],
             'summary' => [
                 'sales_today' => round((float) (clone $todayInvoices)->sum('total_amount'), 2),
                 'transactions_today' => (int) (clone $todayInvoices)->count(),
+                'sales_period' => round($periodTotal, 2),
+                'transactions_period' => $periodTransactions,
                 'sales_month' => round($monthTotal, 2),
                 'average_ticket_month' => round($monthTransactions ? $monthTotal / $monthTransactions : 0, 2),
                 'active_products' => $products->where('is_active', true)->count(),
@@ -71,13 +81,21 @@ class DashboardService
                 'providers' => Provider::query()->count(),
                 'stock_units' => round((float) $stock->sum('units'), 2),
                 'stock_value' => round((float) $stock->sum('value'), 2),
-                'low_stock_items' => InventoryItem::query()
+                'low_stock_items' => Product::query()
+                    ->where('is_active', true)
                     ->where('min_stock', '>', 0)
                     ->whereColumn('current_stock', '<=', 'min_stock')
                     ->count(),
+                'recent_purchases' => DB::table('purchases')->whereDate('issue_date', '>=', today()->subDays(29))->count(),
+                'pending_returns' => DB::table('book_return_sales')->where('status', 'pending')->count()
+                    + DB::table('book_return_purchases')->where('status', 'pending')->count(),
             ],
             'sales' => $this->salesTrend(),
             'top_products' => $this->topProducts(),
+            'low_stock_products' => $this->lowStockProducts(),
+            'recent_purchases' => $this->recentPurchases(),
+            'pending_returns' => $this->pendingReturns(),
+            'publisher_volume' => $this->publisherVolume(),
             'classification' => $classification,
             'classification_definitions' => [
                 'new' => 'Alta hace menos de 90 días; todavía sin historial suficiente.',
@@ -224,6 +242,105 @@ class DashboardService
                 'code' => $row->code,
                 'units' => round((float) $row->units, 2),
                 'amount' => round((float) $row->amount, 2),
+            ]);
+    }
+
+    private function lowStockProducts(): Collection
+    {
+        return Product::query()
+            ->where('is_active', true)
+            ->whereNotNull('min_stock')
+            ->where('min_stock', '>', 0)
+            ->whereColumn('current_stock', '<=', 'min_stock')
+            ->orderBy('current_stock')
+            ->limit(8)
+            ->get(['id', 'name', 'code', 'current_stock', 'min_stock'])
+            ->map(fn (Product $product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'code' => $product->code,
+                'stock' => (float) $product->current_stock,
+                'minimum' => (float) $product->min_stock,
+            ]);
+    }
+
+    private function recentPurchases(): Collection
+    {
+        return DB::table('purchases')
+            ->orderByDesc('issue_date')
+            ->orderByDesc('id')
+            ->limit(6)
+            ->get(['id', 'full_number', 'provider_name', 'issue_date', 'total_amount', 'status_name'])
+            ->map(fn ($purchase) => [
+                'id' => (int) $purchase->id,
+                'number' => $purchase->full_number ?: 'Compra #'.$purchase->id,
+                'provider' => $purchase->provider_name ?: 'Sin proveedor',
+                'date' => $purchase->issue_date,
+                'total' => (float) $purchase->total_amount,
+                'status' => $purchase->status_name,
+            ]);
+    }
+
+    private function pendingReturns(): array
+    {
+        $customerCount = DB::table('book_return_sales')->where('status', 'pending')->count();
+        $supplierCount = DB::table('book_return_purchases')->where('status', 'pending')->count();
+        $customers = DB::table('book_return_sales as returns')
+            ->leftJoin('clients', 'clients.id', '=', 'returns.client_id')
+            ->where('returns.status', 'pending')
+            ->orderByDesc('returns.return_date')
+            ->limit(5)
+            ->get(['returns.id', 'returns.return_date', 'returns.reason', 'clients.name'])
+            ->map(fn ($return) => [
+                'id' => (int) $return->id,
+                'type' => 'customer',
+                'date' => $return->return_date,
+                'party' => $return->name ?: 'Cliente',
+                'reason' => $return->reason,
+            ]);
+        $suppliers = DB::table('book_return_purchases as returns')
+            ->leftJoin('providers', 'providers.id', '=', 'returns.provider_id')
+            ->where('returns.status', 'pending')
+            ->orderByDesc('returns.return_date')
+            ->limit(5)
+            ->get(['returns.id', 'returns.return_date', 'returns.reason', 'providers.name'])
+            ->map(fn ($return) => [
+                'id' => (int) $return->id,
+                'type' => 'supplier',
+                'date' => $return->return_date,
+                'party' => $return->name ?: 'Proveedor',
+                'reason' => $return->reason,
+            ]);
+
+        return [
+            'customer_count' => $customerCount,
+            'supplier_count' => $supplierCount,
+            'total' => $customerCount + $supplierCount,
+            'items' => $customers->concat($suppliers)->sortByDesc('date')->take(6)->values(),
+        ];
+    }
+
+    private function publisherVolume(): Collection
+    {
+        return DB::table('invoice_items as item')
+            ->join('invoices as invoice', 'invoice.id', '=', 'item.invoice_id')
+            ->leftJoin('product_variants as variant', 'variant.id', '=', 'item.product_variant_id')
+            ->leftJoin('products as product', 'product.id', '=', DB::raw('COALESCE(item.product_id, variant.product_id)'))
+            ->leftJoin('publishers as publisher', 'publisher.id', '=', DB::raw('COALESCE(product.publisher_id, variant.publisher_id)'))
+            ->whereDate('invoice.issue_date', '>=', today()->subDays(29))
+            ->whereRaw("LOWER(COALESCE(invoice.status_name, '')) NOT LIKE '%anul%'")
+            ->where(fn ($query) => $query->where('invoice.receipt_types_prefix', 'FV')
+                ->orWhere(fn ($legacy) => $legacy->whereNull('invoice.receipt_types_prefix')->where('invoice.receipt_type_name', 'like', '%Factura%')->where('invoice.receipt_type_name', 'not like', '%Compra%')))
+            ->groupByRaw("COALESCE(publisher.id, 0), COALESCE(publisher.name, 'Sin editorial')")
+            ->orderByDesc('amount')
+            ->limit(6)
+            ->selectRaw("COALESCE(publisher.id, 0) as id, COALESCE(publisher.name, 'Sin editorial') as name, SUM(item.quantity) as units, SUM(item.total_amount) as amount")
+            ->get()
+            ->map(fn ($publisher) => [
+                'id' => (int) $publisher->id,
+                'name' => $publisher->name,
+                'units' => round((float) $publisher->units, 2),
+                'amount' => round((float) $publisher->amount, 2),
             ]);
     }
 }

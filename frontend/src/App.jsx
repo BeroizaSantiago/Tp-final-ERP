@@ -25,6 +25,7 @@ import { ClientsPage } from './features/sales/ClientsPage'
 import { PromotionsListPage } from './features/sales/PromotionsListPage'
 import { PromotionFormPage } from './features/sales/PromotionFormPage'
 import { StockSearch } from './features/books/StockSearch'
+import { StockAdjustmentPage } from './features/stock/StockAdjustmentPage'
 import { OrderListPage } from './features/purchases/OrderListPage'
 import { OrderFormPage } from './features/purchases/OrderFormPage'
 import { OrderDetailPage } from './features/purchases/OrderDetailPage'
@@ -37,6 +38,8 @@ import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/PlaceholderPages'
 import { RegisterPage } from './pages/RegisterPage'
 import { HOME_PATH } from './lib/routes'
+import { StockMovementReportPage } from './features/reports/StockMovementReportPage'
+import { DashboardPage } from './features/dashboard/DashboardPage'
 
 /**
  * Mapa de rutas de la SPA.
@@ -74,14 +77,14 @@ export default function App() {
         }
       >
         <Route path="/" element={<Navigate to={HOME_PATH} replace />} />
-        {/* Dashboard con sección de ventas */}
-        <Route path="/dashboard" element={<Navigate to={HOME_PATH} replace />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
 
         <Route path="/libros" element={<BookListPage />} />
         <Route path="/libros/nuevo" element={<BookFormPage />} />
         <Route path="/libros/:id" element={<BookDetailPage />} />
         <Route path="/libros/:id/editar" element={<BookFormPage />} />
         <Route path="/stock" element={<StockSearch />} />
+        <Route path="/stock/ajuste" element={<StockAdjustmentPage />} />
 
         <Route path="/compras" element={<PurchaseListPage />} />
         <Route path="/compras/nueva" element={<PurchaseFormPage />} />
@@ -114,6 +117,7 @@ export default function App() {
         <Route path="/gastos/:id" element={<ExpenseDetailPage />} />
         <Route path="/gastos/:id/pago" element={<ExpensePaymentPage />} />
         <Route path="/proveedores" element={<ProvidersPage />} />
+        <Route path="/reportes/trazabilidad-stock" element={<StockMovementReportPage />} />
 
         {Object.values(MASTERS).map((config) => (
           <Route

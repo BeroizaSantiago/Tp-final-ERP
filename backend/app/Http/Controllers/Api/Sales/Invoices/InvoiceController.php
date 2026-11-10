@@ -11,6 +11,8 @@ use App\Models\Clients\CustomerReceiptPayment;
 use App\Models\Sales\Invoice;
 use App\Models\Sales\InvoicePayment;
 use App\Models\Sales\Voucher;
+use App\Models\Stock\InventoryItem;
+use App\Models\Stock\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Finance\CashSheet;
@@ -223,12 +225,56 @@ class InvoiceController extends SalesDocumentController
                     ]);
                 }
 
-                $remaining = (float) $variant->current_stock - $quantity;
-                $variant->update([
-                    'current_stock' => $remaining,
-                    'available_stock' => $remaining,
-                ]);
-                app(\App\Services\StockService::class)->recalculateProductStock($variant->product);
+                $inventoryItems = InventoryItem::query()
+                    ->where('product_variant_id', $variant->id)
+                    ->where('current_stock', '>', 0)
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get();
+
+                if ($inventoryItems->isNotEmpty()) {
+                    $pending = $quantity;
+
+                    foreach ($inventoryItems as $inventoryItem) {
+                        if ($pending <= 0.00001) break;
+
+                        $stockBefore = (float) $inventoryItem->current_stock;
+                        $moved = min($stockBefore, $pending);
+                        $stockAfter = round($stockBefore - $moved, 4);
+                        $inventoryItem->update(['current_stock' => $stockAfter]);
+
+                        StockMovement::create([
+                            'inventory_item_id' => $inventoryItem->id,
+                            'movement_type' => 'sale',
+                            'quantity' => -$moved,
+                            'stock_before' => $stockBefore,
+                            'stock_after' => $stockAfter,
+                            'reference_type' => 'invoice',
+                            'reference_id' => $lockedInvoice->id,
+                            'notes' => 'Venta ' . ($lockedInvoice->display_number ?: '#'.$lockedInvoice->id),
+                        ]);
+
+                        $pending -= $moved;
+                    }
+
+                    if ($pending > 0.00001) {
+                        throw \Illuminate\Validation\ValidationException::withMessages([
+                            'stock' => "El inventario por depósito de {$item->product_name} no coincide con el stock disponible.",
+                        ]);
+                    }
+
+                    $stockService = app(\App\Services\StockService::class);
+                    $stockService->recalculateVariantStock($variant);
+                    $stockService->recalculateProductStock($variant->product);
+                } else {
+                    // Compatibilidad con libros antiguos sin inventario por depósito.
+                    $remaining = (float) $variant->current_stock - $quantity;
+                    $variant->update([
+                        'current_stock' => $remaining,
+                        'available_stock' => $remaining,
+                    ]);
+                    app(\App\Services\StockService::class)->recalculateProductStock($variant->product);
+                }
                 $affectedProductIds[] = (int) $variant->product_id;
             }
 
