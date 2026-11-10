@@ -46,7 +46,7 @@ export function finalizeInvoice(id) {
 }
 
 export async function getInvoicePdf(id) {
-  return apiRequest(`/invoices/${id}/pdf`, { method: 'GET' })
+  return apiRequest(`/invoices/${id}/pdf?_=${Date.now()}`, { method: 'GET' })
 }
 
 export async function downloadInvoicePdf(id) {
@@ -317,8 +317,8 @@ export function variantColor(variant) {
 }
 
 const STATUS_TONES = [
-  [/pagada|recibida|completada|aprobada/, 'success'],
-  [/pendiente|parcial|borrador|registrado/, 'warning'],
+  [/cobrada|pagada|recibida|completada|finalizada|aprobada|autorizada|emitida/, 'success'],
+  [/pendiente|parcial|borrador|registrado|procesando/, 'warning'],
   [/anulada|cancelada|rechazada/, 'danger'],
 ]
 

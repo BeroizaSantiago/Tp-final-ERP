@@ -3,9 +3,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Badge } from '../../components/Badge'
 import { BackLink } from '../../components/fields'
 import { Icon } from '../../components/icons'
+import { useToast } from '../../context/ToastContext'
 import { dateTime, money, number } from '../../lib/format'
 import { useApiResource } from '../../lib/useApiResource'
-import { statusTone, variantLabel } from './api'
+import { downloadInvoicePdf, statusTone } from './api'
 
 function Detail({ label, value, wide }) {
   return (
@@ -19,6 +20,7 @@ function Detail({ label, value, wide }) {
 export function SaleDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const toast = useToast()
 
   const { data: sale, loading, error } = useApiResource(`/invoices/${id}`, { deps: [id] })
 
@@ -65,6 +67,22 @@ export function SaleDetailPage() {
 
         <div className="page-actions">
           <Badge tone={statusTone(sale.status_name)}>{sale.status_name ?? 'Sin estado'}</Badge>
+          {sale.stock_applied_at ? (
+            <button
+              className="erp-btn erp-btn-outline"
+              type="button"
+              onClick={async () => {
+                try {
+                  await downloadInvoicePdf(sale.id)
+                } catch (downloadError) {
+                  toast.error('No se pudo descargar el comprobante PDF.', downloadError.message)
+                }
+              }}
+            >
+              <Icon name="fileList" size={18} />
+              Descargar PDF
+            </button>
+          ) : null}
           <Link className="erp-btn erp-btn-primary" to={`/ventas/${sale.id}/pago`}>
             <Icon name="money" size={18} />
             Formas de Pago

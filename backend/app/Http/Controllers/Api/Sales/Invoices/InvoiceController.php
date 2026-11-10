@@ -23,7 +23,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Throwable;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Mail;
 
 /**
@@ -893,19 +895,15 @@ class InvoiceController extends SalesDocumentController
             
     public function pdf(Invoice $invoice)
     {
-    $invoice->load(['client', 'items', 'payments']);
+        $invoice->load(['client', 'items', 'payments']);
+        $pdf = $this->renderInvoicePdf($invoice);
+        $filename = 'comprobante-' . $invoice->id . '.pdf';
 
-    $pdf = Pdf::loadView('invoices.pdf', [
-        'invoice' => $invoice,
-    ])->setPaper('a4');
-
-    $filename = 'comprobante-' . $invoice->id . '.pdf';
-
-    return response()->json([
-        'filename' => $filename,
-        'pdf' => base64_encode($pdf->output()),
-    ]);
-}
+        return response()->json([
+            'filename' => $filename,
+            'pdf' => base64_encode($pdf),
+        ])->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    }
 
 public function sendEmail(Invoice $invoice)
 {
@@ -922,9 +920,7 @@ public function sendEmail(Invoice $invoice)
         ], 422);
     }
 
-    $pdf = Pdf::loadView('invoices.pdf', [
-        'invoice' => $invoice,
-    ])->setPaper('a4');
+    $pdf = $this->renderInvoicePdf($invoice);
 
     $filename = 'comprobante-' . $invoice->id . '.pdf';
 
@@ -943,7 +939,7 @@ public function sendEmail(Invoice $invoice)
                     . $invoice->display_number
                 )
                 ->attachData(
-                    $pdf->output(),
+                    $pdf,
                     $filename,
                     ['mime' => 'application/pdf']
                 );
@@ -953,6 +949,65 @@ public function sendEmail(Invoice $invoice)
     return response()->json([
         'message' => 'Comprobante enviado correctamente a ' . $email,
     ]);
+}
+
+private function renderInvoicePdf(Invoice $invoice): string
+{
+    $qrMatrix = $this->invoiceQrMatrix($invoice);
+    $pdf = new Dompdf();
+    $pdf->loadHtml(view('invoices.pdf', [
+        'invoice' => $invoice,
+        'qrMatrix' => $qrMatrix,
+    ])->render(), 'UTF-8');
+    $pdf->setPaper('A4');
+    $pdf->render();
+
+    return $pdf->output();
+}
+
+private function invoiceQrMatrix(Invoice $invoice): array
+{
+    $cuit = preg_replace('/\D/', '', (string) config('arca.cuit', ''));
+
+    if (! $invoice->arca_cae || strlen($cuit) !== 11) {
+        $contents = json_encode([
+            'tipo' => 'COMPROBANTE_DEMOSTRATIVO',
+            'leyenda' => 'SIN VALIDEZ FISCAL',
+            'comprobante' => $invoice->display_number,
+            'fecha' => optional($invoice->issue_date)->format('Y-m-d'),
+            'total' => round((float) $invoice->total_amount, 2),
+        ], JSON_UNESCAPED_UNICODE);
+    } else {
+        $payload = [
+            'ver' => 1,
+            'fecha' => optional($invoice->issue_date)->format('Y-m-d'),
+            'cuit' => (int) $cuit,
+            'ptoVta' => (int) ($invoice->arca_point_of_sale ?: $invoice->first_number),
+            'tipoCmp' => (int) $invoice->arca_voucher_type,
+            'nroCmp' => (int) ($invoice->arca_voucher_number ?: $invoice->second_number),
+            'importe' => round((float) $invoice->total_amount, 2),
+            'moneda' => 'PES',
+            'ctz' => 1,
+            'tipoDocRec' => $invoice->arca_receiver_document_type,
+            'nroDocRec' => $invoice->arca_receiver_document_number,
+            'tipoCodAut' => 'E',
+            'codAut' => (int) $invoice->arca_cae,
+        ];
+        $contents = 'https://www.afip.gob.ar/fe/qr/?p=' . base64_encode(json_encode($payload));
+    }
+
+    $matrix = (new PngWriter())
+        ->write(new QrCode(data: $contents, size: 260, margin: 4))
+        ->getMatrix();
+    $rows = [];
+
+    for ($row = 0; $row < $matrix->getBlockCount(); $row++) {
+        for ($column = 0; $column < $matrix->getBlockCount(); $column++) {
+            $rows[$row][$column] = $matrix->getBlockValue($row, $column);
+        }
+    }
+
+    return $rows;
 }
 
 }

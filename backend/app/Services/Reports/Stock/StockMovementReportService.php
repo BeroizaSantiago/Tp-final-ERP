@@ -157,7 +157,7 @@ class StockMovementReportService
     {
         return $movement->reference_type === 'invoice'
             ? ($reference?->user_name ?: $reference?->seller_full_name ?: 'Sistema')
-            : ($reference?->created_by ?: 'Sistema');
+            : (data_get($reference, 'created_by') ?: 'Sistema');
     }
 
     private function document(StockMovement $movement, mixed $reference): string

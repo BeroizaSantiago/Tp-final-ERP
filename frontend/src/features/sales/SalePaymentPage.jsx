@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { BackLink } from '../../components/fields'
 import { useApiResource } from '../../lib/useApiResource'
 import { useToast } from '../../context/ToastContext'
-import { addInvoicePayment, applyPromotion, finalizeInvoice, getCompatiblePromotions, downloadInvoicePdf, sendInvoicePdfEmail } from './api'
+import { addInvoicePayment, applyPromotion, finalizeInvoice, getCompatiblePromotions, sendInvoicePdfEmail } from './api'
 import { PaymentPanel } from '../../components/PaymentPanel'
 
 export function SalePaymentPage() {
@@ -12,7 +12,6 @@ export function SalePaymentPage() {
   const { id } = useParams()
   const [saving, setSaving] = useState(false)
   const { data: sale, loading, error, reload } = useApiResource(`/invoices/${id}`, { deps: [id] })
-  const saleFinalized = Boolean(sale?.stock_applied_at)
 
   if (loading) {
     return (
@@ -94,17 +93,6 @@ export function SalePaymentPage() {
         appliedPromotion={sale.sales_promotion}
         promotionDiscount={sale.promotion_discount_amount}
         onFinish={handleFinish}
-        saleFinalized={saleFinalized}
-        onDownloadPdf={async () => {
-          try {
-            await downloadInvoicePdf(id)
-          } catch (error) {
-            toast.error(
-              'No se pudo descargar el comprobante PDF.',
-              error.message
-            )
-          }
-        }}
         finishLabel="Finalizar Venta"
       />
     </>

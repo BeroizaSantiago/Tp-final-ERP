@@ -15,15 +15,24 @@ import {
   searchReportProducts,
 } from './api'
 
-function localDate(value = new Date()) {
+function localDate(value) {
   const offset = value.getTimezoneOffset() * 60000
   return new Date(value.getTime() - offset).toISOString().slice(0, 10)
 }
 
+function sameDayPreviousMonth(value) {
+  const year = value.getFullYear()
+  const month = value.getMonth()
+  const previousMonthLastDay = new Date(year, month, 0).getDate()
+
+  return new Date(year, month - 1, Math.min(value.getDate(), previousMonthLastDay))
+}
+
 function initialFilters() {
   const today = new Date()
+
   return {
-    date_from: localDate(new Date(today.getFullYear(), today.getMonth(), 1)),
+    date_from: localDate(sameDayPreviousMonth(today)),
     date_to: localDate(today),
     product_ids: [],
     name: '',
@@ -85,7 +94,11 @@ export function StockMovementReportPage() {
 
   const search = async (event) => {
     event?.preventDefault()
-    if (!filters.date_from || !filters.date_to || filters.date_from > filters.date_to) {
+    if (!filters.date_from || !filters.date_to) {
+      toast.error('Completá el período', 'Seleccioná la fecha desde y la fecha hasta para consultar el historial.')
+      return
+    }
+    if (filters.date_from > filters.date_to) {
       toast.error('Revisá las fechas', 'La fecha desde no puede ser posterior a la fecha hasta.')
       return
     }
@@ -100,8 +113,6 @@ export function StockMovementReportPage() {
       setLoading(false)
     }
   }
-
-  useEffect(() => { search() }, [])
 
   const download = async (format) => {
     setDownloading(format)
