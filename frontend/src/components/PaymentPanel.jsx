@@ -43,6 +43,8 @@ export function PaymentPanel({
   finishTo,
   finishLabel = 'Finalizar',
   onFinish,
+  onDownloadPdf,
+  saleFinalized = false,
 }) {
   const toast = useToast()
   const [selectedMethod, setSelectedMethod] = useState('cash')
@@ -563,6 +565,20 @@ export function PaymentPanel({
               <h4 style={{ margin: 0 }}>{money(paid)}</h4>
             </div>
           </div>
+          
+          {itemType === 'venta' && saleFinalized && onDownloadPdf && (
+            <div style={{ padding: '0 1rem 1rem' }}>
+              <button
+                type="button"
+                className="erp-btn erp-btn-offline"
+                style={{ width: '100%' }}
+                onClick={onDownloadPdf}
+              >
+                Descargar comprobante PDF
+              </button>
+            </div>
+          )}
+
 
           <div style={{ marginTop: 'auto' }}>
             <button

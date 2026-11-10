@@ -91,6 +91,8 @@ Route::get('/invoices', [InvoiceController::class, 'index']);
 Route::get('/invoices/{invoice}', [InvoiceController::class, 'show']);
 Route::get('/invoices/client/{client}', [InvoiceLookupController::class, 'byClient']);
 Route::post('/invoices/{invoice}/exchange-tickets', [InvoiceController::class, 'storeExchangeTickets']);
+Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf',]);
+Route::middleware('auth:sanctum')->post('/invoices/{invoice}/send-email',[InvoiceController::class, 'sendEmail']);
 Route::get('/vouchers', [VoucherController::class, 'index']);
 Route::post('/vouchers', [VoucherController::class, 'store']);
 Route::get('/vouchers/lookup/{code}', [VoucherController::class, 'lookup']);

@@ -4,10 +4,7 @@ import { useState } from 'react'
 import { BackLink } from '../../components/fields'
 import { useApiResource } from '../../lib/useApiResource'
 import { useToast } from '../../context/ToastContext'
-import { addInvoicePayment } from './api'
-import { applyPromotion } from './api'
-import { finalizeInvoice } from './api'
-import { getCompatiblePromotions } from './api'
+import { addInvoicePayment, applyPromotion, finalizeInvoice, getCompatiblePromotions, downloadInvoicePdf, sendInvoicePdfEmail } from './api'
 import { PaymentPanel } from '../../components/PaymentPanel'
 
 export function SalePaymentPage() {
@@ -15,6 +12,7 @@ export function SalePaymentPage() {
   const { id } = useParams()
   const [saving, setSaving] = useState(false)
   const { data: sale, loading, error, reload } = useApiResource(`/invoices/${id}`, { deps: [id] })
+  const saleFinalized = Boolean(sale?.stock_applied_at)
 
   if (loading) {
     return (
@@ -38,13 +36,27 @@ export function SalePaymentPage() {
     setSaving(true)
     try {
       const res = await finalizeInvoice(id)
-      if (res && res.invoice) {
-        toast.success(
-          'Venta finalizada exitosamente',
-          'Comprobante: ' + (res.invoice.full_number ?? res.invoice.id)
-        )
+
+      if (res?.invoice) {
+        try {
+          const result = await sendInvoicePdfEmail(id)
+
+          toast.success(
+            'Venta finalizada exitosamente',
+            result.message || 'Comprobante enviado al email del cliente.'
+          )
+        } catch (emailError) {
+          toast.error(
+            'La venta se finalizó, pero no se pudo enviar el comprobante por correo.',
+            emailError.message
+          )
+        }
+
         window.location.href = `/ventas/${res.invoice.id ?? id}`
-      } else if (res && res.message) {
+        return
+      }
+
+      if (res?.message) {
         toast.error(res.message)
       } else {
         toast.success('Venta finalizada exitosamente')
@@ -82,6 +94,17 @@ export function SalePaymentPage() {
         appliedPromotion={sale.sales_promotion}
         promotionDiscount={sale.promotion_discount_amount}
         onFinish={handleFinish}
+        saleFinalized={saleFinalized}
+        onDownloadPdf={async () => {
+          try {
+            await downloadInvoicePdf(id)
+          } catch (error) {
+            toast.error(
+              'No se pudo descargar el comprobante PDF.',
+              error.message
+            )
+          }
+        }}
         finishLabel="Finalizar Venta"
       />
     </>
