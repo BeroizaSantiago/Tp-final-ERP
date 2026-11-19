@@ -63,6 +63,7 @@ use App\Http\Controllers\Api\Security\RoleController;
 use App\Http\Controllers\Api\Auth\SessionController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\IA\RequestIAController;
 
 Route::get('/dashboard', DashboardController::class)->middleware('auth:sanctum');
 
@@ -72,6 +73,7 @@ Route::post('/register', [RegisterController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [SessionController::class, 'me']);
     Route::post('/logout', [SessionController::class, 'destroy']);
+
 });
 
 Route::get('/security/users', [SecurityUserController::class, 'index']);
@@ -432,4 +434,11 @@ Route::middleware('auth:sanctum')->prefix('reports/stock')->controller(StockRepo
     Route::get('/sales-based/options','stockBySalesOptions'); Route::get('/sales-based/export','stockBySalesExport'); Route::get('/sales-based','stockBySales');
     Route::get('/tree/options','stockOptions'); Route::get('/tree/export','stockExport'); Route::get('/tree','stock');
 });
+
+Route::middleware('auth:sanctum')->prefix('ia')->group(function () {
+    Route::get('/request', [RequestIAController::class, 'index']);
+    Route::post('/request', [RequestIAController::class, 'store']);
+    Route::get('/request/{requestIA}', [RequestIAController::class, 'show']);
+});
+
 
