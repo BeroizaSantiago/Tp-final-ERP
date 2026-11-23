@@ -268,6 +268,42 @@ class CatalogContextBuilder
         ]);
     }
 
+    /** Resuelve localmente preguntas cuantitativas o listados del catálogo. */
+    public function localCatalogAnswer(string $query): ?string
+    {
+        $normalized = Str::lower(Str::ascii($query));
+        $products = Product::query()->with(['author','category','publisher','collection'])->where('is_active', true)->get();
+        $categories = ProductCategory::query()->get()->filter(fn ($category) => str_contains($normalized, Str::lower(Str::ascii($category->name))));
+
+        if ($categories->isNotEmpty()) {
+            $ids = $categories->pluck('id');
+            $names = $categories->pluck('name')->map(fn ($name) => Str::lower(Str::ascii($name)));
+            $products = $products->filter(fn (Product $product) => $ids->contains($product->category_id)
+                || $names->contains(Str::lower(Str::ascii((string) $product->getAttribute('category')))));
+        } else {
+            $authors = Author::query()->get()->filter(fn ($author) => str_contains($normalized, Str::lower(Str::ascii($author->name))));
+            $publishers = Publisher::query()->get()->filter(fn ($publisher) => str_contains($normalized, Str::lower(Str::ascii($publisher->name))));
+            if ($authors->isNotEmpty()) $products = $products->whereIn('author_id', $authors->pluck('id'));
+            if ($publishers->isNotEmpty()) $products = $products->whereIn('publisher_id', $publishers->pluck('id'));
+        }
+
+        if ($products->isEmpty()) return 'No se encontraron libros del catálogo que coincidan con la consulta.';
+        if (!preg_match('/cu[aá]nt|cantidad|inventario|stock|tenemos|disponib/i', $query)) return null;
+
+        $units = $products->sum(fn (Product $product) => (float) ($product->available_stock ?: $product->current_stock));
+        $detail = $products->sortBy('name')->map(function (Product $product) {
+            $stock = (float) ($product->available_stock ?: $product->current_stock);
+            return $product->name.' ('.rtrim(rtrim(number_format($stock, 2, ',', '.'), '0'), ',').' unidades)';
+        })->implode(', ');
+
+        return 'Hay '.$products->count().' títulos que coinciden con la consulta, con '.$this->plainNumber($units).' unidades en total: '.$detail.'.';
+    }
+
+    private function plainNumber(float $value): string
+    {
+        return rtrim(rtrim(number_format($value, 2, ',', '.'), '0'), ',');
+    }
+
     /**
      * Datos públicos de un autor. Se expone para poder reutilizarlo cuando la
      * consulta pide un autor pero no es del tipo "resumen_autor".

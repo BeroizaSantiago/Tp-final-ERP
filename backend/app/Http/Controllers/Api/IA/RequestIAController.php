@@ -84,12 +84,12 @@ class RequestIAController extends Controller
                 $contexto
             );
 
-            $respuesta = $gemini->generarTexto($instruccion);
+            $respuesta = $gemini->generarTexto($instruccion, $datos['tipo_solicitud']);
 
             $registro->update([
                 'estado' => 'completado',
                 'respuesta' => $respuesta,
-                'modelo_ia' => config('gemini.model'),
+                'modelo_ia' => $gemini->lastModel() ?: config('gemini.model'),
                 'mensaje_error' => null,
             ]);
 
@@ -99,6 +99,27 @@ class RequestIAController extends Controller
             ], 201);
         } catch (Throwable $e) {
             report($e);
+
+            $respuestaLocal = $this->respuestaLocal(
+                $datos['tipo_solicitud'],
+                $datos['solicitud'],
+                $contexto ?? [],
+                $contextBuilder
+            );
+
+            if ($respuestaLocal) {
+                $registro->update([
+                    'estado' => 'completado',
+                    'respuesta' => $respuestaLocal,
+                    'modelo_ia' => 'catalogo-local',
+                    'mensaje_error' => null,
+                ]);
+
+                return response()->json([
+                    'message' => 'Gemini no estaba disponible; la respuesta se generó con los datos locales del catálogo.',
+                    'data' => $registro->fresh(),
+                ], 201);
+            }
 
             $registro->update([
                 'estado' => 'error',
@@ -112,6 +133,46 @@ class RequestIAController extends Controller
                 'solicitud_id' => $registro->id,
             ], 502);
         }
+    }
+
+    private function respuestaLocal(string $tipo, string $solicitud, array $contexto, CatalogContextBuilder $builder): ?string
+    {
+        if ($tipo === 'consulta_bibliografica') {
+            return $builder->localCatalogAnswer($solicitud);
+        }
+
+        if ($tipo === 'sinopsis') {
+            return data_get($contexto, 'libro.descripcion_web')
+                ?: data_get($contexto, 'libro.descripcion')
+                ?: data_get($contexto, 'libro.descripcion_corta_web');
+        }
+
+        if ($tipo === 'resumen_autor') {
+            return data_get($contexto, 'autor.biografia');
+        }
+
+        if ($tipo === 'generos_palabras_clave') {
+            $info = data_get($contexto, 'libro.informacion_bibliografica', []);
+            $parts = array_filter([
+                !empty($info['genero']) ? 'Género: '.$info['genero'].'.' : null,
+                !empty($info['temas']) ? 'Temas: '.implode(', ', $info['temas']).'.' : null,
+                !empty($info['palabras_clave']) ? 'Palabras clave: '.implode(', ', $info['palabras_clave']).'.' : null,
+            ]);
+            return $parts ? implode("\n", $parts) : null;
+        }
+
+        if ($tipo === 'recomendacion_personalizada') {
+            $candidates = collect($contexto['candidatos_con_stock'] ?? [])->take(5);
+            if ($candidates->isEmpty()) return null;
+            $lines = $candidates->values()->map(function ($book, $index) {
+                $author = data_get($book, 'autor.nombre', 'autor no informado');
+                $genre = data_get($book, 'categoria.nombre') ?: data_get($book, 'informacion_bibliografica.genero');
+                return ($index + 1).'. '.$book['nombre'].' — '.$author.($genre ? ' · '.$genre : '').'.';
+            });
+            return "Gemini no estaba disponible. Estas sugerencias se calcularon localmente según las compras anteriores y el stock disponible:\n\n".$lines->implode("\n");
+        }
+
+        return null;
     }
 
     /**

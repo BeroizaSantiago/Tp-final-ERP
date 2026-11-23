@@ -36,9 +36,15 @@ return [
     | es grande, así que el valor por defecto es 60.
     */
 
-    'request_timeout' => env('GEMINI_REQUEST_TIMEOUT', 60),
+    'request_timeout' => env('GEMINI_REQUEST_TIMEOUT', 30),
 
-    'max_retries' => env('GEMINI_MAX_RETRIES', 2),
+    'max_retries' => env('GEMINI_MAX_RETRIES', 1),
+
+    'model_cooldown' => env('GEMINI_MODEL_COOLDOWN', 120),
+
+    'models_simple' => array_values(array_filter(array_map('trim', explode(',', (string) env('GEMINI_SIMPLE_MODELS', 'gemini-3.8-flash,gemini-3.6-flash'))))),
+
+    'models_complex' => array_values(array_filter(array_map('trim', explode(',', (string) env('GEMINI_COMPLEX_MODELS', 'gemini-3.8-flash,gemini-3.6-flash'))))),
 
     /*
     |--------------------------------------------------------------------------
@@ -53,5 +59,7 @@ return [
 
     'verify' => env('GEMINI_VERIFY', base_path('resources/certs/cacert.pem')),
 
-    'model' => env('GEMINI_MODEL', 'gemini-3.6-flash'),
+    'model' => env('GEMINI_MODEL', 'gemini-3.8-flash'),
+
+    'fallback_models' => array_values(array_filter(array_map('trim', explode(',', (string) env('GEMINI_FALLBACK_MODELS', 'gemini-3.6-flash'))))),
 ];
