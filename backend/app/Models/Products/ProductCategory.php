@@ -2,6 +2,7 @@
 
 namespace App\Models\Products;
 
+use App\Models\IA\AiEnrichment;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -19,5 +20,10 @@ class ProductCategory extends Model
     public function children()
     {
         return $this->hasMany(ProductCategory::class, 'parent_id');
+    }
+
+    public function aiEnrichments()
+    {
+        return $this->morphMany(AiEnrichment::class, 'enrichable');
     }
 }

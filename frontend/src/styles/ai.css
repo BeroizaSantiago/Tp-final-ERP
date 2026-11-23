@@ -1,0 +1,183 @@
+/**
+ * Asistente IA.
+ *
+ * Dos columnas: el formulario de la consulta y la respuesta. Debajo queda el
+ * historial, que reutiliza la tabla y la paginación del resto del ERP.
+ */
+
+.ai-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid color-mix(in srgb, #ffb400 35%, transparent);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, #ffb400 12%, var(--erp-paper-bg));
+}
+
+.ai-banner svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: #b97c00;
+}
+
+.ai-banner strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--erp-heading-color);
+}
+
+.ai-banner p {
+  margin: 0;
+  color: var(--erp-body-color);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.ai-banner code {
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.3rem;
+  background: var(--erp-body-bg);
+  font-size: 0.82rem;
+}
+
+.ai-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: start;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.ai-layout > .erp-card {
+  margin-bottom: 0;
+}
+
+.ai-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.15rem;
+}
+
+.ai-form .erp-field-block {
+  margin: 0;
+}
+
+.ai-form-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ai-form-error {
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--erp-danger) 12%, transparent);
+  color: var(--erp-danger);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.ai-result-card {
+  min-height: 20rem;
+}
+
+.ai-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ai-result {
+  padding: 1.15rem;
+}
+
+.ai-result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.9rem;
+  margin-bottom: 1rem;
+  color: var(--erp-secondary-color);
+  font-size: 0.8rem;
+}
+
+.ai-result-text {
+  color: var(--erp-body-color);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.ai-result-error {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--erp-danger) 12%, transparent);
+  color: var(--erp-danger);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.ai-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 20rem;
+  padding: 2.5rem 1.5rem;
+  color: var(--erp-secondary-color);
+  text-align: center;
+}
+
+.ai-empty svg {
+  color: var(--erp-primary);
+}
+
+.ai-empty strong {
+  color: var(--erp-heading-color);
+  font-size: 1rem;
+}
+
+.ai-empty p {
+  max-width: 22rem;
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.ai-history-prompt {
+  display: block;
+  max-width: 28rem;
+  overflow: hidden;
+  color: var(--erp-body-color);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .ai-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ai-form-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ai-form-foot .form-actions {
+    justify-content: flex-end;
+  }
+
+  .ai-history-prompt {
+    max-width: 14rem;
+  }
+}

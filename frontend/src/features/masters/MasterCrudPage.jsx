@@ -218,6 +218,16 @@ function MasterField({ field, value, error, onChange }) {
             </option>
           ))}
         </select>
+      ) : field.type === 'textarea' ? (
+        <textarea
+          id={field.name}
+          name={field.name}
+          className={`${inputClass} erp-textarea${error ? ' is-invalid' : ''}`}
+          value={value ?? ''}
+          onChange={onChange}
+          placeholder={field.placeholder}
+          rows={field.rows ?? 4}
+        />
       ) : (
         <input
           id={field.name}
@@ -457,5 +467,8 @@ const COLUMN_LABELS = {
   hex_code: 'Color',
   parent_id: 'Padre',
   brand_id: 'Marca',
+  publisher_id: 'Editorial',
+  nationality: 'Nacionalidad',
+  country: 'País',
   size_type_id: 'Tipo de talle',
 }

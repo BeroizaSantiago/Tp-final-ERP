@@ -436,9 +436,11 @@ Route::middleware('auth:sanctum')->prefix('reports/stock')->controller(StockRepo
 });
 
 Route::middleware('auth:sanctum')->prefix('ia')->group(function () {
+    Route::get('/status', [RequestIAController::class, 'status']);
     Route::get('/request', [RequestIAController::class, 'index']);
     Route::post('/request', [RequestIAController::class, 'store']);
     Route::get('/request/{requestIA}', [RequestIAController::class, 'show']);
+    Route::post('/request/{requestIA}/approve', [RequestIAController::class, 'approve']);
 });
 
 

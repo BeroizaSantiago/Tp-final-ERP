@@ -33,6 +33,8 @@ class DetailedSalesReportController extends Controller
             'product_id'=>['nullable','integer','exists:products,id'],'provider_id'=>['nullable','integer','exists:providers,id'],
             'brand_id'=>['nullable','integer','exists:brands,id'],'model_id'=>['nullable','integer','exists:product_models,id'],
             'category_id'=>['nullable','integer','exists:product_categories,id'],'seller_id'=>['nullable','integer','exists:users,id'],
+            'author_id'=>['nullable','integer','exists:authors,id'],'publisher_id'=>['nullable','integer','exists:publishers,id'],
+            'collection_id'=>['nullable','integer','exists:collections,id'],
             'price_type'=>['nullable','string','max:100'],'with_variant'=>['nullable','boolean']];
         if ($export) $rules['format']=['required','in:xlsx,csv'];
         $data=$request->validate($rules); $data['with_variant']=(bool)($data['with_variant']??false); return $data;

@@ -25,7 +25,8 @@ class StockTreeReportService
             $term = trim((string) $filters['product']);
             $productQuery->where(function ($query) use ($term) {
                 $query->where('name', 'like', '%'.$term.'%')
-                    ->orWhere('code', 'like', '%'.$term.'%');
+                    ->orWhere('code', 'like', '%'.$term.'%')
+                    ->orWhere('bar_code', 'like', '%'.$term.'%');
             });
         }
 
@@ -35,6 +36,9 @@ class StockTreeReportService
         if (! empty($filters['brand_id'])) $productQuery->where('brand_id', $filters['brand_id']);
         if (! empty($filters['model_id'])) $productQuery->where('product_model_id', $filters['model_id']);
         if (! empty($filters['category_id'])) $productQuery->where('category_id', $filters['category_id']);
+        if (! empty($filters['author_id'])) $productQuery->where('author_id', $filters['author_id']);
+        if (! empty($filters['publisher_id'])) $productQuery->where('publisher_id', $filters['publisher_id']);
+        if (! empty($filters['collection_id'])) $productQuery->where('collection_id', $filters['collection_id']);
         if (! empty($filters['provider'])) $productQuery->where('principal_provider_name', 'like', '%'.trim((string) $filters['provider']).'%');
 
         $inventoryQuery = InventoryItem::query()->with(['variant.size', 'variant.color']);
@@ -62,7 +66,7 @@ class StockTreeReportService
 
         $total = $paginate ? (clone $productQuery)->count() : 0;
         $products = $productQuery
-            ->with(['category:id,name', 'brand:id,name', 'model:id,name', 'variants.size', 'variants.color'])
+            ->with(['category:id,name', 'brand:id,name', 'model:id,name', 'author:id,name', 'publisher:id,name', 'collection:id,name', 'variants.size', 'variants.color'])
             ->when($paginate, fn ($query) => $query->orderBy('name')->forPage($page, $perPage))
             ->get();
 
@@ -156,6 +160,9 @@ class StockTreeReportService
             })->sortBy('label')->values() : collect();
             return [
                 'key' => $this->productKey($product, $item), 'code' => $product?->code ?: $item->code ?: '-', 'name' => $product?->name ?: $item->product_name,
+                'isbn'=>$product?->bar_code ?: $item->bar_code, 'author'=>$product?->author?->name ?: 'Sin autor',
+                'publisher'=>$product?->publisher?->name ?: 'Sin editorial', 'category'=>$product?->getRelation('category')?->name ?: $product?->getAttribute('category') ?: 'Sin género',
+                'collection'=>$product?->collection?->name ?: 'Sin colección',
                 'active' => (bool) ($product?->is_active ?? true), 'min_stock' => (float) ($group->max(fn ($r) => (float) $r['item']->min_stock) ?: $product?->min_stock ?: 0),
                 'reposition_stock' => (float) ($group->max(fn ($r) => (float) $r['item']->reposition_stock) ?: $product?->reposition_stock ?: 0),
                 'cells' => $this->cells($group, $columns, $filters, $mainCurrency), 'colors' => $colors->all(),
@@ -177,7 +184,11 @@ class StockTreeReportService
             'warehouses' => InventoryItem::whereNotNull('warehouse_name')->distinct()->orderBy('warehouse_name')->pluck('warehouse_name'),
             'currencies' => Product::whereNotNull('currency_symbol')->distinct()->orderBy('currency_symbol')->pluck('currency_symbol')->merge(InventoryItem::whereNotNull('currency_symbol')->distinct()->pluck('currency_symbol'))->filter()->unique()->values(),
             'brands' => Brand::orderBy('name')->get(['id', 'name']), 'models' => ProductModel::orderBy('name')->get(['id', 'name']),
-            'categories' => ProductCategory::orderBy('name')->get(['id', 'name']), 'providers' => Provider::orderBy('name')->pluck('name')];
+            'categories' => ProductCategory::orderBy('name')->get(['id', 'name']),
+            'authors'=>\App\Models\Products\Author::where('is_active',true)->orderBy('name')->get(['id','name']),
+            'publishers'=>\App\Models\Products\Publisher::where('is_active',true)->orderBy('name')->get(['id','name']),
+            'collections'=>\App\Models\Products\Collection::where('is_active',true)->orderBy('name')->get(['id','name']),
+            'providers' => Provider::orderBy('name')->pluck('name')];
     }
 
     private function emptyReport(array $filters, bool $paginate): array

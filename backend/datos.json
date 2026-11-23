@@ -1,0 +1,1462 @@
+{
+  "catalogo": "Bibliografía para ERP",
+  "fecha_compilacion": "2026-11-23",
+  "advertencia": "Información recopilada y parcialmente contrastada. null indica dato no verificado. ISBN, paginación y portada deben confirmarse para cada edición.",
+  "totales": {
+    "libros": 23,
+    "autores": 20,
+    "editoriales": 19
+  },
+  "libros": [
+    {
+      "id": 1,
+      "titulo": "Harry Potter y la piedra filosofal",
+      "titulo_original": "Harry Potter and the Philosopher's Stone",
+      "autor": "J. K. Rowling",
+      "editorial": "Salamandra",
+      "isbn_13": "9789878000107",
+      "isbn_10": null,
+      "anio_original": 1997,
+      "anio_edicion": 2020,
+      "paginas_referencia": 288,
+      "genero": "Fantasía juvenil",
+      "saga": "Harry Potter",
+      "numero_saga": 1,
+      "edad_minima_orientativa": 9,
+      "sinopsis": "Harry descubre que es mago e ingresa a Hogwarts, donde hace amigos, aprende hechicería e investiga el misterio de la piedra filosofal.",
+      "descripcion_breve": "Harry descubre que es mago e ingresa a Hogwarts, donde hace amigos, aprende hechicería e investiga el misterio de la piedra filosofal.",
+      "temas": [
+        "Magia",
+        "amistad",
+        "identidad",
+        "valentía"
+      ],
+      "palabras_clave": [
+        "Hogwarts",
+        "magia",
+        "Voldemort",
+        "aventuras"
+      ],
+      "idioma_edicion": "español",
+      "formato": "Tapa blanda",
+      "dimensiones": "12,5 x 19 cm",
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9789878000107-L.jpg",
+      "notas": "ISBN confirmado en catálogo universitario; páginas 285 o 288 según impresión.",
+      "fuente": "https://koha-esociales.unr.edu.ar/cgi-bin/koha/opac-detail.pl?biblionumber=359"
+    },
+    {
+      "id": 2,
+      "titulo": "La noche de la usina",
+      "titulo_original": "La noche de la usina",
+      "autor": "Eduardo Sacheri",
+      "editorial": "Alfaguara",
+      "isbn_13": "9788420419589",
+      "isbn_10": null,
+      "anio_original": 2016,
+      "anio_edicion": null,
+      "paginas_referencia": 376,
+      "genero": "Novela contemporánea",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "En la Argentina de la crisis de 2001, vecinos de un pueblo reúnen ahorros para un proyecto colectivo. Tras sufrir una estafa, preparan un plan para recuperar su dinero.",
+      "descripcion_breve": "En la Argentina de la crisis de 2001, vecinos de un pueblo reúnen ahorros para un proyecto colectivo.",
+      "temas": [
+        "Crisis económica",
+        "corrupción",
+        "solidaridad",
+        "justicia"
+      ],
+      "palabras_clave": [
+        "Argentina",
+        "cooperativa",
+        "estafa",
+        "2001"
+      ],
+      "idioma_edicion": "español",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9788420419589-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 3,
+      "titulo": "Cien años de soledad",
+      "titulo_original": "Cien años de soledad",
+      "autor": "Gabriel García Márquez",
+      "editorial": "Sudamericana",
+      "isbn_13": "9789500700290",
+      "isbn_10": null,
+      "anio_original": 1967,
+      "anio_edicion": null,
+      "paginas_referencia": null,
+      "genero": "Realismo mágico",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "La historia de varias generaciones de los Buendía recorre la fundación, el esplendor y la decadencia de Macondo, entre guerras, amores y sucesos extraordinarios.",
+      "descripcion_breve": "La historia de varias generaciones de los Buendía recorre la fundación, el esplendor y la decadencia de Macondo, entre guerras, amores y sucesos extraordinarios.",
+      "temas": [
+        "Familia",
+        "soledad",
+        "memoria",
+        "destino"
+      ],
+      "palabras_clave": [
+        "Macondo",
+        "Buendía",
+        "Colombia",
+        "generaciones"
+      ],
+      "idioma_edicion": "español",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9789500700290-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 4,
+      "titulo": "El secreto de sus ojos",
+      "titulo_original": "La pregunta de sus ojos",
+      "autor": "Eduardo Sacheri",
+      "editorial": "Alfaguara",
+      "isbn_13": null,
+      "isbn_10": null,
+      "anio_original": 2005,
+      "anio_edicion": null,
+      "paginas_referencia": null,
+      "genero": "Novela policial",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "Un funcionario judicial retirado reconstruye un asesinato que marcó su vida y revive el amor, la impunidad y los conflictos políticos que rodearon la investigación.",
+      "descripcion_breve": "Un funcionario judicial retirado reconstruye un asesinato que marcó su vida y revive el amor, la impunidad y los conflictos políticos que rodearon la investigación.",
+      "temas": [
+        "Justicia",
+        "memoria",
+        "amor",
+        "impunidad"
+      ],
+      "palabras_clave": [
+        "crimen",
+        "investigación",
+        "Argentina",
+        "pasado"
+      ],
+      "idioma_edicion": "español",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": null,
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 5,
+      "titulo": "Hábitos atómicos",
+      "titulo_original": "Atomic Habits",
+      "autor": "James Clear",
+      "editorial": "Avery",
+      "isbn_13": null,
+      "isbn_10": null,
+      "anio_original": 2018,
+      "anio_edicion": null,
+      "paginas_referencia": null,
+      "genero": "Desarrollo personal",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 15,
+      "sinopsis": "James Clear presenta estrategias para construir hábitos mediante cambios pequeños, señales ambientales, repetición y sistemas sostenibles de mejora.",
+      "descripcion_breve": "James Clear presenta estrategias para construir hábitos mediante cambios pequeños, señales ambientales, repetición y sistemas sostenibles de mejora.",
+      "temas": [
+        "Hábitos",
+        "conducta",
+        "disciplina",
+        "mejora continua"
+      ],
+      "palabras_clave": [
+        "productividad",
+        "hábitos",
+        "objetivos",
+        "motivación"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": null,
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 6,
+      "titulo": "Cien años de soledad",
+      "titulo_original": "Cien años de soledad",
+      "autor": "Gabriel García Márquez",
+      "editorial": "Vintage Español",
+      "isbn_13": "9780307474728",
+      "isbn_10": null,
+      "anio_original": 1967,
+      "anio_edicion": 2009,
+      "paginas_referencia": 494,
+      "genero": "Realismo mágico",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "Las generaciones de la familia Buendía repiten amores, conflictos y errores en el pueblo de Macondo, donde la realidad y lo maravilloso conviven.",
+      "descripcion_breve": "Las generaciones de la familia Buendía repiten amores, conflictos y errores en el pueblo de Macondo, donde la realidad y lo maravilloso conviven.",
+      "temas": [
+        "Soledad",
+        "historia",
+        "familia",
+        "memoria"
+      ],
+      "palabras_clave": [
+        "Macondo",
+        "Buendía",
+        "realismo mágico"
+      ],
+      "idioma_edicion": "español",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780307474728-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 7,
+      "titulo": "El principito",
+      "titulo_original": "Le Petit Prince",
+      "autor": "Antoine de Saint-Exupéry",
+      "editorial": "Mariner Books",
+      "isbn_13": null,
+      "isbn_10": null,
+      "anio_original": 1943,
+      "anio_edicion": null,
+      "paginas_referencia": null,
+      "genero": "Fábula filosófica",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 8,
+      "sinopsis": "Un aviador perdido en el desierto conoce a un príncipe de otro planeta. Sus conversaciones revelan reflexiones sobre el amor, la amistad y la mirada de la infancia.",
+      "descripcion_breve": "Un aviador perdido en el desierto conoce a un príncipe de otro planeta.",
+      "temas": [
+        "Amistad",
+        "amor",
+        "responsabilidad",
+        "infancia"
+      ],
+      "palabras_clave": [
+        "rosa",
+        "zorro",
+        "desierto",
+        "planeta"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": null,
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 8,
+      "titulo": "1984",
+      "titulo_original": "Nineteen Eighty-Four",
+      "autor": "George Orwell",
+      "editorial": "Signet Classics",
+      "isbn_13": "9780451524935",
+      "isbn_10": null,
+      "anio_original": 1949,
+      "anio_edicion": null,
+      "paginas_referencia": 328,
+      "genero": "Distopía política",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "Winston Smith vive bajo un régimen que vigila a sus ciudadanos, manipula el pasado y controla el lenguaje; su búsqueda de libertad amenaza el orden establecido.",
+      "descripcion_breve": "Winston Smith vive bajo un régimen que vigila a sus ciudadanos, manipula el pasado y controla el lenguaje; su búsqueda de libertad amenaza el orden establecido.",
+      "temas": [
+        "Totalitarismo",
+        "vigilancia",
+        "censura",
+        "libertad"
+      ],
+      "palabras_clave": [
+        "Gran Hermano",
+        "Oceanía",
+        "neolengua"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 9,
+      "titulo": "El alquimista",
+      "titulo_original": "O Alquimista",
+      "autor": "Paulo Coelho",
+      "editorial": "HarperOne",
+      "isbn_13": "9780062315007",
+      "isbn_10": null,
+      "anio_original": 1988,
+      "anio_edicion": null,
+      "paginas_referencia": 208,
+      "genero": "Ficción filosófica",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 13,
+      "sinopsis": "Un pastor andaluz emprende un viaje hacia Egipto en busca de un tesoro y descubre enseñanzas sobre los sueños, las decisiones y la propia vocación.",
+      "descripcion_breve": "Un pastor andaluz emprende un viaje hacia Egipto en busca de un tesoro y descubre enseñanzas sobre los sueños, las decisiones y la propia vocación.",
+      "temas": [
+        "Destino",
+        "sueños",
+        "espiritualidad",
+        "autoconocimiento"
+      ],
+      "palabras_clave": [
+        "Santiago",
+        "alquimia",
+        "viaje",
+        "leyenda personal"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 10,
+      "titulo": "Orgullo y prejuicio",
+      "titulo_original": "Pride and Prejudice",
+      "autor": "Jane Austen",
+      "editorial": "Penguin Classics",
+      "isbn_13": "9780141439518",
+      "isbn_10": null,
+      "anio_original": 1813,
+      "anio_edicion": null,
+      "paginas_referencia": 480,
+      "genero": "Romance clásico",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 14,
+      "sinopsis": "Elizabeth Bennet y Fitzwilliam Darcy deben superar malentendidos, prejuicios y barreras sociales en una sociedad donde el matrimonio determina el futuro de muchas mujeres.",
+      "descripcion_breve": "Elizabeth Bennet y Fitzwilliam Darcy deben superar malentendidos, prejuicios y barreras sociales en una sociedad donde el matrimonio determina el futuro de muchas mujeres.",
+      "temas": [
+        "Clase social",
+        "matrimonio",
+        "prejuicios",
+        "independencia"
+      ],
+      "palabras_clave": [
+        "Elizabeth Bennet",
+        "Darcy",
+        "Inglaterra"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780141439518-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 11,
+      "titulo": "El hobbit",
+      "titulo_original": "The Hobbit",
+      "autor": "J. R. R. Tolkien",
+      "editorial": "Mariner Books",
+      "isbn_13": "9780547928227",
+      "isbn_10": null,
+      "anio_original": 1937,
+      "anio_edicion": null,
+      "paginas_referencia": 320,
+      "genero": "Fantasía épica",
+      "saga": "Tierra Media",
+      "numero_saga": null,
+      "edad_minima_orientativa": 10,
+      "sinopsis": "Bilbo Bolsón acompaña a Gandalf y a un grupo de enanos a recuperar un tesoro custodiado por Smaug, descubriendo peligros y un misterioso anillo.",
+      "descripcion_breve": "Bilbo Bolsón acompaña a Gandalf y a un grupo de enanos a recuperar un tesoro custodiado por Smaug, descubriendo peligros y un misterioso anillo.",
+      "temas": [
+        "Aventura",
+        "valentía",
+        "amistad",
+        "codicia"
+      ],
+      "palabras_clave": [
+        "Bilbo",
+        "Gandalf",
+        "Smaug",
+        "Tierra Media"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 12,
+      "titulo": "Los juegos del hambre",
+      "titulo_original": "The Hunger Games",
+      "autor": "Suzanne Collins",
+      "editorial": "Scholastic Press",
+      "isbn_13": "9780439023481",
+      "isbn_10": null,
+      "anio_original": 2008,
+      "anio_edicion": null,
+      "paginas_referencia": 374,
+      "genero": "Distopía juvenil",
+      "saga": "Los juegos del hambre",
+      "numero_saga": 1,
+      "edad_minima_orientativa": 13,
+      "sinopsis": "Katniss Everdeen se ofrece como tributo para salvar a su hermana y participa en una competencia mortal televisada que evidencia la crueldad del poder.",
+      "descripcion_breve": "Katniss Everdeen se ofrece como tributo para salvar a su hermana y participa en una competencia mortal televisada que evidencia la crueldad del poder.",
+      "temas": [
+        "Supervivencia",
+        "desigualdad",
+        "sacrificio",
+        "rebelión"
+      ],
+      "palabras_clave": [
+        "Katniss",
+        "Panem",
+        "Capitolio"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780439023481-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 13,
+      "titulo": "Sapiens: De animales a dioses",
+      "titulo_original": "Sapiens: A Brief History of Humankind",
+      "autor": "Yuval Noah Harari",
+      "editorial": "Harper",
+      "isbn_13": null,
+      "isbn_10": null,
+      "anio_original": 2011,
+      "anio_edicion": null,
+      "paginas_referencia": null,
+      "genero": "Historia y antropología",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "Un recorrido interpretativo por la historia de la humanidad, desde la revolución cognitiva y la agricultura hasta la ciencia y las instituciones modernas.",
+      "descripcion_breve": "Un recorrido interpretativo por la historia de la humanidad, desde la revolución cognitiva y la agricultura hasta la ciencia y las instituciones modernas.",
+      "temas": [
+        "Evolución",
+        "civilización",
+        "religión",
+        "economía"
+      ],
+      "palabras_clave": [
+        "Homo sapiens",
+        "historia",
+        "cultura"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": null,
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 14,
+      "titulo": "Don Quijote de la Mancha",
+      "titulo_original": "El ingenioso hidalgo don Quijote de la Mancha",
+      "autor": "Miguel de Cervantes",
+      "editorial": "Alfaguara",
+      "isbn_13": "9788420472146",
+      "isbn_10": null,
+      "anio_original": 1605,
+      "anio_edicion": null,
+      "paginas_referencia": 1248,
+      "genero": "Clásico y sátira",
+      "saga": "Don Quijote",
+      "numero_saga": null,
+      "edad_minima_orientativa": 15,
+      "sinopsis": "Alonso Quijano adopta la identidad de Don Quijote y emprende aventuras con Sancho Panza, confundiendo ideales caballerescos con la realidad cotidiana.",
+      "descripcion_breve": "Alonso Quijano adopta la identidad de Don Quijote y emprende aventuras con Sancho Panza, confundiendo ideales caballerescos con la realidad cotidiana.",
+      "temas": [
+        "Idealismo",
+        "realidad",
+        "amistad",
+        "libertad"
+      ],
+      "palabras_clave": [
+        "Sancho Panza",
+        "molinos",
+        "caballería"
+      ],
+      "idioma_edicion": "español",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9788420472146-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 15,
+      "titulo": "La sombra del viento",
+      "titulo_original": "La sombra del viento",
+      "autor": "Carlos Ruiz Zafón",
+      "editorial": "Planeta",
+      "isbn_13": null,
+      "isbn_10": null,
+      "anio_original": 2001,
+      "anio_edicion": null,
+      "paginas_referencia": null,
+      "genero": "Misterio histórico",
+      "saga": "El Cementerio de los Libros Olvidados",
+      "numero_saga": 1,
+      "edad_minima_orientativa": 15,
+      "sinopsis": "Daniel Sempere encuentra un libro olvidado en la Barcelona de posguerra y descubre una red de secretos alrededor de su misterioso autor.",
+      "descripcion_breve": "Daniel Sempere encuentra un libro olvidado en la Barcelona de posguerra y descubre una red de secretos alrededor de su misterioso autor.",
+      "temas": [
+        "Libros",
+        "memoria",
+        "amor",
+        "secretos"
+      ],
+      "palabras_clave": [
+        "Barcelona",
+        "Daniel Sempere",
+        "Julián Carax"
+      ],
+      "idioma_edicion": "español",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": null,
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 16,
+      "titulo": "El código Da Vinci",
+      "titulo_original": "The Da Vinci Code",
+      "autor": "Dan Brown",
+      "editorial": "Anchor Books",
+      "isbn_13": "9780307474278",
+      "isbn_10": null,
+      "anio_original": 2003,
+      "anio_edicion": null,
+      "paginas_referencia": 624,
+      "genero": "Thriller de misterio",
+      "saga": "Robert Langdon",
+      "numero_saga": 2,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "Robert Langdon investiga un asesinato en el Louvre y, junto a Sophie Neveu, descifra pistas sobre arte, símbolos y una supuesta conspiración histórica.",
+      "descripcion_breve": "Robert Langdon investiga un asesinato en el Louvre y, junto a Sophie Neveu, descifra pistas sobre arte, símbolos y una supuesta conspiración histórica.",
+      "temas": [
+        "Religión",
+        "arte",
+        "conspiración",
+        "simbología"
+      ],
+      "palabras_clave": [
+        "Louvre",
+        "Leonardo da Vinci",
+        "Grial"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780307474278-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 17,
+      "titulo": "Bajo la misma estrella",
+      "titulo_original": "The Fault in Our Stars",
+      "autor": "John Green",
+      "editorial": "Penguin Books",
+      "isbn_13": null,
+      "isbn_10": null,
+      "anio_original": 2012,
+      "anio_edicion": null,
+      "paginas_referencia": null,
+      "genero": "Romance juvenil",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 14,
+      "sinopsis": "Hazel Grace y Augustus Waters se conocen en un grupo de apoyo y construyen una relación mientras reflexionan sobre la enfermedad, el amor y la mortalidad.",
+      "descripcion_breve": "Hazel Grace y Augustus Waters se conocen en un grupo de apoyo y construyen una relación mientras reflexionan sobre la enfermedad, el amor y la mortalidad.",
+      "temas": [
+        "Amor",
+        "enfermedad",
+        "pérdida",
+        "esperanza"
+      ],
+      "palabras_clave": [
+        "Hazel",
+        "Augustus",
+        "adolescencia"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": null,
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 18,
+      "titulo": "El poder del ahora",
+      "titulo_original": "The Power of Now",
+      "autor": "Eckhart Tolle",
+      "editorial": "New World Library",
+      "isbn_13": "9781577314806",
+      "isbn_10": null,
+      "anio_original": 1997,
+      "anio_edicion": null,
+      "paginas_referencia": 236,
+      "genero": "Espiritualidad",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "Tolle expone una perspectiva espiritual que propone prestar atención al presente y observar los pensamientos sin identificarse por completo con ellos.",
+      "descripcion_breve": "Tolle expone una perspectiva espiritual que propone prestar atención al presente y observar los pensamientos sin identificarse por completo con ellos.",
+      "temas": [
+        "Presencia",
+        "conciencia",
+        "ego",
+        "aceptación"
+      ],
+      "palabras_clave": [
+        "mindfulness",
+        "meditación",
+        "paz interior"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9781577314806-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 19,
+      "titulo": "Padre rico, padre pobre",
+      "titulo_original": "Rich Dad Poor Dad",
+      "autor": "Robert T. Kiyosaki",
+      "editorial": "Plata Publishing",
+      "isbn_13": "9781612680194",
+      "isbn_10": null,
+      "anio_original": 1997,
+      "anio_edicion": null,
+      "paginas_referencia": 336,
+      "genero": "Finanzas personales",
+      "saga": "Padre rico",
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "Kiyosaki contrasta dos modelos de educación sobre el dinero para presentar conceptos sobre activos, pasivos, inversiones y emprendimiento.",
+      "descripcion_breve": "Kiyosaki contrasta dos modelos de educación sobre el dinero para presentar conceptos sobre activos, pasivos, inversiones y emprendimiento.",
+      "temas": [
+        "Dinero",
+        "activos",
+        "inversión",
+        "educación financiera"
+      ],
+      "palabras_clave": [
+        "finanzas",
+        "ingresos",
+        "libertad financiera"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9781612680194-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 20,
+      "titulo": "El señor de los anillos: La comunidad del anillo",
+      "titulo_original": "The Fellowship of the Ring",
+      "autor": "J. R. R. Tolkien",
+      "editorial": "Mariner Books",
+      "isbn_13": "9780547928210",
+      "isbn_10": null,
+      "anio_original": 1954,
+      "anio_edicion": 2012,
+      "paginas_referencia": 432,
+      "genero": "Fantasía épica",
+      "saga": "El señor de los anillos",
+      "numero_saga": 1,
+      "edad_minima_orientativa": 13,
+      "sinopsis": "Frodo hereda el Anillo Único y parte junto con sus compañeros en una misión para impedir que Sauron recupere su poder.",
+      "descripcion_breve": "Frodo hereda el Anillo Único y parte junto con sus compañeros en una misión para impedir que Sauron recupere su poder.",
+      "temas": [
+        "Amistad",
+        "poder",
+        "sacrificio",
+        "esperanza"
+      ],
+      "palabras_clave": [
+        "Frodo",
+        "Gandalf",
+        "Mordor",
+        "anillo"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": "Tapa blanda",
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780547928210-L.jpg",
+      "notas": "Mariner 2012: fuentes distinguen páginas de texto y páginas totales.",
+      "fuente": "https://www.tolkienbooks.us/lotr/us/tpb/hm2012/the-fellowship-of-the-ring-2012"
+    },
+    {
+      "id": 21,
+      "titulo": "La chica del tren",
+      "titulo_original": "The Girl on the Train",
+      "autor": "Paula Hawkins",
+      "editorial": "Riverhead Books",
+      "isbn_13": "9781594634024",
+      "isbn_10": null,
+      "anio_original": 2015,
+      "anio_edicion": null,
+      "paginas_referencia": 336,
+      "genero": "Thriller psicológico",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 16,
+      "sinopsis": "Rachel observa desde el tren a una pareja que imagina perfecta; una desaparición la involucra en una investigación atravesada por recuerdos confusos.",
+      "descripcion_breve": "Rachel observa desde el tren a una pareja que imagina perfecta; una desaparición la involucra en una investigación atravesada por recuerdos confusos.",
+      "temas": [
+        "Memoria",
+        "engaño",
+        "relaciones",
+        "violencia"
+      ],
+      "palabras_clave": [
+        "Rachel",
+        "tren",
+        "desaparición",
+        "misterio"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9781594634024-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 22,
+      "titulo": "Dune",
+      "titulo_original": "Dune",
+      "autor": "Frank Herbert",
+      "editorial": "Ace Books",
+      "isbn_13": "9780441172719",
+      "isbn_10": null,
+      "anio_original": 1965,
+      "anio_edicion": null,
+      "paginas_referencia": 896,
+      "genero": "Ciencia ficción",
+      "saga": "Dune",
+      "numero_saga": 1,
+      "edad_minima_orientativa": 15,
+      "sinopsis": "Paul Atreides llega al planeta Arrakis, centro de disputas por la especia, y se ve envuelto en una lucha de poder político, religioso y ecológico.",
+      "descripcion_breve": "Paul Atreides llega al planeta Arrakis, centro de disputas por la especia, y se ve envuelto en una lucha de poder político, religioso y ecológico.",
+      "temas": [
+        "Poder",
+        "ecología",
+        "religión",
+        "colonialismo"
+      ],
+      "palabras_clave": [
+        "Arrakis",
+        "fremen",
+        "especia",
+        "Paul Atreides"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780441172719-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    },
+    {
+      "id": 23,
+      "titulo": "El diario de Ana Frank",
+      "titulo_original": "Het Achterhuis",
+      "autor": "Ana Frank",
+      "editorial": "Bantam Books",
+      "isbn_13": "9780553296983",
+      "isbn_10": null,
+      "anio_original": 1947,
+      "anio_edicion": null,
+      "paginas_referencia": 304,
+      "genero": "Diario autobiográfico",
+      "saga": null,
+      "numero_saga": null,
+      "edad_minima_orientativa": 12,
+      "sinopsis": "Ana Frank describe su vida escondida en Ámsterdam durante la ocupación nazi, sus relaciones familiares, sus temores y esperanzas.",
+      "descripcion_breve": "Ana Frank describe su vida escondida en Ámsterdam durante la ocupación nazi, sus relaciones familiares, sus temores y esperanzas.",
+      "temas": [
+        "Holocausto",
+        "guerra",
+        "identidad",
+        "esperanza"
+      ],
+      "palabras_clave": [
+        "Ana Frank",
+        "Ámsterdam",
+        "nazismo",
+        "diario"
+      ],
+      "idioma_edicion": "inglés",
+      "formato": null,
+      "dimensiones": null,
+      "peso": null,
+      "url_portada": "https://covers.openlibrary.org/b/isbn/9780553296983-L.jpg",
+      "notas": "Confirmar los datos de la edición exacta; los valores son referencias bibliográficas."
+    }
+  ],
+  "autores": [
+    {
+      "id": 1,
+      "nombre": "Ana Frank",
+      "nombre_completo": "Annelies Marie Frank",
+      "anio_nacimiento": 1929,
+      "anio_fallecimiento": 1945,
+      "nacionalidad": "Alemana",
+      "biografia": "Escribió su diario durante su ocultamiento en Ámsterdam ante la persecución nazi; murió en Bergen-Belsen.",
+      "generos": "Diario y testimonio",
+      "temas": [
+        "Persecución",
+        "adolescencia",
+        "esperanza"
+      ],
+      "obras_destacadas": [
+        "El diario de Ana Frank"
+      ],
+      "sitio_web": "https://www.annefrank.org/"
+    },
+    {
+      "id": 2,
+      "nombre": "Antoine de Saint-Exupéry",
+      "nombre_completo": "Antoine Marie Jean-Baptiste Roger de Saint-Exupéry",
+      "anio_nacimiento": 1900,
+      "anio_fallecimiento": 1944,
+      "nacionalidad": "Francesa",
+      "biografia": "Aviador y escritor francés cuyas experiencias de vuelo inspiraron su literatura; desapareció durante una misión aérea.",
+      "generos": "Fábula y novela",
+      "temas": [
+        "Amistad",
+        "aviación",
+        "responsabilidad"
+      ],
+      "obras_destacadas": [
+        "El principito",
+        "Vuelo nocturno",
+        "Tierra de hombres"
+      ],
+      "sitio_web": null
+    },
+    {
+      "id": 3,
+      "nombre": "Carlos Ruiz Zafón",
+      "nombre_completo": "Carlos Ruiz Zafón",
+      "anio_nacimiento": 1964,
+      "anio_fallecimiento": 2020,
+      "nacionalidad": "Española",
+      "biografia": "Novelista barcelonés reconocido por el ciclo del Cementerio de los Libros Olvidados.",
+      "generos": "Misterio y ficción histórica",
+      "temas": [
+        "Libros",
+        "memoria",
+        "secretos"
+      ],
+      "obras_destacadas": [
+        "La sombra del viento",
+        "El juego del ángel",
+        "Marina"
+      ],
+      "sitio_web": null
+    },
+    {
+      "id": 4,
+      "nombre": "Dan Brown",
+      "nombre_completo": "Daniel Gerhard Brown",
+      "anio_nacimiento": 1964,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Estadounidense",
+      "biografia": "Escritor de suspenso conocido por la serie de Robert Langdon.",
+      "generos": "Thriller y misterio",
+      "temas": [
+        "Arte",
+        "religión",
+        "conspiraciones"
+      ],
+      "obras_destacadas": [
+        "El código Da Vinci",
+        "Ángeles y demonios",
+        "Inferno"
+      ],
+      "sitio_web": "https://danbrown.com/"
+    },
+    {
+      "id": 5,
+      "nombre": "Eckhart Tolle",
+      "nombre_completo": "Ulrich Leonard Tölle",
+      "anio_nacimiento": 1948,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Alemana y canadiense",
+      "biografia": "Divulgador espiritual centrado en la atención al momento presente.",
+      "generos": "Espiritualidad y autoayuda",
+      "temas": [
+        "Presencia",
+        "conciencia",
+        "aceptación"
+      ],
+      "obras_destacadas": [
+        "El poder del ahora",
+        "Una nueva tierra"
+      ],
+      "sitio_web": "https://eckharttolle.com/"
+    },
+    {
+      "id": 6,
+      "nombre": "Eduardo Sacheri",
+      "nombre_completo": "Eduardo Alfredo Sacheri",
+      "anio_nacimiento": 1967,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Argentina",
+      "biografia": "Escritor, historiador y docente argentino; Premio Alfaguara 2016.",
+      "generos": "Novela y policial",
+      "temas": [
+        "Amistad",
+        "justicia",
+        "fútbol",
+        "memoria"
+      ],
+      "obras_destacadas": [
+        "La pregunta de sus ojos",
+        "La noche de la usina",
+        "Papeles en el viento"
+      ],
+      "sitio_web": null
+    },
+    {
+      "id": 7,
+      "nombre": "Frank Herbert",
+      "nombre_completo": "Franklin Patrick Herbert Jr.",
+      "anio_nacimiento": 1920,
+      "anio_fallecimiento": 1986,
+      "nacionalidad": "Estadounidense",
+      "biografia": "Periodista y novelista creador de Dune, premiada con Hugo y Nebula.",
+      "generos": "Ciencia ficción",
+      "temas": [
+        "Ecología",
+        "política",
+        "religión"
+      ],
+      "obras_destacadas": [
+        "Dune",
+        "El mesías de Dune",
+        "Hijos de Dune"
+      ],
+      "sitio_web": null
+    },
+    {
+      "id": 8,
+      "nombre": "Gabriel García Márquez",
+      "nombre_completo": "Gabriel José de la Concordia García Márquez",
+      "anio_nacimiento": 1927,
+      "anio_fallecimiento": 2014,
+      "nacionalidad": "Colombiana",
+      "biografia": "Novelista y periodista colombiano, Premio Nobel de Literatura 1982.",
+      "generos": "Realismo mágico y crónica",
+      "temas": [
+        "Soledad",
+        "familia",
+        "poder"
+      ],
+      "obras_destacadas": [
+        "Cien años de soledad",
+        "El amor en los tiempos del cólera",
+        "Crónica de una muerte anunciada"
+      ],
+      "sitio_web": null
+    },
+    {
+      "id": 9,
+      "nombre": "George Orwell",
+      "nombre_completo": "Eric Arthur Blair",
+      "anio_nacimiento": 1903,
+      "anio_fallecimiento": 1950,
+      "nacionalidad": "Británica",
+      "biografia": "Escritor y periodista británico célebre por su crítica del autoritarismo.",
+      "generos": "Distopía y sátira",
+      "temas": [
+        "Totalitarismo",
+        "propaganda",
+        "libertad"
+      ],
+      "obras_destacadas": [
+        "1984",
+        "Rebelión en la granja",
+        "Homenaje a Cataluña"
+      ],
+      "sitio_web": null
+    },
+    {
+      "id": 10,
+      "nombre": "J. K. Rowling",
+      "nombre_completo": "Joanne Rowling",
+      "anio_nacimiento": 1965,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Británica",
+      "biografia": "Autora de Harry Potter; publica policiales como Robert Galbraith.",
+      "generos": "Fantasía juvenil y policial",
+      "temas": [
+        "Amistad",
+        "identidad",
+        "poder"
+      ],
+      "obras_destacadas": [
+        "Harry Potter",
+        "Una vacante imprevista",
+        "Cormoran Strike"
+      ],
+      "sitio_web": "https://www.jkrowling.com/"
+    },
+    {
+      "id": 11,
+      "nombre": "J. R. R. Tolkien",
+      "nombre_completo": "John Ronald Reuel Tolkien",
+      "anio_nacimiento": 1892,
+      "anio_fallecimiento": 1973,
+      "nacionalidad": "Británica",
+      "biografia": "Filólogo y profesor de Oxford, creador de la Tierra Media. El sitio corresponde a una sociedad literaria.",
+      "generos": "Fantasía épica y filología",
+      "temas": [
+        "Poder",
+        "amistad",
+        "sacrificio"
+      ],
+      "obras_destacadas": [
+        "El hobbit",
+        "El señor de los anillos",
+        "El Silmarillion"
+      ],
+      "sitio_web": "https://www.tolkiensociety.org/"
+    },
+    {
+      "id": 12,
+      "nombre": "James Clear",
+      "nombre_completo": "James Clear",
+      "anio_nacimiento": 1986,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Estadounidense",
+      "biografia": "Escritor y divulgador de métodos de mejora continua y diseño de hábitos.",
+      "generos": "Desarrollo personal",
+      "temas": [
+        "Hábitos",
+        "disciplina",
+        "sistemas"
+      ],
+      "obras_destacadas": [
+        "Hábitos atómicos"
+      ],
+      "sitio_web": "https://jamesclear.com/"
+    },
+    {
+      "id": 13,
+      "nombre": "Jane Austen",
+      "nombre_completo": "Jane Austen",
+      "anio_nacimiento": 1775,
+      "anio_fallecimiento": 1817,
+      "nacionalidad": "Británica",
+      "biografia": "Novelista inglesa conocida por sus retratos irónicos de las convenciones sociales.",
+      "generos": "Romance y sátira social",
+      "temas": [
+        "Matrimonio",
+        "clase social",
+        "independencia"
+      ],
+      "obras_destacadas": [
+        "Orgullo y prejuicio",
+        "Emma",
+        "Persuasión"
+      ],
+      "sitio_web": null
+    },
+    {
+      "id": 14,
+      "nombre": "John Green",
+      "nombre_completo": "John Michael Green",
+      "anio_nacimiento": 1977,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Estadounidense",
+      "biografia": "Novelista juvenil y divulgador educativo, ganador del premio Michael L. Printz.",
+      "generos": "Ficción juvenil",
+      "temas": [
+        "Amor",
+        "adolescencia",
+        "pérdida"
+      ],
+      "obras_destacadas": [
+        "Bajo la misma estrella",
+        "Buscando a Alaska",
+        "Ciudades de papel"
+      ],
+      "sitio_web": "https://www.johngreenbooks.com/"
+    },
+    {
+      "id": 15,
+      "nombre": "Miguel de Cervantes",
+      "nombre_completo": "Miguel de Cervantes Saavedra",
+      "anio_nacimiento": 1547,
+      "anio_fallecimiento": 1616,
+      "nacionalidad": "Española",
+      "biografia": "Escritor del Siglo de Oro, figura decisiva en la evolución de la novela moderna.",
+      "generos": "Novela y teatro",
+      "temas": [
+        "Idealismo",
+        "libertad",
+        "realidad"
+      ],
+      "obras_destacadas": [
+        "Don Quijote de la Mancha",
+        "Novelas ejemplares",
+        "La Galatea"
+      ],
+      "sitio_web": null
+    },
+    {
+      "id": 16,
+      "nombre": "Paula Hawkins",
+      "nombre_completo": "Paula Hawkins",
+      "anio_nacimiento": 1972,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Británica",
+      "biografia": "Escritora británica nacida en el actual Zimbabue, conocida por sus thrillers.",
+      "generos": "Thriller psicológico",
+      "temas": [
+        "Memoria",
+        "engaño",
+        "violencia"
+      ],
+      "obras_destacadas": [
+        "La chica del tren",
+        "Escrito en el agua",
+        "A fuego lento"
+      ],
+      "sitio_web": "https://paulahawkinsbooks.com/"
+    },
+    {
+      "id": 17,
+      "nombre": "Paulo Coelho",
+      "nombre_completo": "Paulo Coelho de Souza",
+      "anio_nacimiento": 1947,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Brasileña",
+      "biografia": "Novelista brasileño de proyección internacional conocido por sus relatos alegóricos.",
+      "generos": "Ficción filosófica",
+      "temas": [
+        "Destino",
+        "sueños",
+        "espiritualidad"
+      ],
+      "obras_destacadas": [
+        "El alquimista",
+        "Brida",
+        "Veronika decide morir"
+      ],
+      "sitio_web": "https://paulocoelho.com/"
+    },
+    {
+      "id": 18,
+      "nombre": "Robert T. Kiyosaki",
+      "nombre_completo": "Robert Toru Kiyosaki",
+      "anio_nacimiento": 1947,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Estadounidense",
+      "biografia": "Autor y empresario de educación financiera; varias recomendaciones son debatidas.",
+      "generos": "Finanzas personales",
+      "temas": [
+        "Activos",
+        "inversión",
+        "dinero"
+      ],
+      "obras_destacadas": [
+        "Padre rico",
+        "padre pobre",
+        "El cuadrante del flujo de dinero"
+      ],
+      "sitio_web": "https://www.richdad.com/"
+    },
+    {
+      "id": 19,
+      "nombre": "Suzanne Collins",
+      "nombre_completo": "Suzanne Marie Collins",
+      "anio_nacimiento": 1962,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Estadounidense",
+      "biografia": "Escritora estadounidense creadora de Los juegos del hambre.",
+      "generos": "Distopía juvenil",
+      "temas": [
+        "Guerra",
+        "poder",
+        "supervivencia"
+      ],
+      "obras_destacadas": [
+        "Los juegos del hambre",
+        "En llamas",
+        "Sinsajo",
+        "Amanecer en la cosecha"
+      ],
+      "sitio_web": "https://www.suzannecollinsbooks.com/"
+    },
+    {
+      "id": 20,
+      "nombre": "Yuval Noah Harari",
+      "nombre_completo": "Yuval Noah Harari",
+      "anio_nacimiento": 1976,
+      "anio_fallecimiento": null,
+      "nacionalidad": "Israelí",
+      "biografia": "Historiador israelí y divulgador de historia humana y tecnología.",
+      "generos": "Historia y ensayo",
+      "temas": [
+        "Evolución",
+        "tecnología",
+        "poder"
+      ],
+      "obras_destacadas": [
+        "Sapiens",
+        "Homo Deus",
+        "21 lecciones para el siglo XXI",
+        "Nexus"
+      ],
+      "sitio_web": "https://www.ynharari.com/"
+    }
+  ],
+  "editoriales": [
+    {
+      "id": 1,
+      "nombre": "Ace Books",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": 1952,
+      "especializacion": "Ciencia ficción y fantasía",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhouse.com/",
+      "descripcion": "Ace Books es un sello o editorial de Estados Unidos especializado en ciencia ficción y fantasía.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 2,
+      "nombre": "Alfaguara",
+      "pais_origen": "España",
+      "anio_fundacion_o_antecedente": 1964,
+      "especializacion": "Narrativa literaria",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhousegrupoeditorial.com/sello/alfaguara/",
+      "descripcion": "Alfaguara es un sello o editorial de España especializado en narrativa literaria.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 3,
+      "nombre": "Anchor Books",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": 1953,
+      "especializacion": "Ficción, ensayo y reediciones",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhouse.com/",
+      "descripcion": "Anchor Books es un sello o editorial de Estados Unidos especializado en ficción, ensayo y reediciones.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 4,
+      "nombre": "Avery",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": null,
+      "especializacion": "Salud y desarrollo personal",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhouse.com/",
+      "descripcion": "Avery es un sello o editorial de Estados Unidos especializado en salud y desarrollo personal.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 5,
+      "nombre": "Bantam Books",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": 1945,
+      "especializacion": "Ficción comercial",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhouse.com/",
+      "descripcion": "Bantam Books es un sello o editorial de Estados Unidos especializado en ficción comercial.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 6,
+      "nombre": "Harper",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": 1817,
+      "especializacion": "Literatura general",
+      "grupo_editorial": "HarperCollins",
+      "sitio_web": "https://www.harpercollins.com/",
+      "descripcion": "Harper es un sello o editorial de Estados Unidos especializado en literatura general.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 7,
+      "nombre": "HarperOne",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": null,
+      "especializacion": "Espiritualidad y bienestar",
+      "grupo_editorial": "HarperCollins",
+      "sitio_web": "https://www.harpercollins.com/",
+      "descripcion": "HarperOne es un sello o editorial de Estados Unidos especializado en espiritualidad y bienestar.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 8,
+      "nombre": "Mariner Books",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": null,
+      "especializacion": "Narrativa, clásicos y ensayo",
+      "grupo_editorial": "HarperCollins",
+      "sitio_web": "https://www.harpercollins.com/",
+      "descripcion": "Mariner Books es un sello o editorial de Estados Unidos especializado en narrativa, clásicos y ensayo.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 9,
+      "nombre": "New World Library",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": 1977,
+      "especializacion": "Espiritualidad y autoayuda",
+      "grupo_editorial": "Independiente",
+      "sitio_web": "https://www.newworldlibrary.com/",
+      "descripcion": "New World Library es un sello o editorial de Estados Unidos especializado en espiritualidad y autoayuda.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 10,
+      "nombre": "Penguin Books",
+      "pais_origen": "Reino Unido",
+      "anio_fundacion_o_antecedente": 1935,
+      "especializacion": "Literatura general",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguin.co.uk/",
+      "descripcion": "Penguin Books es un sello o editorial de Reino Unido especializado en literatura general.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 11,
+      "nombre": "Penguin Classics",
+      "pais_origen": "Reino Unido",
+      "anio_fundacion_o_antecedente": 1946,
+      "especializacion": "Clásicos literarios",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguin.co.uk/",
+      "descripcion": "Penguin Classics es un sello o editorial de Reino Unido especializado en clásicos literarios.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 12,
+      "nombre": "Planeta",
+      "pais_origen": "España",
+      "anio_fundacion_o_antecedente": 1949,
+      "especializacion": "Narrativa y ensayo",
+      "grupo_editorial": "Grupo Planeta",
+      "sitio_web": "https://www.planetadelibros.com/",
+      "descripcion": "Planeta es un sello o editorial de España especializado en narrativa y ensayo.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 13,
+      "nombre": "Plata Publishing",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": null,
+      "especializacion": "Educación financiera",
+      "grupo_editorial": "Plata Publishing",
+      "sitio_web": "https://www.richdad.com/",
+      "descripcion": "Plata Publishing es un sello o editorial de Estados Unidos especializado en educación financiera.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 14,
+      "nombre": "Riverhead Books",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": 1994,
+      "especializacion": "Ficción literaria",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhouse.com/",
+      "descripcion": "Riverhead Books es un sello o editorial de Estados Unidos especializado en ficción literaria.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 15,
+      "nombre": "Salamandra",
+      "pais_origen": "España",
+      "anio_fundacion_o_antecedente": 1989,
+      "especializacion": "Narrativa y literatura juvenil",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhousegrupoeditorial.com/sello/salamandra/",
+      "descripcion": "Salamandra es un sello o editorial de España especializado en narrativa y literatura juvenil.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 16,
+      "nombre": "Scholastic Press",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": null,
+      "especializacion": "Literatura infantil y juvenil",
+      "grupo_editorial": "Scholastic Corporation",
+      "sitio_web": "https://www.scholastic.com/",
+      "descripcion": "Scholastic Press es un sello o editorial de Estados Unidos especializado en literatura infantil y juvenil.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 17,
+      "nombre": "Signet Classics",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": null,
+      "especializacion": "Clásicos económicos",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhouse.com/",
+      "descripcion": "Signet Classics es un sello o editorial de Estados Unidos especializado en clásicos económicos.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 18,
+      "nombre": "Sudamericana",
+      "pais_origen": "Argentina",
+      "anio_fundacion_o_antecedente": 1939,
+      "especializacion": "Literatura latinoamericana",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhousegrupoeditorial.com/",
+      "descripcion": "Sudamericana es un sello o editorial de Argentina especializado en literatura latinoamericana.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    },
+    {
+      "id": 19,
+      "nombre": "Vintage Español",
+      "pais_origen": "Estados Unidos",
+      "anio_fundacion_o_antecedente": null,
+      "especializacion": "Literatura en español",
+      "grupo_editorial": "Penguin Random House",
+      "sitio_web": "https://www.penguinrandomhouse.com/",
+      "descripcion": "Vintage Español es un sello o editorial de Estados Unidos especializado en literatura en español.",
+      "notas": "La fecha puede corresponder a una entidad antecesora, no al inicio del sello."
+    }
+  ]
+}

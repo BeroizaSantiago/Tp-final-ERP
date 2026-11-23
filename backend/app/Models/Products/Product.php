@@ -3,6 +3,7 @@
 namespace App\Models\Products;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\IA\AiEnrichment;
 use App\Models\Stock\InventoryItem;
 use App\Models\Products\Author;
 
@@ -86,5 +87,10 @@ class Product extends Model
       public function variants()
    {
       return $this->hasMany(ProductVariant::class);
+   }
+
+   public function aiEnrichments()
+   {
+      return $this->morphMany(AiEnrichment::class, 'enrichable');
    }
 }

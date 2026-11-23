@@ -32,10 +32,26 @@ return [
     |--------------------------------------------------------------------------
     |
     | The timeout may be used to specify the maximum number of seconds to wait
-    | for a response. By default, the client will time out after 30 seconds.
+    | for a response. Gemini puede tardar más de 30 segundos cuando el contexto
+    | es grande, así que el valor por defecto es 60.
     */
 
-    'request_timeout' => env('GEMINI_REQUEST_TIMEOUT', 30),
+    'request_timeout' => env('GEMINI_REQUEST_TIMEOUT', 60),
 
-    'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+    'max_retries' => env('GEMINI_MAX_RETRIES', 2),
+
+    /*
+    |--------------------------------------------------------------------------
+    | CA Bundle
+    |--------------------------------------------------------------------------
+    |
+    | PHP/cURL on Windows may not have a CA bundle configured, which causes
+    | "cURL error 60" when connecting to Google. The project ships a bundle
+    | so HTTPS requests work without changing the global php.ini.
+    |
+    */
+
+    'verify' => env('GEMINI_VERIFY', base_path('resources/certs/cacert.pem')),
+
+    'model' => env('GEMINI_MODEL', 'gemini-3.6-flash'),
 ];

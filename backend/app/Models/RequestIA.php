@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Clients\Client;
+use App\Models\Products\Author;
+use App\Models\Products\Product;
 use App\Models\Sales\InvoiceItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +18,8 @@ class RequestIA extends Model
         'usuario_id',
         'cliente_id',
         'detalle_venta_id',
+        'product_id',
+        'author_id',
         'estado',
         'solicitud',
         'respuesta',
@@ -40,5 +44,15 @@ class RequestIA extends Model
             InvoiceItem::class,
             'detalle_venta_id'
         );
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(Author::class);
     }
 }

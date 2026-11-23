@@ -12,6 +12,7 @@ class ProductMarginReportService
         if(!in_array($grouping,['product','category','brand'],true))throw new InvalidArgumentException('Agrupación de margen inválida.');
         $detailFilters=['date_from'=>$filters['date_from'],'date_to'=>$filters['date_to'],'with_variant'=>false];
         if($filters['branch']??null)$detailFilters['branch']=$filters['branch'];
+        foreach(['author_id','publisher_id','collection_id'] as $key)if($filters[$key]??null)$detailFilters[$key]=$filters[$key];
         $filterKey=$grouping.'_id';if($filters[$filterKey]??null)$detailFilters[$filterKey]=$filters[$filterKey];
         $details=$this->details->generate($detailFilters);$rows=collect($details['rows']);
         $grouped=$rows->groupBy(fn($r)=>$this->groupKey($r,$grouping))->map(function(Collection $items,$key)use($grouping){
@@ -22,7 +23,7 @@ class ProductMarginReportService
         $totalSale=round((float)$grouped->sum('total_sale'),2);$grouped=$grouped->map(function($r)use($totalSale){$r['percentage']=$totalSale!=0?round($r['total_sale']*100/$totalSale,2):0.0;return$r;})->sortByDesc('total_sale')->values();
         return ['grouping'=>$grouping,'title'=>$this->title($grouping),'filters'=>$filters,'rows'=>$grouped->all(),'summary'=>['records'=>$grouped->count(),'total_sale'=>$totalSale,'profit'=>round((float)$grouped->sum('profit'),2)]];
     }
-    public function options():array{$o=$this->details->options();return['branches'=>$o['branches'],'products'=>$o['products'],'categories'=>$o['categories'],'brands'=>$o['brands']];}
+    public function options():array{$o=$this->details->options();return['branches'=>$o['branches'],'products'=>$o['products'],'categories'=>$o['categories'],'brands'=>$o['brands'],'authors'=>$o['authors'],'publishers'=>$o['publishers'],'collections'=>$o['collections']];}
     public function exportRows(array $report):Collection{return collect($report['rows'])->map(fn($r)=>[$r['code'],$r['product'],$r['total_sale'],$r['profit'],$r['average_margin'],$r['average_profitability'],$r['percentage']]);}
     private function groupKey(array $r,string $g):string{return(string)($r[$g.'_id']?:$this->groupLabel($r,$g));}
     private function groupLabel(array $r,string $g):string{return match($g){'product'=>$r['product'],'category'=>$r['category'],'brand'=>$r['brand']};}

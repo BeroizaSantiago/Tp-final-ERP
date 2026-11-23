@@ -33,6 +33,7 @@ class ProductCategoryController extends Controller
         $data = $request->validate([
             'external_id' => ['nullable'],
             'name' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'external_code' => ['nullable', 'string'],
             'parent_id' => ['nullable', 'exists:product_categories,id'],
             'web_order' => ['nullable', 'integer'],

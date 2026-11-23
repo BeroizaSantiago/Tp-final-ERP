@@ -30,9 +30,11 @@ class PublisherController extends Controller
         $data = $request->validate([
             'external_id' => ['nullable'],
             'name' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'external_code' => ['nullable', 'string'],
-            'country' => ['nullable', 'string'],
+            'country' => ['nullable', 'string', 'max:100'],
             'website' => ['nullable', 'string', 'max:255'],
+            'founded_year' => ['nullable', 'integer', 'min:1000', 'max:2100'],
             'is_active' => ['nullable', 'boolean'],
         ], [
             'name.required' => 'Ingresá el nombre de la editorial.',

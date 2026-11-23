@@ -39,7 +39,9 @@ import { NotFoundPage } from './pages/PlaceholderPages'
 import { RegisterPage } from './pages/RegisterPage'
 import { HOME_PATH } from './lib/routes'
 import { StockMovementReportPage } from './features/reports/StockMovementReportPage'
+import { SpecializedReportPage } from './features/reports/SpecializedReportPage'
 import { DashboardPage } from './features/dashboard/DashboardPage'
+import { AIAssistantPage } from './features/ai/AIAssistantPage'
 
 /**
  * Mapa de rutas de la SPA.
@@ -78,6 +80,7 @@ export default function App() {
       >
         <Route path="/" element={<Navigate to={HOME_PATH} replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/asistente-ia" element={<AIAssistantPage />} />
 
         <Route path="/libros" element={<BookListPage />} />
         <Route path="/libros/nuevo" element={<BookFormPage />} />
@@ -118,6 +121,8 @@ export default function App() {
         <Route path="/gastos/:id/pago" element={<ExpensePaymentPage />} />
         <Route path="/proveedores" element={<ProvidersPage />} />
         <Route path="/reportes/trazabilidad-stock" element={<StockMovementReportPage />} />
+        <Route path="/reportes/especializados/:type" element={<SpecializedReportPage />} />
+        <Route path="/reportes/especializados" element={<Navigate to="/reportes/especializados/ventas" replace />} />
 
         {Object.values(MASTERS).map((config) => (
           <Route

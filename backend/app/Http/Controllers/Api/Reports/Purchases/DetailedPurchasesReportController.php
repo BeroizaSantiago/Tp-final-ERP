@@ -34,7 +34,10 @@ class DetailedPurchasesReportController extends Controller
     }
     private function filters(Request $r, bool $e = false): array
     {
-        $rules = ['date_from' => ['required', 'date'], 'date_to' => ['required', 'date', 'after_or_equal:date_from'], 'branches' => ['nullable', 'array'], 'branches.*' => ['string', 'max:255'], 'provider_ids' => ['nullable', 'array'], 'provider_ids.*' => ['integer', 'exists:providers,id']];
+        $rules = ['date_from' => ['required', 'date'], 'date_to' => ['required', 'date', 'after_or_equal:date_from'], 'branches' => ['nullable', 'array'], 'branches.*' => ['string', 'max:255'], 'provider_ids' => ['nullable', 'array'], 'provider_ids.*' => ['integer', 'exists:providers,id'],
+            'product_id'=>['nullable','integer','exists:products,id'],'category_id'=>['nullable','integer','exists:product_categories,id'],
+            'author_id'=>['nullable','integer','exists:authors,id'],'publisher_id'=>['nullable','integer','exists:publishers,id'],
+            'collection_id'=>['nullable','integer','exists:collections,id']];
         if ($e) $rules['format'] = ['required', 'in:xlsx,csv'];
         return $r->validate($rules);
     }

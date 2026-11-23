@@ -46,6 +46,7 @@ const SALES_ENTRIES = [
 ]
 
 const REPORT_ENTRIES = [
+  { to: '/reportes/especializados', label: 'Reportes especializados', icon: 'fileList' },
   { to: '/reportes/trazabilidad-stock', label: 'Trazabilidad de inventario', icon: 'barChart' },
 ]
 
@@ -297,6 +298,14 @@ export function AppLayout() {
           >
             <Icon name="dashboard" size={18} />
             <span>Dashboard</span>
+          </NavLink>
+
+          <NavLink
+            to="/asistente-ia"
+            className={({ isActive }) => `app-nav-link${isActive ? ' is-active' : ''}`}
+          >
+            <Icon name="sparkle" size={18} />
+            <span>Asistente IA</span>
           </NavLink>
 
           <div className="app-nav-section">

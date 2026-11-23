@@ -54,3 +54,41 @@ export async function downloadStockMovementReport(filters, format) {
   link.remove()
   URL.revokeObjectURL(url)
 }
+
+const SPECIALIZED = {
+  ventas: '/reports/sales/detailed',
+  compras: '/reports/purchases/detailed',
+  stock: '/reports/stock/tree',
+  rentabilidad: '/reports/products/margins/product',
+}
+
+export function getSpecializedReportOptions(type) {
+  const path = type === 'rentabilidad' ? '/reports/products/margins/options' : `${SPECIALIZED[type]}/options`
+  return apiRequest(path)
+}
+
+export function getSpecializedReport(type, filters) {
+  return apiRequest(`${SPECIALIZED[type]}?${reportQuery(filters)}`)
+}
+
+export async function downloadSpecializedReport(type, filters, format) {
+  const base = SPECIALIZED[type]
+  const pdf = format === 'pdf'
+  if (type === 'stock' && pdf) throw new ApiError('El reporte de stock se exporta en Excel.')
+  const path = pdf ? `${base}/pdf?${reportQuery(filters)}` : `${base}/export?${reportQuery(filters, { format: type === 'stock' ? 'xlsx' : format })}`
+  const token = getToken()
+  const response = await fetch(`${API_URL}${path}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+  if (!response.ok) {
+    const payload = await response.json().catch(() => null)
+    throw new ApiError(payload?.message || 'No se pudo descargar el reporte.', { status: response.status })
+  }
+  const extension = pdf ? 'pdf' : (type === 'stock' ? 'xlsx' : format)
+  const url = URL.createObjectURL(await response.blob())
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `reporte-${type}.${extension}`
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}

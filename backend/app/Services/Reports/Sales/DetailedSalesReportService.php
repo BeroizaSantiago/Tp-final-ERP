@@ -46,11 +46,14 @@ class DetailedSalesReportService
                 return [
                     'invoice_id'=>$invoice->id,'client_id'=>$invoice->client_id,'product_id'=>$product?->id,'variant_id'=>$item->product_variant_id,'provider_id'=>$provider?->id,
                     'brand_id'=>$product?->brand_id,'model_id'=>$product?->product_model_id,'category_id'=>$item->product_category_id?:$product?->category_id,
+                    'author_id'=>$product?->author_id,'publisher_id'=>$product?->publisher_id,'collection_id'=>$product?->collection_id,
                     'seller_id'=>$seller?->id,'receipt_type'=>$this->typeLabel($invoice),'date'=>optional($invoice->issue_date)->format('d/m/Y'),
                     'number'=>$invoice->full_number?:'Comprobante #'.$invoice->id,'channel'=>$this->channel($invoice),
                     'branch'=>$invoice->report_branch_name?:'Sin sucursal','point_of_sale'=>$this->pointOfSale($invoice),
                     'client'=>$invoice->client?->name?:$invoice->customer_name?:'Consumidor final','product'=>$item->product_name?:$product?->name?:$item->description?:'Sin producto',
                     'provider'=>$provider?->name?:$product?->principal_provider_name?:'Sin proveedor',
+                    'author'=>$product?->author?->name?:'Sin autor','publisher'=>$product?->publisher?->name?:'Sin editorial',
+                    'collection'=>$product?->collection?->name?:'Sin colección',
                     'brand'=>$item->brand_name?:$product?->getRelation('brand')?->name?:$product?->getAttribute('brand')?:'Sin marca',
                     'model'=>$item->model_name?:$product?->getRelation('model')?->name?:$product?->getAttribute('model')?:'Sin modelo',
                     'category'=>$item->product_category_name?:$product?->getRelation('category')?->name?:$product?->getAttribute('category')?:'Sin categoría',
@@ -74,6 +77,9 @@ class DetailedSalesReportService
           ->when($filters['brand_id']??null,fn(Collection $r,$v)=>$r->where('brand_id',(int)$v))
           ->when($filters['model_id']??null,fn(Collection $r,$v)=>$r->where('model_id',(int)$v))
           ->when($filters['category_id']??null,fn(Collection $r,$v)=>$r->where('category_id',(int)$v))
+          ->when($filters['author_id']??null,fn(Collection $r,$v)=>$r->where('author_id',(int)$v))
+          ->when($filters['publisher_id']??null,fn(Collection $r,$v)=>$r->where('publisher_id',(int)$v))
+          ->when($filters['collection_id']??null,fn(Collection $r,$v)=>$r->where('collection_id',(int)$v))
           ->when($filters['seller_id']??null,fn(Collection $r,$v)=>$r->where('seller_id',(int)$v))
           ->when($filters['price_type']??null,fn(Collection $r,$v)=>$r->where('price_type',$v))->values();
 
@@ -103,6 +109,9 @@ class DetailedSalesReportService
             'providers'=>Provider::query()->where('is_active',true)->orderBy('name')->get(['id','name']),
             'brands'=>Brand::query()->orderBy('name')->get(['id','name']),'models'=>ProductModel::query()->orderBy('name')->get(['id','name']),
             'categories'=>ProductCategory::query()->orderBy('name')->get(['id','name']),
+            'authors'=>\App\Models\Products\Author::query()->where('is_active',true)->orderBy('name')->get(['id','name']),
+            'publishers'=>\App\Models\Products\Publisher::query()->where('is_active',true)->orderBy('name')->get(['id','name']),
+            'collections'=>\App\Models\Products\Collection::query()->where('is_active',true)->orderBy('name')->get(['id','name']),
             'sellers'=>User::query()->where('is_active',true)->orderBy('name')->get(['id','name','username']),
             'price_types'=>Client::query()->whereNotNull('price_type')->where('price_type','!=','')->distinct()->orderBy('price_type')->pluck('price_type')];
     }
@@ -123,7 +132,7 @@ class DetailedSalesReportService
     private function productContext(Collection $items):array
     {
         $external=$items->pluck('product_external_id')->filter()->unique();$names=$items->pluck('product_name')->filter()->unique();
-        if($external->isEmpty()&&$names->isEmpty())$products=collect();else $products=Product::query()->with(['category','brand','model'])->where(function(Builder $q)use($external,$names){if($external->isNotEmpty())$q->whereIn('external_id',$external);if($names->isNotEmpty())($external->isNotEmpty()?$q->orWhereIn('name',$names):$q->whereIn('name',$names));})->get();
+        if($external->isEmpty()&&$names->isEmpty())$products=collect();else $products=Product::query()->with(['category','brand','model','author','publisher','collection'])->where(function(Builder $q)use($external,$names){if($external->isNotEmpty())$q->whereIn('external_id',$external);if($names->isNotEmpty())($external->isNotEmpty()?$q->orWhereIn('name',$names):$q->whereIn('name',$names));})->get();
         return ['external'=>$products->filter(fn($p)=>$p->external_id!==null)->keyBy(fn($p)=>(string)$p->external_id),'name'=>$products->keyBy(fn($p)=>mb_strtolower((string)$p->name))];
     }
 

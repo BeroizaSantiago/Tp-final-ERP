@@ -40,7 +40,8 @@ class ProductMarginReportController extends Controller
             'product' => 'products',
             'category' => 'product_categories',
             'brand' => 'brands'
-        } . ',id']];
+        } . ',id'], 'author_id'=>['nullable','integer','exists:authors,id'],'publisher_id'=>['nullable','integer','exists:publishers,id'],
+            'collection_id'=>['nullable','integer','exists:collections,id']];
         if ($export) $rules['format'] = ['required', 'in:xlsx,csv'];
         return $r->validate($rules);
     }

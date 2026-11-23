@@ -6,5 +6,5 @@
  * generaría un ciclo.
  */
 
-/** Destino al entrar y tras iniciar sesión: el catálogo de libros. */
+/** Destino al entrar y tras iniciar sesión: el dashboard comercial. */
 export const HOME_PATH = '/dashboard'

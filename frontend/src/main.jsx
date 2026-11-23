@@ -10,6 +10,8 @@ import './styles/theme.css'
 import './styles/app.css'
 import './styles/login.css'
 import './styles/erp.css'
+import './styles/ai.css'
+import './styles/reports.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

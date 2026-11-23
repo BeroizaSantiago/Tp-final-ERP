@@ -34,6 +34,7 @@ class CollectionController extends Controller
             'external_id' => ['nullable'],
             'publisher_id' => ['nullable', 'exists:publishers,id'],
             'name' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'external_code' => ['nullable', 'string'],
             'web_order' => ['nullable', 'integer'],
             'is_active' => ['nullable', 'boolean'],

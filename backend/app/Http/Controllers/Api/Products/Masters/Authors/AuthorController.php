@@ -25,6 +25,11 @@ class AuthorController extends Controller
             'external_id' => ['nullable'],
             'name' => ['required', 'string'],
             'biography' => ['nullable', 'string'],
+            'nationality' => ['nullable', 'string', 'max:100'],
+            'birth_year' => ['nullable', 'integer', 'min:1000', 'max:2100'],
+            'death_year' => ['nullable', 'integer', 'min:1000', 'max:2100'],
+            'website' => ['nullable', 'string', 'max:255'],
+            'notes' => ['nullable', 'string'],
             'external_code' => ['nullable', 'string'],
             'is_active' => ['nullable', 'boolean'],
         ], [
